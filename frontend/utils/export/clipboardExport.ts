@@ -290,6 +290,76 @@ export const exportSetsAndCopyText = async (sets: WorkoutSet[], now = new Date()
   await copyTextToClipboardFallback(text);
 };
 
+const formatSetsAsTextOnly = (sets: WorkoutSet[]): string => {
+  if (!sets || sets.length === 0) return '';
+
+  const weightUnit = getWeightUnit();
+
+  const sessions = new Map<string, WorkoutSet[]>();
+  for (const s of sets) {
+    const key = getSessionKey(s) || 'unknown';
+    if (!sessions.has(key)) sessions.set(key, []);
+    sessions.get(key)!.push(s);
+  }
+
+  const parts: string[] = [];
+
+  const entries = Array.from(sessions.entries()).map(([k, sets]) => ({ key: k, sets }))
+    .sort((a, b) => {
+      const ad = a.sets[0]?.parsedDate?.getTime() ?? 0;
+      const bd = b.sets[0]?.parsedDate?.getTime() ?? 0;
+      return bd - ad;
+    });
+
+  for (const entry of entries) {
+    const sessSets = entry.sets.sort((a, b) => {
+      const exIdxA = a.exercise_index ?? 0;
+      const exIdxB = b.exercise_index ?? 0;
+      if (exIdxA !== exIdxB) return exIdxA - exIdxB;
+      return (a.set_index || 0) - (b.set_index || 0);
+    });
+    const date = sessSets[0]?.parsedDate ? format(sessSets[0].parsedDate!, 'yyyy-MM-dd') : 'unknown date';
+    const title = sessSets[0]?.title || '';
+    parts.push(`Date: ${date}`);
+    if (title) parts.push(`Title: ${title}`);
+
+    const exOrder: string[] = [];
+    const exMap = new Map<string, WorkoutSet[]>();
+    for (const s of sessSets) {
+      const name = s.exercise_title || 'Unknown Exercise';
+      if (!exMap.has(name)) { exMap.set(name, []); exOrder.push(name); }
+      exMap.get(name)!.push(s);
+    }
+
+    for (const name of exOrder) {
+      const exSets = exMap.get(name)!.filter(s => !isWarmupSet(s));
+      if (exSets.length === 0) continue;
+      const repsWithWeight = exSets.map(s => `${s.reps ?? 0}x${convertWeight(s.weight_kg ?? 0, weightUnit)}${weightUnit}`);
+      parts.push(name);
+      parts.push(`Sets: ${exSets.length}`);
+      parts.push(`Reps: ${repsWithWeight.join(',')}`);
+      parts.push('');
+    }
+
+    parts.push('---');
+  }
+
+  return parts.join('\n');
+};
+
+export const exportSetsAndCopyTextOnly = async (sets: WorkoutSet[], now = new Date()): Promise<void> => {
+  const text = formatSetsAsTextOnly(sets);
+  try {
+    if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+      return;
+    }
+  } catch (e) {
+    // fallthrough
+  }
+  await copyTextToClipboardFallback(text);
+};
+
 export const exportPackageAndCopyText = async (
   fullData: WorkoutSet[],
   dailyData: DailySummary[],
