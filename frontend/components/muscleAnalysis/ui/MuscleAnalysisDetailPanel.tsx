@@ -11,6 +11,7 @@ import { SVG_MUSCLE_NAMES } from '../../../utils/muscle/mapping';
 import type { WeeklySetsWindow } from '../../../utils/muscle/analytics';
 import type { ExerciseAsset } from '../../../utils/data/exerciseAssets';
 import type { ExerciseMuscleData } from '../../../utils/muscle/mapping';
+import type { MuscleVolumeThresholds } from '../../../utils/muscle/hypertrophy/muscleParams';
 import { MuscleAnalysisExerciseList } from './MuscleAnalysisExerciseList';
 import { LifetimeAchievementCard } from './LifetimeAchievementCard';
 import type { LifetimeAchievementData } from '../hooks/useLifetimeAchievement';
@@ -23,9 +24,11 @@ interface MuscleAnalysisDetailPanelProps {
   volumeDelta: { direction: 'up' | 'down' | 'same'; formattedPercent: string } | null;
   trendData: Array<{ period: string; sets: number }>;
   windowedSelectionBreakdown: { totalSetsInWindow: number } | null;
-  contributingExercises: Array<{ name: string; sets: number; primarySets: number; secondarySets: number }>;
+  contributingExercises: Array<{ name: string; sets: number; primarySets: number; secondarySets: number; strengthTrend: number | null; strengthLabel: string | null }>;
   assetsMap: Map<string, ExerciseAsset> | null;
   exerciseMuscleData: Map<string, ExerciseMuscleData>;
+  volumeThresholds: MuscleVolumeThresholds;
+  secondarySetMultiplier: number;
   onExerciseClick?: (exerciseName: string) => void;
   clearSelection: () => void;
   lifetimeAchievement: LifetimeAchievementData | null;
@@ -43,6 +46,8 @@ export const MuscleAnalysisDetailPanel: React.FC<MuscleAnalysisDetailPanelProps>
   contributingExercises,
   assetsMap,
   exerciseMuscleData,
+  volumeThresholds,
+  secondarySetMultiplier,
   onExerciseClick,
   clearSelection,
   lifetimeAchievement,
@@ -170,6 +175,8 @@ export const MuscleAnalysisDetailPanel: React.FC<MuscleAnalysisDetailPanelProps>
               assetsMap={assetsMap}
               exerciseMuscleData={exerciseMuscleData}
               totalSetsInWindow={totalSetsInWindow}
+              volumeThresholds={volumeThresholds}
+              secondarySetMultiplier={secondarySetMultiplier}
               onExerciseClick={onExerciseClick}
             />
           </div>

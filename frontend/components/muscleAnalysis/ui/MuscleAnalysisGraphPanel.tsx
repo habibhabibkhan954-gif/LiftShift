@@ -210,9 +210,7 @@ export const MuscleAnalysisGraphPanel: React.FC<MuscleAnalysisGraphPanelProps> =
       windowedSelectionBreakdown,
       clearSelection,
     }) => {
-      const title = selectedMuscle
-        ? ((HEADLESS_MUSCLE_NAMES as any)[selectedMuscle] ?? selectedMuscle)
-        : "All Muscles";
+      const title = `Wkly sets for ${selectedMuscle ? ((HEADLESS_MUSCLE_NAMES as any)[selectedMuscle] ?? selectedMuscle) : 'Full Body'}`;
 
       const totalSetsInWindow =
         windowedSelectionBreakdown?.totalSetsInWindow ?? 0;
@@ -412,19 +410,19 @@ export const MuscleAnalysisGraphPanel: React.FC<MuscleAnalysisGraphPanelProps> =
               <span className="text-[10px] text-slate-400 whitespace-nowrap">
                 {volumeDelta && volumeDelta.direction !== "same" && (
                   <span
-                    className={`flex items-center gap-0.5 ${volumeDelta.direction === "up" ? "text-emerald-400" : "text-rose-400"}`}
+                    className={`flex items-center font-semibold rounded-full gap-0.5 px-1.5 py-0.5 rounded ${volumeDelta.direction === "up" ? "bg-emerald-500/20 text-emerald-400" : "bg-rose-500/20 text-rose-400"}`}
                   >
                     {volumeDelta.direction === "up" ? (
                       <TrendingUp className="w-2.5 h-2.5" />
                     ) : (
                       <TrendingDown className="w-2.5 h-2.5" />
                     )}
-                    {volumeDelta.formattedPercent} vs{" "}
+                    {volumeDelta.formattedPercent} Vol vs{" "}
                     {weeklySetsWindow === "7d"
-                      ? "prv wk"
+                      ? "lst wk"
                       : weeklySetsWindow === "30d"
-                        ? "prv mo"
-                        : "prv yr"}
+                        ? "lst mo"
+                        : "lst yr"}
                   </span>
                 )}
               </span>

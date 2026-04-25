@@ -8,7 +8,7 @@ import { ChevronDown } from 'lucide-react';
 import { stripExerciseSourceLabel } from '../../../utils/exercise/exerciseSourceLabel';
 
 interface MuscleAnalysisExerciseListProps {
-  contributingExercises: Array<{ name: string; sets: number; primarySets: number; secondarySets: number }>;
+  contributingExercises: Array<{ name: string; sets: number; primarySets: number; secondarySets: number; strengthTrend: number | null; strengthLabel: string | null }>;
   assetsMap: Map<string, ExerciseAsset> | null;
   exerciseMuscleData: Map<string, ExerciseMuscleData>;
   totalSetsInWindow: number;
@@ -46,7 +46,7 @@ export const MuscleAnalysisExerciseList: React.FC<MuscleAnalysisExerciseListProp
   return (
     <div className="px-4 mt-2">
       <div
-        className="space-y-2 overflow-y-auto max-h-[120px] sm:max-h-[250px]"
+        className="space-y-2"
       >
         {displayedExercises.map((ex) => {
           const baseName = stripExerciseSourceLabel(ex.name);
@@ -82,14 +82,26 @@ export const MuscleAnalysisExerciseList: React.FC<MuscleAnalysisExerciseListProp
                   </div>
                 </div>
 
-                <div className="min-w-0 flex flex-col">
-                  <div className="flex items-center gap-2 min-w-0 pt-1">
-                    <div className="min-w-0">
-                      <div className="text-sm font-semibold text-white truncate">{ex.name}</div>
-                    </div>
-                  </div>
+                <div className="min-w-0 flex flex-col justify-center">
+                  <div className="text-sm font-semibold text-white truncate">{ex.name}</div>
 
-                  <div className="mt-auto flex flex-wrap items-center gap-2 text-[11px] pb-1">
+                  {ex.strengthLabel && (
+                    <div className="my-0.5">
+                      <span
+                        className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-semibold ${
+                          ex.strengthTrend > 0 
+                            ? 'bg-emerald-500/15 text-emerald-400' 
+                            : ex.strengthTrend < 0 
+                              ? 'bg-rose-500/15 text-rose-400'
+                              : 'bg-slate-500/15 text-slate-400'
+                        }`}
+                      >
+                        {ex.strengthLabel}
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="flex flex-wrap items-center gap-2 text-[11px]">
                     <div className="text-slate-400">
                       {pct}% of sets
                     </div>

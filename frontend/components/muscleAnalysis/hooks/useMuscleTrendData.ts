@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { differenceInCalendarDays } from 'date-fns';
-import type { WorkoutSet } from '../../../types';
+import type { WorkoutSet, ExerciseStats, ExerciseHistoryEntry } from '../../../types';
 import { computeWeeklySetsDelta } from '../utils/weeklySetsMetrics';
 import type { WeeklySetsWindow } from '../../../utils/muscle/analytics';
 import { computeDailySvgMuscleVolumes, computeWindowedExerciseBreakdown } from '../../../utils/muscle/volume';
@@ -12,6 +12,7 @@ import { computationCache } from '../../../utils/storage/computationCache';
 import { muscleCacheKeys } from '../../../utils/storage/cacheKeys';
 import { getVolumeThresholds, type TrainingLevel } from '../../../utils/muscle/hypertrophy/muscleParams';
 import { useTrainingLevel } from '../../../hooks/app/useTrainingLevel';
+import { analyzeExerciseTrend } from '../../exerciseView/trend/exerciseTrendUi';
 
 interface UseMuscleTrendDataParams {
   data: WorkoutSet[];
@@ -260,12 +261,83 @@ export const useMuscleTrendData = ({
 
   const contributingExercises = useMemo(() => {
     if (!windowedSelectionBreakdown) return [];
-    const exercises: Array<{ name: string; sets: number; primarySets: number; secondarySets: number }> = [];
+    
+    const calculateExerciseStrengthTrend = (exerciseName: string): { diffPct: number | null; label: string | null } => {
+      const exerciseSets = data.filter(s => 
+        s.exercise_title === exerciseName && 
+        !isWarmupSet(s) && 
+        s.parsedDate &&
+        s.weight_kg > 0
+      );
+      
+      if (exerciseSets.length < 2) return null;
+      
+      const groupedByDate = new Map<string, ExerciseHistoryEntry>();
+      for (const s of exerciseSets) {
+        const dateKey = s.parsedDate?.toISOString().split('T')[0] ?? '';
+        const existing = groupedByDate.get(dateKey);
+        const est1RM = s.weight_kg * (1 + s.reps / 30);
+        
+        if (!existing) {
+          groupedByDate.set(dateKey, {
+            date: s.parsedDate ?? new Date(),
+            weight: s.weight_kg,
+            reps: s.reps,
+            oneRepMax: est1RM,
+            volume: s.weight_kg * s.reps,
+            isPr: s.isPr ?? false,
+            prTypes: s.prTypes,
+          });
+        } else {
+          if (est1RM > existing.oneRepMax) {
+            groupedByDate.set(dateKey, {
+              date: s.parsedDate ?? existing.date,
+              weight: s.weight_kg,
+              reps: s.reps,
+              oneRepMax: est1RM,
+              volume: existing.volume + (s.weight_kg * s.reps),
+              isPr: existing.isPr || (s.isPr ?? false),
+              prTypes: [...new Set([...(existing.prTypes ?? []), ...(s.prTypes ?? [])])],
+            });
+          }
+        }
+      }
+      
+      const history = Array.from(groupedByDate.values())
+        .sort((a, b) => a.date.getTime() - b.date.getTime());
+      
+      if (history.length < 2) return null;
+      
+      const exerciseStats: ExerciseStats = {
+        name: exerciseName,
+        totalSets: exerciseSets.length,
+        totalVolume: exerciseSets.reduce((sum, s) => sum + (s.weight_kg * s.reps), 0),
+        maxWeight: Math.max(...exerciseSets.map(s => s.weight_kg)),
+        prCount: exerciseSets.filter(s => s.isPr).length,
+        history,
+      };
+      
+      const trendResult = analyzeExerciseTrend(exerciseStats, 'kg');
+      if (trendResult.diffPct === null || trendResult.diffPct === undefined) return { diffPct: null, label: null };
+      const prefix = trendResult.diffPct > 0 ? '+' : '';
+      return { 
+        diffPct: trendResult.diffPct,
+        label: `Strength: ${prefix}${Math.round(trendResult.diffPct * 10) / 10}%`
+      };
+    };
+    
+    const exercises: Array<{ name: string; sets: number; primarySets: number; secondarySets: number; strengthTrend: number | null; strengthLabel: string | null }> = [];
     windowedSelectionBreakdown.exercises.forEach((exData, name) => {
-      exercises.push({ name, ...exData });
+      const trendData = calculateExerciseStrengthTrend(name);
+      exercises.push({ 
+        name, 
+        ...exData, 
+        strengthTrend: trendData?.diffPct ?? null,
+        strengthLabel: trendData?.label ?? null
+      });
     });
     return exercises.sort((a, b) => b.sets - a.sets);
-  }, [windowedSelectionBreakdown]);
+  }, [windowedSelectionBreakdown, data]);
 
   const totalSets = useMemo(() => {
     return data.reduce((acc, s) => (isWarmupSet(s) ? acc : acc + 1), 0);
