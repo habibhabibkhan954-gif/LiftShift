@@ -20,7 +20,7 @@
   --bodymap-empty-alpha: 0.25;
 
   --panel-rgb: 0 0 0;
-  --border-rgb: 71 85 105;
+  --border-rgb: 100 116 139;
   --outline-rgb: 0 0 0;
 
   --overlay-rgb: 0 0 0;
@@ -37,7 +37,7 @@
   --scrollbar-thumb: #475569;
   --scrollbar-thumb-hover: #64748b;
 
-  --uniform-btn-border-rgb: 71 85 105;
+  --uniform-btn-border-rgb: 100 116 139;
   --uniform-btn-border-hover-rgb: 255 255 255;
 }
 
@@ -51,7 +51,7 @@ html[data-theme='medium-dark'] {
   --text-muted: #94a3b8;
   --heatmap-hue: 5;
   --panel-rgb: 15 23 42;
-  --border-rgb: 71 85 105;
+  --border-rgb: 100 116 139;
   --outline-rgb: 15 23 42;
 
   --overlay-rgb: 2 6 23;
@@ -61,7 +61,7 @@ html[data-theme='medium-dark'] {
   --scrollbar-thumb: #334155;
   --scrollbar-thumb-hover: #475569;
 
-  --uniform-btn-border-rgb: 71 85 105;
+  --uniform-btn-border-rgb: 100 116 139;
   --uniform-btn-border-hover-rgb: 255 255 255;
 }
 
@@ -73,7 +73,7 @@ html[data-theme='midnight-dark'] {
   --text-muted: #94a3b8;
   --heatmap-hue: 5;
   --panel-rgb: 2 6 23;
-  --border-rgb: 71 85 105;
+  --border-rgb: 100 116 139;
   --outline-rgb: 2 6 23;
 
   --overlay-rgb: 0 0 0;
@@ -83,7 +83,7 @@ html[data-theme='midnight-dark'] {
   --scrollbar-thumb: #1f2937;
   --scrollbar-thumb-hover: #334155;
 
-  --uniform-btn-border-rgb: 71 85 105;
+  --uniform-btn-border-rgb: 100 116 139;
   --uniform-btn-border-hover-rgb: 255 255 255;
 }
 
@@ -95,7 +95,7 @@ html[data-theme='pure-black'] {
   --text-muted: #94a3b8;
   --heatmap-hue: 5;
   --panel-rgb: 0 0 0;
-  --border-rgb: 51 51 51;
+  --border-rgb: 80 80 80;
   --outline-rgb: 0 0 0;
 
   --overlay-rgb: 0 0 0;
@@ -105,7 +105,7 @@ html[data-theme='pure-black'] {
   --scrollbar-thumb: #262626;
   --scrollbar-thumb-hover: #404040;
 
-  --uniform-btn-border-rgb: 71 71 71;
+  --uniform-btn-border-rgb: 80 80 80;
   --uniform-btn-border-hover-rgb: 255 255 255;
 }
 
@@ -131,8 +131,8 @@ html[data-theme='light'] {
   --bodymap-empty-alpha: 0.15;
 
   --panel-rgb: 255 255 255;
-  --border-rgb: 203 213 225;
-  --outline-rgb: 148 163 184;
+  --border-rgb: 148 163 184;
+  --outline-rgb: 100 116 139;
 
   --overlay-rgb: 15 23 42;
   --overlay-90-alpha: 0.35;
