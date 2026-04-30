@@ -133,28 +133,27 @@ export const ActivityHeatmap = memo(({
 
   const todayStr = format(today, 'yyyy-MM-dd');
   const todayInRange = heatmapData.some(d => format(d.date, 'yyyy-MM-dd') === todayStr);
+  const maxVolume = Math.max(...heatmapData.map(d => d.totalVolume), 1);
 
-  const getColor = (count: number, isFuture?: boolean) => {
-    if (isFuture) return 'bg-slate-700/30 border border-slate-600/30';
-    if (count === 0) return 'bg-slate-800/50';
+  const getColor = (volume: number, isFuture?: boolean) => {
+    if (isFuture) return { bgClass: 'bg-slate-700/30 border border-slate-600/30', style: {} };
+    if (volume === 0) return { bgClass: 'bg-slate-800/50', style: {} };
 
-    if (count <= 5)   return 'bg-emerald-500/30';
-    if (count <= 10)  return 'bg-emerald-500/50';
-    if (count <= 20)  return 'bg-emerald-500/70';
-    if (count <= 35)  return 'bg-emerald-500/85';
-    if (count <= 50)  return 'bg-emerald-500';
-    if (count <= 75)  return 'bg-emerald-400';
-    if (count <= 100) return 'bg-emerald-300';
+    const intensity = Math.min(volume / maxVolume, 1);
+    const lightness = 25 + (intensity * 40);
+    const saturation = 70 + (intensity * 20);
 
-    return 'bg-emerald-200';
+    return { bgClass: '', style: { backgroundColor: `hsl(160, ${saturation}%, ${lightness}%)` } };
   };
 
-  const getDayTextColor = (count: number, isFuture?: boolean) => {
+  const getDayTextColor = (volume: number, isFuture?: boolean) => {
     if (isFuture) return 'text-slate-500';
-    if (count === 0) return 'text-slate-600';
-    if (count <= 10)  return 'text-emerald-300/70';
-    if (count <= 35)  return 'text-white';
-    return 'text-slate-900';
+    if (volume === 0) return 'text-slate-600';
+
+    const intensity = Math.min(volume / maxVolume, 1);
+    const lightness = 25 + (intensity * 40);
+    
+    return lightness < 40 ? 'text-white' : 'text-slate-900';
   };
 
 
@@ -164,9 +163,9 @@ export const ActivityHeatmap = memo(({
     setTooltip({
       rect,
       title: formatHumanReadableDate(day.date, { now }),
-      body: `${day.count} Sets${day.title ? `\n${day.title}` : ''}`,
+      body: `${day.totalVolume.toLocaleString()} kg${day.title ? `\n${day.title}` : ''}`,
       footer: 'Click to view details',
-      status: (day.count > 30 ? 'success' : 'info') as TooltipData['status'],
+      status: (day.totalVolume > 3000 ? 'success' : 'info') as TooltipData['status'],
     });
   };
 
@@ -202,9 +201,13 @@ export const ActivityHeatmap = memo(({
               <div className="flex items-center gap-1.5 text-[10px] text-slate-500">
                 <span>Less</span>
                 <div className="flex gap-0.5">
-                  {['bg-slate-800/50', 'bg-emerald-500/30', 'bg-emerald-500/60', 'bg-emerald-500', 'bg-emerald-400'].map((c, i) => (
-                    <div key={i} className={`w-2.5 h-2.5 rounded ${c}`} />
-                  ))}
+                  {[0, 0.25, 0.5, 0.75, 1].map((intensity, i) => {
+                    const lightness = 25 + (intensity * 40);
+                    const saturation = 70 + (intensity * 20);
+                    const bgClass = intensity === 0 ? 'bg-slate-800/50' : '';
+                    const style = intensity === 0 ? {} : { backgroundColor: `hsl(160, ${saturation}%, ${lightness}%)` };
+                    return <div key={i} className={`w-2.5 h-2.5 rounded ${bgClass}`} style={style} />;
+                  })}
                 </div>
                 <span>More</span>
               </div>
@@ -245,11 +248,13 @@ export const ActivityHeatmap = memo(({
                       const dayNum = day.date.getDate();
                       const isFuture = day.isFuture;
                       const isToday = format(day.date, 'yyyy-MM-dd') === todayStr;
-                      const textColor = isLatestMonth ? getDayTextColor(day.count, isFuture) : '';
+                      const { bgClass, style } = getColor(day.totalVolume, isFuture);
+                      const textColor = isLatestMonth ? getDayTextColor(day.totalVolume, isFuture) : '';
                       return (
                         <div
                           key={day.date.toISOString()}
-                          className={`${cellSizeClass} rounded flex items-center justify-center text-[8px] font-medium ${getColor(day.count, isFuture)} ${textColor} transition-all duration-300 ${day.count > 0 && !isFuture ? 'cursor-pointer hover:ring-2 hover:ring-white/30' : 'cursor-default'} ${isToday ? 'ring-2 ring-blue-400/70' : ''}`}
+                          className={`${cellSizeClass} rounded flex items-center justify-center text-[8px] font-medium ${bgClass} ${textColor} transition-all duration-300 ${day.totalVolume > 0 && !isFuture ? 'cursor-pointer hover:ring-2 hover:ring-white/30' : 'cursor-default'} ${isToday ? 'ring-2 ring-blue-400/70' : ''}`}
+                          style={style}
                           onClick={() => day.count > 0 && !isFuture && onDayClick?.(day.date)}
                           onMouseEnter={(e) => !isFuture && handleMouseEnter(e, day)}
                           onMouseLeave={() => !isFuture && setTooltip(null)}
