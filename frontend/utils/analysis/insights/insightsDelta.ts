@@ -2,7 +2,7 @@ import { endOfDay, isWithinInterval, startOfDay, subDays } from 'date-fns';
 import { WorkoutSet } from '../../../types';
 import { formatDeltaPercentage, getDeltaFormatPreset } from '../../format/deltaFormat';
 import { getSessionKey } from '../../date/dateUtils';
-import { isWarmupSet } from '../classification/setClassification';
+import { getWeeklyVolumeSetWeight } from '../classification/setClassification';
 
 export interface PeriodStats {
   totalVolume: number;
@@ -34,11 +34,12 @@ export const calculatePeriodStats = (data: WorkoutSet[], startDate: Date, endDat
   let totalSets = 0;
 
   for (const set of filtered) {
-    if (isWarmupSet(set)) continue;
+    const setWeight = getWeeklyVolumeSetWeight(set);
+    if (setWeight <= 0) continue;
 
     const sessionKey = getSessionKey(set);
     if (sessionKey) sessions.add(sessionKey);
-    totalSets += 1;
+    totalSets += setWeight;
     totalVolume += (set.weight_kg || 0) * (set.reps || 0);
     if (set.isPr) totalPRs++;
   }
@@ -50,7 +51,7 @@ export const calculatePeriodStats = (data: WorkoutSet[], startDate: Date, endDat
     totalSets,
     totalWorkouts,
     totalPRs,
-    avgSetsPerWorkout: totalWorkouts > 0 ? Math.round(totalSets / totalWorkouts) : 0,
+    avgSetsPerWorkout: totalWorkouts > 0 ? Math.round((totalSets / totalWorkouts) * 10) / 10 : 0,
     avgVolumePerWorkout: totalWorkouts > 0 ? Math.round(totalVolume / totalWorkouts) : 0,
   };
 };

@@ -1,7 +1,7 @@
 import { format, startOfWeek, subWeeks } from 'date-fns';
 import { DailySummary, WorkoutSet } from '../../../types';
 import { formatDayContraction, formatWeekContraction, getSessionKey } from '../../date/dateUtils';
-import { isWarmupSet } from '../classification/setClassification';
+import { getWeeklyVolumeSetWeight } from '../classification/setClassification';
 
 export interface SparklinePoint {
   value: number;
@@ -67,9 +67,10 @@ export const buildWeeklySparklineBundle = (
     const idx = weekKeyToIndex.get(weekKey);
     if (idx == null) continue;
 
-    if (isWarmupSet(s)) continue;
+    const setWeight = getWeeklyVolumeSetWeight(s);
+    if (setWeight <= 0) continue;
 
-    setCounts[idx] += 1;
+    setCounts[idx] += setWeight;
     if (s.isPr) prCounts[idx] += 1;
 
     const sessionKey = getSessionKey(s);
