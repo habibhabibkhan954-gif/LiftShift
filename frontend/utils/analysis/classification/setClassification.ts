@@ -131,3 +131,16 @@ export const countSets = (
 export const getEffectiveSetCount = (sets: WorkoutSet[]): number => {
   return countSets(sets, { excludeWarmup: true });
 };
+
+/**
+ * Set weighting for weekly volume analytics:
+ * - Normal working sets count as 1.0
+ * - Warm-ups count as 0
+ * - All other working set variations count as 0.5
+ */
+export const getWeeklyVolumeSetWeight = (set: Pick<WorkoutSet, 'set_type'>): number => {
+  const config = getSetTypeConfig(set);
+  if (!config.isWorkingSet) return 0;
+  if (config.id === 'normal') return 1;
+  return 0.5;
+};
