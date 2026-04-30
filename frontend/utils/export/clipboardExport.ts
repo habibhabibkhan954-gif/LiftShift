@@ -10,6 +10,7 @@ import { calculateUnifiedScore, findCurrentCheckpointIndexByScore, CHECKPOINTS }
 import type { TrainingLevel } from '../muscle/hypertrophy/muscleParams';
 
 export type ExperienceLevel = 'Newbie' | 'Beginner' | 'Early Intermediate' | 'Intermediate' | 'Advanced' | 'Elite';
+export type ExportTimeframe = number | 'all' | 'last_session';
 
 export const calculateTrainingExperience = (sets: WorkoutSet[], now = new Date()): { monthsTraining: number; level: ExperienceLevel; simplifiedLevel: TrainingLevel } => {
   if (!sets || sets.length === 0) {
@@ -62,7 +63,7 @@ export const calculateTrainingExperience = (sets: WorkoutSet[], now = new Date()
 export interface ExportPackage {
   meta: {
     generatedAt: string;
-    months: number | 'all';
+    months: ExportTimeframe;
     countSets: number;
   };
   rawSets: WorkoutSet[];
@@ -74,16 +75,60 @@ export interface ExportPackage {
   topExercisesOverTime: ReturnType<typeof getTopExercisesOverTime>;
 }
 
+const getLastSessionSets = (fullData: WorkoutSet[]): WorkoutSet[] => {
+  let latestSessionKey: string | null = null;
+  let latestSessionTs = Number.NEGATIVE_INFINITY;
+
+  for (const s of fullData) {
+    const d = s.parsedDate;
+    if (!d) continue;
+    const sessionKey = getSessionKey(s);
+    if (!sessionKey) continue;
+    const ts = d.getTime();
+    if (ts > latestSessionTs) {
+      latestSessionTs = ts;
+      latestSessionKey = sessionKey;
+    }
+  }
+
+  if (latestSessionKey) {
+    return fullData.filter((s) => getSessionKey(s) === latestSessionKey);
+  }
+
+  let latestDayTs = Number.NEGATIVE_INFINITY;
+  for (const s of fullData) {
+    const d = s.parsedDate;
+    if (!d) continue;
+    const ts = d.getTime();
+    if (ts > latestDayTs) latestDayTs = ts;
+  }
+  if (!Number.isFinite(latestDayTs)) return [];
+  const latestDay = format(new Date(latestDayTs), 'yyyy-MM-dd');
+  return fullData.filter((s) => s.parsedDate && format(s.parsedDate, 'yyyy-MM-dd') === latestDay);
+};
+
+export const getSetsForExportScope = (
+  fullData: WorkoutSet[],
+  timeframe: ExportTimeframe = 1,
+  effectiveNow?: Date
+): WorkoutSet[] => {
+  if (timeframe === 'all') return fullData;
+  if (timeframe === 'last_session') return getLastSessionSets(fullData);
+  const referenceDate = effectiveNow || new Date();
+  const minTs = subMonths(referenceDate, timeframe).getTime();
+  return fullData.filter((s) => !!s.parsedDate && s.parsedDate.getTime() >= minTs);
+};
+
 export const gatherLastNMonthsPackage = (
   fullData: WorkoutSet[],
   dailyData: DailySummary[],
   exerciseStats: ExerciseStats[],
-  months: number | 'all' = 1,
+  months: ExportTimeframe = 1,
   now = new Date(),
   effectiveNow?: Date
 ): ExportPackage => {
   const referenceDate = effectiveNow || now;
-  const filtered = months === 'all' ? fullData : fullData.filter(s => !!s.parsedDate && s.parsedDate.getTime() >= subMonths(referenceDate, months).getTime());
+  const filtered = getSetsForExportScope(fullData, months, referenceDate);
 
   const daily = getDailySummaries(filtered);
   const exercises = getExerciseStats(filtered);
@@ -150,7 +195,7 @@ export const exportAndCopyPackage = async (
   fullData: WorkoutSet[],
   dailyData: DailySummary[],
   exerciseStats: ExerciseStats[],
-  months: number | 'all' = 1,
+  months: ExportTimeframe = 1,
   now = new Date(),
   effectiveNow?: Date
 ): Promise<void> => {
@@ -364,13 +409,19 @@ export const exportPackageAndCopyText = async (
   fullData: WorkoutSet[],
   dailyData: DailySummary[],
   exerciseStats: ExerciseStats[],
-  months: number | 'all' = 1,
+  months: ExportTimeframe = 1,
   now = new Date(),
   effectiveNow?: Date,
   promptTemplate: string = AI_PROMPT
 ): Promise<void> => {
   const pkg = gatherLastNMonthsPackage(fullData, dailyData, exerciseStats, months, now, effectiveNow);
-  const meta: ExportMeta = { generatedAt: pkg.meta.generatedAt, scope: months === 'all' ? 'all' : `${pkg.meta.months}m`, countSets: pkg.meta.countSets };
+  const scope =
+    months === 'all'
+      ? 'all'
+      : months === 'last_session'
+        ? 'last session'
+        : `${pkg.meta.months}m`;
+  const meta: ExportMeta = { generatedAt: pkg.meta.generatedAt, scope, countSets: pkg.meta.countSets };
   const text = formatSetsAsText(pkg.rawSets, meta, fullData, promptTemplate);
   try {
     if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
