@@ -25,6 +25,12 @@ export const ActivityHeatmap = memo(({
   onDayClick?: (date: Date) => void;
   now?: Date;
 }) => {
+  const today = useMemo(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }, []);
+
   const heatmapData = useMemo(() => {
     return computationCache.getOrCompute(
       'heatmapData',
@@ -54,7 +60,7 @@ export const ActivityHeatmap = memo(({
       },
       { ttl: 10 * 60 * 1000 }
     );
-  }, [dailyData]);
+  }, [dailyData, today]);
 
   const monthBlocks = useMemo(() => {
     type MonthBlock = { key: string; label: string; cells: Array<any | null> };
@@ -98,7 +104,7 @@ export const ActivityHeatmap = memo(({
     }
 
     return blocks;
-  }, [heatmapData]);
+  }, [heatmapData, today]);
 
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
