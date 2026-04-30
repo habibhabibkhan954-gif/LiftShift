@@ -194,8 +194,8 @@ const getColor = (count: number) => {
                         key={day.date.toISOString()}
                         className={`w-3 h-3 rounded-sm ${getColor(day.count)} transition-all duration-300 ${day.count > 0 ? 'cursor-pointer hover:z-10' : 'cursor-default'}`}
                         onClick={() => day.count > 0 && onDayClick?.(day.date)}
-                        onMouseEnter={(e) => handleMouseEnter(e, day)}
-                        onMouseLeave={() => setTooltip(null)}
+                        onMouseEnter={(e) => day.count > 0 && handleMouseEnter(e, day)}
+                        onMouseLeave={(e) => day.count > 0 && setTooltip(null)}
                       />
                     );
                   })}
