@@ -4,9 +4,7 @@ import React, { memo } from 'react';
 import { AlertTriangle, Calendar, Dumbbell, Trophy } from 'lucide-react';
 
 import type { DashboardInsights, PRInsights } from '../../utils/analysis/insights';
-import { AIAnalysisCard } from './AIAnalysisCard';
 import { KPICard } from './KPICard';
-import { useIsMobile } from './useIsMobile';
 
 // PR Status Badge
 const PRStatusBadge: React.FC<{ prInsights: PRInsights }> = ({ prInsights }) => {
@@ -43,8 +41,6 @@ interface InsightsPanelProps {
   totalWorkouts: number;
   totalSets: number;
   totalPRs: number;
-  // AI Analysis props
-  onAIAnalyze?: () => void;
 }
 
 export const InsightsPanel: React.FC<InsightsPanelProps> = memo(function InsightsPanel(props) {
@@ -53,16 +49,11 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = memo(function Insight
     totalWorkouts,
     totalSets,
     totalPRs,
-    onAIAnalyze,
   } = props;
   const { rolling7d, streakInfo, prInsights, volumeSparkline, workoutSparkline, prSparkline, setsSparkline, consistencySparkline } = insights;
 
-  // Only show AI Analysis card on mobile (hidden on desktop where it's in the header)
-  const isMobile = useIsMobile();
-  const showAICard = onAIAnalyze && isMobile;
-
   return (
-    <div className={`grid gap-2 ${showAICard ? 'grid-cols-2 lg:grid-cols-4' : 'grid-cols-2 lg:grid-cols-3'}`}>
+    <div className="grid gap-2 grid-cols-2 lg:grid-cols-3">
       {/* Workouts */}
       <KPICard
         title="Lst 7d"
@@ -74,6 +65,7 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = memo(function Insight
         deltaContext="vs prev 7d"
         sparkline={workoutSparkline}
         sparklineColor="#3b82f6"
+        sparklineTitle="Workout frequency over last 8 weeks"
       />
 
       {/* Sets This Week */}
@@ -87,6 +79,7 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = memo(function Insight
         deltaContext="vs prev 7d"
         sparkline={setsSparkline}
         sparklineColor="#a855f7"
+        sparklineTitle="Training volume over last 8 weeks"
       />
 
       {/* PRs */}
@@ -98,14 +91,9 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = memo(function Insight
         iconColor="text-yellow-400"
         sparkline={prSparkline}
         sparklineColor="#eab308"
+        sparklineTitle="Personal records over last 8 weeks"
         badge={<PRStatusBadge prInsights={prInsights} />}
       />
-
-      {/* AI Analysis Card - Mobile Only */}
-      {showAICard && onAIAnalyze && (
-        <AIAnalysisCard onAIAnalyze={onAIAnalyze} />
-      )}
     </div>
   );
 });
-

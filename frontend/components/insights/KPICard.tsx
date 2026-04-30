@@ -56,6 +56,7 @@ interface KPICardProps {
   deltaContext?: string;
   sparkline?: SparklinePoint[];
   sparklineColor?: string;
+  sparklineTitle?: string;
   badge?: React.ReactNode;
   compact?: boolean;
 }
@@ -70,6 +71,7 @@ export const KPICard: React.FC<KPICardProps> = ({
   deltaContext,
   sparkline,
   sparklineColor = '#3b82f6',
+  sparklineTitle,
   badge,
   compact = false,
 }) => {
@@ -121,7 +123,7 @@ export const KPICard: React.FC<KPICardProps> = ({
         </div>
         {sparkline && sparkline.length > 1 && (
           <div className="flex-shrink-0">
-            <Sparkline data={sparkline} color={sparklineColor} height={24} />
+            <Sparkline data={sparkline} color={sparklineColor} height={24} title={sparklineTitle} />
           </div>
         )}
       </div>

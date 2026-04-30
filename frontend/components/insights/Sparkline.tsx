@@ -3,10 +3,11 @@ import React from 'react';
 import type { SparklinePoint } from '../../utils/analysis/insights';
 
 // Mini Sparkline Component
-export const Sparkline: React.FC<{ data: SparklinePoint[]; color?: string; height?: number }> = ({
+export const Sparkline: React.FC<{ data: SparklinePoint[]; color?: string; height?: number; title?: string }> = ({
   data,
   color = '#3b82f6',
   height = 24,
+  title,
 }) => {
   if (data.length < 2) return null;
 
@@ -27,7 +28,8 @@ export const Sparkline: React.FC<{ data: SparklinePoint[]; color?: string; heigh
   const markerId = `sparkline-arrow-${String(color).replace(/[^a-zA-Z0-9]/g, '')}`;
 
   return (
-    <svg width={width} height={height} className="overflow-visible">
+    <span title={title} className="inline-block cursor-help">
+      <svg width={width} height={height} className="overflow-visible">
       <defs>
         <marker
           id={markerId}
@@ -54,5 +56,6 @@ export const Sparkline: React.FC<{ data: SparklinePoint[]; color?: string; heigh
         className="drop-shadow-sm"
       />
     </svg>
+    </span>
   );
 };
