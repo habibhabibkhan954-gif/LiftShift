@@ -71,7 +71,7 @@ const getRecentWorkingSets = (data: WorkoutSet[], now: Date, days: number): Work
   });
 };
 
-const sentenceCaseName = (exerciseName: string): string => stripExerciseSourceLabel(exerciseName);
+const sentenceCaseName = (exerciseName: string): string => ' ' + stripExerciseSourceLabel(exerciseName);
 
 const segText = (str: string): SummarySegment => ({ text: str, type: 'text' });
 const segExercise = (name: string): SummarySegment => ({
