@@ -17,7 +17,7 @@ export const AppFilterControls: React.FC<AppFilterControlsProps> = ({
   toggleCalendarOpen,
 }) => (
   <div
-    className={`relative flex items-center gap-2 rounded-lg px-3 py-2 h-10 shadow-sm transition-all duration-300 ${
+    className={`relative flex items-center gap-2 rounded-lg px-3 py-2 h-10 transition-all duration-300 ${
       hasActiveCalendarFilter ? 'bg-black/70 border border-slate-600/60' : 'bg-black/70 border border-slate-700/50'
     }`}
   >

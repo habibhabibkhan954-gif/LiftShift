@@ -6,6 +6,7 @@ import { CHART_TOOLTIP_STYLE, CHART_COLORS, ANIMATION_KEYFRAMES } from '../../..
 import { getEffectiveNowFromWorkoutData, getSessionKey } from '../../../utils/date/dateUtils';
 import { getExerciseAssets, ExerciseAsset } from '../../../utils/data/exerciseAssets';
 import { calculateDashboardInsights } from '../../../utils/analysis/insights';
+import { buildDashboardSummary } from '../../../utils/analysis/dashboardSummary/dashboardSummary';
 import { computationCache } from '../../../utils/storage/computationCache';
 import { dashboardCacheKeys } from '../../../utils/storage/cacheKeys';
 import { prefetchExerciseData } from '../../../utils/prefetch/prefetchStrategies';
@@ -246,6 +247,32 @@ export const Dashboard: React.FC<DashboardProps> = ({
     secondarySetMultiplier,
   });
 
+  const dashboardSummary = useMemo(() => buildDashboardSummary({
+    dashboardInsights,
+    filteredData,
+    dailyData,
+    exerciseStats,
+    activePlateauExercises,
+    totalWorkouts,
+    totalSets,
+    totalPRs: totalPrs,
+    effectiveNow,
+    weightUnit,
+    filterCacheKey,
+  }), [
+    dashboardInsights,
+    filteredData,
+    dailyData,
+    exerciseStats,
+    activePlateauExercises,
+    totalWorkouts,
+    totalSets,
+    totalPrs,
+    effectiveNow,
+    weightUnit,
+    filterCacheKey,
+  ]);
+
   const TooltipStyle = CHART_TOOLTIP_STYLE;
   const PIE_COLORS = useMemo(() => [...CHART_COLORS], []);
 
@@ -258,6 +285,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
       totalSets={totalSets}
       totalPrs={totalPrs}
       dashboardInsights={dashboardInsights}
+      dashboardSummary={dashboardSummary}
       onDayClick={onDayClick}
       onMuscleClick={onMuscleClick}
       onExerciseClick={onExerciseClick}

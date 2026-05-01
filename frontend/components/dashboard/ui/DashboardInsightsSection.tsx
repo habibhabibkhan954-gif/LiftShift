@@ -3,9 +3,11 @@ import { AlertTriangle } from 'lucide-react';
 import { InsightsPanel, PlateauAlert, RecentPRsPanel } from '../../insights/InsightCards';
 import { ActivityHeatmap } from './ActivityHeatmap';
 import { TrainingTimelineCard } from '../trainingTimeline/TrainingTimelineCard';
+import { DashboardSummaryCard } from './DashboardSummaryCard';
 import type { WeightUnit } from '../../../utils/storage/localStorage';
 import type { DailySummary } from '../../../types';
 import type { TimelineProgress } from '../../../utils/training/trainingTimeline';
+import type { DashboardSummaryResult } from '../../../utils/analysis/dashboardSummary/dashboardSummary';
 import { stripExerciseSourceLabel } from '../../../utils/exercise/exerciseSourceLabel';
 
 interface DashboardInsightsSectionProps {
@@ -13,6 +15,7 @@ interface DashboardInsightsSectionProps {
   totalWorkouts: number;
   totalSets: number;
   totalPrs: number;
+  dashboardSummary: DashboardSummaryResult;
   weightUnit: WeightUnit;
   effectiveNow: Date;
   onExerciseClick?: (exerciseName: string) => void;
@@ -29,6 +32,7 @@ export const DashboardInsightsSection: React.FC<DashboardInsightsSectionProps> =
   totalWorkouts,
   totalSets,
   totalPrs,
+  dashboardSummary,
   weightUnit,
   effectiveNow,
   onExerciseClick,
@@ -40,6 +44,8 @@ export const DashboardInsightsSection: React.FC<DashboardInsightsSectionProps> =
   timelineProgress,
 }) => (
   <>
+    <DashboardSummaryCard summary={dashboardSummary} onExerciseClick={onExerciseClick} onDayClick={onDayClick} />
+
     <InsightsPanel
       insights={dashboardInsights}
       totalWorkouts={totalWorkouts}

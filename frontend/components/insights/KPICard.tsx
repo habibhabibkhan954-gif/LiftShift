@@ -15,7 +15,14 @@ const DeltaBadge: React.FC<{ delta: DeltaResult; suffix?: string; showPercent?: 
 }) => {
   const { direction, formattedPercent } = delta;
 
-  if (direction === 'same') {
+  // Guard against malformed delta objects that would render an empty-looking badge
+  const validDirections: Array<'up' | 'down' | 'same'> = ['up', 'down', 'same'];
+  const safeDirection = validDirections.includes(direction) ? direction : 'same';
+  const safeFormattedPercent = typeof formattedPercent === 'string' && formattedPercent.length > 0
+    ? formattedPercent
+    : `${delta.deltaPercent ?? 0}%`;
+
+  if (safeDirection === 'same') {
     return (
       <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400">
         <Activity className="w-3 h-3" />
@@ -28,7 +35,7 @@ const DeltaBadge: React.FC<{ delta: DeltaResult; suffix?: string; showPercent?: 
     );
   }
 
-  const isUp = direction === 'up';
+  const isUp = safeDirection === 'up';
   const colorClass = isUp ? 'text-emerald-400' : 'text-rose-400';
   const bgClass = isUp ? 'bg-emerald-500/10' : 'bg-rose-500/10';
   const Icon = isUp ? TrendingUp : TrendingDown;
@@ -37,7 +44,7 @@ const DeltaBadge: React.FC<{ delta: DeltaResult; suffix?: string; showPercent?: 
     <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded ${bgClass} ${colorClass}`}>
       <Icon className="w-3 h-3" />
       <span className="text-[10px] font-bold">
-        {formattedPercent}
+        {safeFormattedPercent}
         {suffix}
       </span>
       {context && <span className="text-[9px] opacity-75">{context}</span>}

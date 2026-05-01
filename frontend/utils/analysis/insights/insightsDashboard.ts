@@ -29,9 +29,9 @@ export const calculateDashboardInsights = (
   const { workoutSparkline, prSparkline, setsSparkline, consistencySparkline } =
     buildWeeklySparklineBundle(data, 8, now);
   return {
-    rolling7d: getRollingWindowComparison(data, 7, now, 2),
-    rolling30d: getRollingWindowComparison(data, 30, now, 2),
-    rolling365d: getRollingWindowComparison(data, 365, now, 2),
+    rolling7d: getRollingWindowComparison(data, 7, now, 1),
+    rolling30d: getRollingWindowComparison(data, 30, now, 1),
+    rolling365d: getRollingWindowComparison(data, 365, now, 1),
     streakInfo: calculateStreakInfo(data, now),
     prInsights: calculatePRInsights(data, now),
     volumeSparkline: getVolumeSparkline(dailyData),

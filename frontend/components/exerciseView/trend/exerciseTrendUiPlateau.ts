@@ -129,22 +129,22 @@ export const getPlateauAdvice = (
       : convertWeight(w + getStandardWeightIncrementKg(weightUnit), weightUnit);
 
     return pickDeterministic(`${seedBase}|sub`, [
-      `Pick ${maxReps} reps and chase ${maxReps + 1} on ALL sets. No playing favorites with the first set only.`,
-      'Next session: add 1 rep to your first set, then make the others match. Quality over speed.',
+      `Pick ${maxReps} reps and chase ${maxReps + 1} on ALL sets — no playing favorites with the first set only`,
+      'Next session: add 1 rep to your first set, then make the others match — quality over speed',
       isLowerWeightBetter
-        ? `Standardize at ${maxReps} reps. Master it across all sets, then reduce support to ~${suggestedNext}${weightUnit}.`
-        : `Standardize at ${maxReps} reps. Master it across all sets, then level up to ${suggestedNext}${weightUnit}.`,
+        ? `Master ${maxReps} reps across all sets, then reduce support to ~${suggestedNext}${weightUnit}`
+        : `Master ${maxReps} reps across all sets, then level up to ${suggestedNext}${weightUnit}`,
       isLowerWeightBetter
-        ? `Try ~${suggestedNext}${weightUnit} support next session. If form gets ugly, repeat ${plateauWeight}${weightUnit} and add a rep.`
-        : `Try ${suggestedNext}${weightUnit} next session. If form gets ugly, repeat ${plateauWeight}${weightUnit} and add a rep.`,
-      'Get fancy: pause reps, slow eccentrics (3-4 seconds), or slightly shorter rests.',
+        ? `Try ~${suggestedNext}${weightUnit} support next session, or repeat ${plateauWeight}${weightUnit} and add a rep if form breaks`
+        : `Try ${suggestedNext}${weightUnit} next session, or repeat ${plateauWeight}${weightUnit} and add a rep if form breaks`,
+      'Get fancy: pause reps, slow eccentrics (3-4 seconds), or slightly shorter rests',
       isLowerWeightBetter
-        ? `Double progression: repeat ${plateauWeight}${weightUnit} support and add 1-2 reps, then reduce assistance.`
-        : `Double progression: repeat ${plateauWeight}${weightUnit} and add 1-2 reps across sets, then increase weight.`,
+        ? `Double progression: repeat ${plateauWeight}${weightUnit} support, add 1-2 reps, then reduce assistance`
+        : `Double progression: repeat ${plateauWeight}${weightUnit}, add 1-2 reps across sets, then increase weight`,
       isLowerWeightBetter
-        ? `Stay at ${plateauWeight}${weightUnit} support and earn a bigger rep buffer. Then move to ~${suggestedNext}${weightUnit} with confidence.`
-        : `Stay at ${plateauWeight}${weightUnit} and earn a bigger rep buffer. Then jump to ${suggestedNext}${weightUnit} with confidence.`,
-      'Add one variable: +1 rep, +1 set, or +5-10% rest reduction. Tiny change, big signal.',
+        ? `Build a bigger rep buffer at ${plateauWeight}${weightUnit} support, then move to ~${suggestedNext}${weightUnit} with confidence`
+        : `Build a bigger rep buffer at ${plateauWeight}${weightUnit}, then jump to ${suggestedNext}${weightUnit} with confidence`,
+      'Add one variable: +1 rep, +1 set, or +5-10% rest reduction — tiny change, big signal',
     ] as const);
   })();
 

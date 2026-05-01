@@ -23,6 +23,7 @@ import {
   TrendBadge,
 } from '../insights/ChartBits';
 import { RECHARTS_XAXIS_PADDING, RECHARTS_YAXIS_MARGIN, calculateYAxisDomain, formatAxisNumber } from '../../../utils/chart/chartEnhancements';
+import { SegmentControl } from '../../ui/SegmentControl';
 
 type WeekShapeView = 'radar' | 'bar';
 
@@ -67,32 +68,14 @@ export const WeeklyRhythmCard = ({
         </h3>
 
         <div className="flex items-center justify-end gap-0.5 sm:gap-1 flex-wrap sm:flex-nowrap overflow-x-auto sm:overflow-visible max-w-full">
-          <div className="bg-black/70 p-0.5 rounded-lg flex gap-0.5 border border-slate-800 transition-all duration-200 hover:border-slate-700 shrink-0">
-            <button
-              onClick={() => onViewToggle('radar')}
-              title="Radar"
-              aria-label="Radar"
-              className={`w-6 h-5 flex items-center justify-center rounded transition-all duration-200 cursor-pointer ${
-                view === 'radar'
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
-                  : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-              }`}
-            >
-              <Scan className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => onViewToggle('bar')}
-              title="Bar"
-              aria-label="Bar"
-              className={`w-6 h-5 flex items-center justify-center rounded transition-all duration-200 cursor-pointer ${
-                view === 'bar'
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
-                  : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-              }`}
-            >
-              <BarChart3 className="w-4 h-4" />
-            </button>
-          </div>
+          <SegmentControl
+            options={[
+              { value: 'radar', icon: <Scan className="w-4 h-4" />, title: 'Radar' },
+              { value: 'bar', icon: <BarChart3 className="w-4 h-4" />, title: 'Bar' },
+            ]}
+            value={view}
+            onChange={onViewToggle}
+          />
         </div>
       </div>
 

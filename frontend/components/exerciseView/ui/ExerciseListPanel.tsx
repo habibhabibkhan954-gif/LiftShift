@@ -4,6 +4,7 @@ import { ExerciseStats } from '../../../types';
 import { ExerciseAssetLookup } from '../../../utils/exercise/exerciseAssetLookup';
 import type { UseExerciseFiltersReturn } from '../hooks/useExerciseFilters';
 import { ExerciseListRow } from './ExerciseListRow';
+import { SegmentControl } from '../../ui/SegmentControl';
 
 interface ExerciseListPanelProps {
   searchTerm: string;
@@ -76,26 +77,14 @@ export const ExerciseListPanel: React.FC<ExerciseListPanelProps> = ({
         />
 
         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-          <div className="bg-black/70 p-1 rounded-lg flex gap-1 border border-slate-700/50">
-            <button
-              type="button"
-              onClick={() => setExerciseListSortMode('recent')}
-              title="Sort by most recently trained"
-              aria-label="Sort by recent"
-              className={`px-2 py-1 rounded text-[9px] font-bold whitespace-nowrap cursor-pointer ${exerciseListSortMode === 'recent' ? 'bg-blue-600 text-white' : 'text-slate-500 hover:text-slate-300 hover:bg-black/60'}`}
-            >
-              recent
-            </button>
-            <button
-              type="button"
-              onClick={() => setExerciseListSortMode('trend')}
-              title="Sort by % strength change"
-              aria-label="Sort by trend"
-              className={`px-2 py-1 rounded text-[9px] font-bold whitespace-nowrap cursor-pointer ${exerciseListSortMode === 'trend' ? 'bg-blue-600 text-white' : 'text-slate-500 hover:text-slate-300 hover:bg-black/60'}`}
-            >
-              %
-            </button>
-          </div>
+          <SegmentControl
+            options={[
+              { value: 'recent', label: 'recent', title: 'Sort by most recently trained' },
+              { value: 'trend', label: '%', title: 'Sort by % strength change' },
+            ]}
+            value={exerciseListSortMode}
+            onChange={setExerciseListSortMode}
+          />
 
           <button
             type="button"

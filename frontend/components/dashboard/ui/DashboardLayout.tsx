@@ -3,6 +3,7 @@ import type { BodyMapGender } from '../../bodyMap/BodyMap';
 import type { DailySummary, ExerciseStats, WorkoutSet } from '../../../types';
 import type { WeightUnit } from '../../../utils/storage/localStorage';
 import type { TimelineProgress } from '../../../utils/training/trainingTimeline';
+import type { DashboardSummaryResult } from '../../../utils/analysis/dashboardSummary/dashboardSummary';
 import { DashboardHeaderBar } from './DashboardHeaderBar';
 import { DashboardInsightsSection } from './DashboardInsightsSection';
 import { DashboardPrimaryCharts } from './DashboardPrimaryCharts';
@@ -16,6 +17,7 @@ interface DashboardLayoutProps {
   totalSets: number;
   totalPrs: number;
   dashboardInsights: any;
+  dashboardSummary: DashboardSummaryResult;
   onDayClick?: (date: Date) => void;
   onMuscleClick?: (muscleId: string, weeklySetsWindow: 'all' | '7d' | '30d' | '365d') => void;
   onExerciseClick?: (exerciseName: string) => void;
@@ -88,6 +90,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
     totalSets,
     totalPrs,
     dashboardInsights,
+    dashboardSummary,
     onDayClick,
     onMuscleClick,
     onExerciseClick,
@@ -167,6 +170,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
           totalSets={totalSets}
           totalPrs={totalPrs}
           weightUnit={weightUnit}
+          dashboardSummary={dashboardSummary}
           effectiveNow={effectiveNow}
           onExerciseClick={onExerciseClick}
           onDayClick={onDayClick}

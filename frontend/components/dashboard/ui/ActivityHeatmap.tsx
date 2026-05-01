@@ -179,47 +179,51 @@ export const ActivityHeatmap = memo(({
 
   return (
     <div className="bg-black/70 border border-slate-700/50 p-4 sm:p-5 rounded-xl flex flex-col lg:flex-row gap-4 lg:gap-5 overflow-hidden">
-      <div className="flex-shrink-0 min-w-[160px] lg:min-w-[200px] border-b lg:border-b-0 lg:border-r border-slate-700/50 pb-4 lg:pb-0 lg:pr-6">
-        <div className="grid grid-cols-2 gap-x-3 gap-y-3">
-          <div className="col-span-2 flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400">
-              <Target className="w-4 h-4" />
+      <div className="flex-shrink-0 min-w-[160px] sm:min-w-[200px] lg:min-w-[240px] border-b lg:border-b-0 lg:border-r border-slate-700/50 pb-4 lg:pb-0 lg:pr-6 lg:flex lg:flex-col">
+        <div className="flex flex-col gap-3 lg:flex-1">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400">
+                <Target className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Consistency</span>
             </div>
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Consistency</span>
-          </div>
-          
-          <div className="col-span-1 row-span-1">
-            <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-bold text-white">{streakInfo.consistencyScore}</span>
-              <span className="text-lg text-slate-500">%</span>
-            </div>
-            <div className="text-xs text-slate-500 mt-0.5">{streakInfo.avgWorkoutsPerWeek} days/wk</div>
-          </div>
-          
-          <div className="col-span-1 row-span-1 flex flex-col items-end">
             <StreakBadge streak={streakInfo} />
           </div>
-          
-          <div className="col-span-1 row-span-1">
-            <Sparkline data={consistencySparkline} color="#10b981" height={24} title="Workout consistency over last 8 weeks" />
-          </div>
-          
-          <div className="col-span-1 row-span-1 flex items-end justify-end">
-            {todayInRange && (
-              <div className="flex items-center gap-1.5 text-[10px] text-slate-500">
-                <span>Less</span>
-                <div className="flex gap-0.5">
-                  {[0, 0.25, 0.5, 0.75, 1].map((intensity, i) => {
-                    const lightness = 25 + (intensity * 40);
-                    const saturation = 70 + (intensity * 20);
-                    const bgClass = intensity === 0 ? 'bg-slate-800/50' : '';
-                    const style = intensity === 0 ? {} : { backgroundColor: `hsl(160, ${saturation}%, ${lightness}%)` };
-                    return <div key={i} className={`w-2.5 h-2.5 rounded ${bgClass}`} style={style} />;
-                  })}
-                </div>
-                <span>More</span>
+
+          <div className="grid grid-cols-2 gap-x-4 lg:flex-1 lg:h-full lg:grid-rows-[1fr_auto]">
+            <div className="row-span-2 flex flex-col justify-center items-start">
+              <div className="flex items-baseline gap-1">
+                <span className="text-3xl font-bold text-white">{streakInfo.consistencyScore}</span>
+                <span className="text-lg text-slate-500">%</span>
               </div>
-            )}
+            </div>
+
+            <div className="row-span-2 flex items-center justify-end">
+              <Sparkline data={consistencySparkline} color="#10b981" height={24} title="Workout consistency over last 8 weeks" />
+            </div>
+
+            <div className="flex items-center justify-start">
+              <span className="text-xs text-slate-500">{streakInfo.avgWorkoutsPerWeek} days/wk</span>
+            </div>
+
+            <div className="flex items-center justify-end">
+              {todayInRange && (
+                <div className="flex items-center gap-1.5 text-[10px] text-slate-500">
+                  <span>Less</span>
+                  <div className="flex gap-0.5">
+                    {[0, 0.25, 0.5, 0.75, 1].map((intensity, i) => {
+                      const lightness = 25 + (intensity * 40);
+                      const saturation = 70 + (intensity * 20);
+                      const bgClass = intensity === 0 ? 'bg-slate-800/50' : '';
+                      const style = intensity === 0 ? {} : { backgroundColor: `hsl(160, ${saturation}%, ${lightness}%)` };
+                      return <div key={i} className={`w-2.5 h-2.5 rounded ${bgClass}`} style={style} />;
+                    })}
+                  </div>
+                  <span>More</span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
