@@ -23,16 +23,10 @@ import {
   ThemeMode,
   getThemeMode,
   saveThemeMode,
-  DateMode,
-  getDateMode,
-  saveDateMode,
   ExerciseTrendMode,
   getExerciseTrendMode,
   saveExerciseTrendMode,
 } from '../../utils/storage/localStorage';
-
-// Re-export DateMode for convenience
-export type { DateMode } from '../../utils/storage/localStorage';
 
 /**
  * Shape of all user preferences.
@@ -42,7 +36,6 @@ export interface UserPreferences {
   weightUnit: WeightUnit;
   bodyMapGender: StoredBodyMapGender;
   themeMode: ThemeMode;
-  dateMode: DateMode;
   exerciseTrendMode: ExerciseTrendMode;
 }
 
@@ -54,7 +47,6 @@ export interface PreferencesActions {
   setWeightUnit: (unit: WeightUnit) => void;
   setBodyMapGender: (gender: StoredBodyMapGender) => void;
   setThemeMode: (mode: ThemeMode) => void;
-  setDateMode: (mode: DateMode) => void;
   setExerciseTrendMode: (mode: ExerciseTrendMode) => void;
 }
 
@@ -66,7 +58,6 @@ export const getAllPreferences = (): UserPreferences => ({
   weightUnit: getWeightUnit(),
   bodyMapGender: getBodyMapGender(),
   themeMode: getThemeMode(),
-  dateMode: getDateMode(),
   exerciseTrendMode: getExerciseTrendMode(),
 });
 
@@ -77,17 +68,6 @@ export const getAllPreferences = (): UserPreferences => ({
  * components should still manage their own state and use the setters to persist.
  * This design allows for easy database migration while keeping the React
  * reactivity model intact.
- * 
- * Example usage in a component:
- * ```tsx
- * const [dateMode, setDateModeState] = useState<DateMode>(getDateMode());
- * const { setDateMode } = usePreferences();
- * 
- * const handleDateModeChange = (mode: DateMode) => {
- *   setDateModeState(mode);
- *   setDateMode(mode);
- * };
- * ```
  */
 export const usePreferences = (): PreferencesActions => {
   const setWeightUnit = useCallback((unit: WeightUnit) => {
@@ -102,10 +82,6 @@ export const usePreferences = (): PreferencesActions => {
     saveThemeMode(mode);
   }, []);
 
-  const setDateMode = useCallback((mode: DateMode) => {
-    saveDateMode(mode);
-  }, []);
-
   const setExerciseTrendMode = useCallback((mode: ExerciseTrendMode) => {
     saveExerciseTrendMode(mode);
   }, []);
@@ -114,9 +90,8 @@ export const usePreferences = (): PreferencesActions => {
     setWeightUnit,
     setBodyMapGender,
     setThemeMode,
-    setDateMode,
     setExerciseTrendMode,
-  }), [setWeightUnit, setBodyMapGender, setThemeMode, setDateMode, setExerciseTrendMode]);
+  }), [setWeightUnit, setBodyMapGender, setThemeMode, setExerciseTrendMode]);
 };
 
 /**
@@ -135,16 +110,6 @@ export const usePreferences = (): PreferencesActions => {
  *   This shows true relative times but may result in empty recent charts
  *   if data is old (e.g., if last workout was 3 months ago, "last 7 days" is empty)
  */
-export const computeEffectiveNow = (
-  dataBasedNow: Date,
-  dateMode: DateMode
-): Date => {
-  if (dateMode === 'actual') {
-    return new Date();
-  }
-  // 'effective' mode uses the latest data date
-  return dataBasedNow;
-};
 
 /**
  * Information about the data age relative to actual current date.

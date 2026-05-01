@@ -96,10 +96,10 @@ export function useAppCalendarFilters({
       if (ts > maxTs) maxTs = ts;
       set.add(format(d.parsedDate, 'yyyy-MM-dd'));
     });
-    const today = new Date();
     const minDate = isFinite(minTs) ? startOfDay(new Date(minTs)) : null;
     const maxInData = maxTs > 0 ? endOfDay(new Date(maxTs)) : null;
-    const maxDate = maxInData ?? (effectiveNow.getTime() > 0 ? endOfDay(effectiveNow) : endOfDay(today));
+    // Use effectiveNow consistently - respect user's dateMode preference
+    const maxDate = maxInData ?? (effectiveNow.getTime() > 0 ? endOfDay(effectiveNow) : null);
     return { minDate, maxDate, availableDatesSet: set };
   }, [effectiveNow, parsedData]);
 

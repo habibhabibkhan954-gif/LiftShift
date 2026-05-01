@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useLayoutEffect, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { Tab, getPathForTab, getTabFromPathname, parseLocalDateFromYyyyMmDd } from '../../app/navigation';
+import { Tab, getPathForTab, getTabFromPathname, parseLocalDateFromYyyyMmDd, formatLocalDateAsYyyyMmDd } from '../../app/navigation';
 import { trackEvent } from '../../utils/integrations/analytics';
 
 export interface UseAppNavigationReturn {
@@ -194,7 +194,7 @@ export function useAppNavigation(): UseAppNavigationReturn {
   const handleDayClick = useCallback((date: Date) => {
     setTargetHistoryDate(date);
     const params = new URLSearchParams();
-    params.set('date', date.toISOString().split('T')[0]);
+    params.set('date', formatLocalDateAsYyyyMmDd(date)); // Use local date, not UTC
     pendingUrlNavKindRef.current = 'deep';
     navigate({ pathname: getPathForTab(Tab.HISTORY), search: `?${params.toString()}` });
   }, [navigate]);

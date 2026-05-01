@@ -8,9 +8,6 @@ import {
   StoredBodyMapGender,
   getBodyMapGender,
   saveBodyMapGender,
-  DateMode,
-  getDateMode,
-  saveDateMode,
   ExerciseTrendMode,
   getExerciseTrendMode,
   saveExerciseTrendMode,
@@ -32,10 +29,6 @@ export interface UseAppPreferencesReturn {
   bodyMapGender: BodyMapGender;
   setBodyMapGender: (gender: BodyMapGender) => void;
   
-  // Date mode
-  dateMode: DateMode;
-  setDateMode: (mode: DateMode) => void;
-  
   // Exercise trend mode
   exerciseTrendMode: ExerciseTrendMode;
   setExerciseTrendMode: (mode: ExerciseTrendMode) => void;
@@ -50,7 +43,6 @@ export function useAppPreferences(): UseAppPreferencesReturn {
   
   const [weightUnit, setWeightUnitState] = useState<WeightUnit>(() => getWeightUnit());
   const [bodyMapGender, setBodyMapGenderState] = useState<BodyMapGender>(() => getBodyMapGender());
-  const [dateMode, setDateModeState] = useState<DateMode>(() => getDateMode());
   const [exerciseTrendMode, setExerciseTrendModeState] = useState<ExerciseTrendMode>(() => getExerciseTrendMode());
   const [secondarySetMultiplier, setSecondarySetMultiplierState] = useState<number>(() => getSecondarySetMultiplier());
 
@@ -65,11 +57,6 @@ export function useAppPreferences(): UseAppPreferencesReturn {
     saveBodyMapGender(bodyMapGender as StoredBodyMapGender);
     setContext({ body_map_gender: bodyMapGender });
   }, [bodyMapGender]);
-
-  // Persist date mode
-  useEffect(() => {
-    saveDateMode(dateMode);
-  }, [dateMode]);
 
   // Persist exercise trend mode
   useEffect(() => {
@@ -96,8 +83,6 @@ export function useAppPreferences(): UseAppPreferencesReturn {
     setWeightUnit: setWeightUnitState,
     bodyMapGender,
     setBodyMapGender: setBodyMapGenderState,
-    dateMode,
-    setDateMode: setDateModeState,
     exerciseTrendMode,
     setExerciseTrendMode: setExerciseTrendModeState,
     secondarySetMultiplier,
