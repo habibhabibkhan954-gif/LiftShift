@@ -30,3 +30,10 @@ export const parseLocalDateFromYyyyMmDd = (value: string): Date | null => {
   if (!Number.isFinite(year) || !Number.isFinite(monthIndex) || !Number.isFinite(day)) return null;
   return new Date(year, monthIndex, day);
 };
+
+export const formatLocalDateAsYyyyMmDd = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
