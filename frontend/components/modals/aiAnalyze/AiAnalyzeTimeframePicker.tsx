@@ -18,9 +18,9 @@ export const AiAnalyzeTimeframePicker: React.FC<AiAnalyzeTimeframePickerProps> =
     <div className="flex flex-wrap gap-2">
       {([
         { label: 'Last session', value: 'last_session' as const },
-        { label: '1 month', value: 1 as const },
-        { label: '3 months', value: 3 as const },
-        { label: '6 months', value: 6 as const },
+        { label: '1 mo', value: 1 as const },
+        { label: '3 mo', value: 3 as const },
+        { label: '6 mo', value: 6 as const },
         { label: 'All', value: 'all' as const },
       ] as const).map((opt) => {
         const selected = months === opt.value;

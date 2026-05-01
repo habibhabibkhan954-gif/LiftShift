@@ -3,7 +3,6 @@ import { Brain } from 'lucide-react';
 import type { DailySummary, ExerciseStats, WorkoutSet } from '../../../types';
 import type { ThemeMode } from '../../../utils/storage/localStorage';
 import { Tooltip, useTooltip } from '../../ui/Tooltip';
-import { AiAnalyzeCategoryChips } from '../../modals/aiAnalyze/AiAnalyzeCategoryChips';
 import { AiAnalyzeFooter } from '../../modals/aiAnalyze/AiAnalyzeFooter';
 import { AiAnalyzeModuleGrid } from '../../modals/aiAnalyze/AiAnalyzeModuleGrid';
 import { AiAnalyzeTimeframePicker } from '../../modals/aiAnalyze/AiAnalyzeTimeframePicker';
@@ -30,8 +29,6 @@ export const DashboardAIAnalysisCard: React.FC<DashboardAIAnalysisCardProps> = (
   const {
     months,
     setMonths,
-    activeCategory,
-    setActiveCategory,
     selectedIds,
     toggleModule,
     visibleModules,
@@ -64,12 +61,6 @@ export const DashboardAIAnalysisCard: React.FC<DashboardAIAnalysisCardProps> = (
       <AiAnalyzeTimeframePicker months={months} setMonths={setMonths} />
 
       <div className="space-y-2">
-        <AiAnalyzeCategoryChips
-          activeCategory={activeCategory}
-          setActiveCategory={setActiveCategory}
-          isLightTheme={isLightTheme}
-        />
-
         <AiAnalyzeModuleGrid
           visibleModules={visibleModules}
           selectedIds={selectedIds}

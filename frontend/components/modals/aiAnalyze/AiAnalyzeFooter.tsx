@@ -20,7 +20,7 @@ export const AiAnalyzeFooter: React.FC<AiAnalyzeFooterProps> = ({
   onOpenGemini,
   onReCopy,
 }) => (
-  <div className="flex-shrink-0 flex items-center justify-center px-4 sm:px-5" style={{ height: '80px' }}>
+  <div className="flex-shrink-0 flex items-center justify-center px-4 sm:px-5" style={{ height: '40px' }}>
     <div className="flex items-center justify-center gap-2 w-full">
       {!isReady ? (
         <button

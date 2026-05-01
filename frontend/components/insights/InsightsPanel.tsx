@@ -68,19 +68,21 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = memo(function Insight
         sparklineTitle="Workout frequency over last 8 weeks"
       />
 
-      {/* Sets This Week */}
-      <KPICard
-        title="Sets"
-        value={rolling7d.current.totalSets}
-        subtitle="lst 7d"
-        icon={Dumbbell}
-        iconColor="text-purple-400"
-        delta={rolling7d.sets ?? undefined}
-        deltaContext="vs prev 7d"
-        sparkline={setsSparkline}
-        sparklineColor="#a855f7"
-        sparklineTitle="Training volume over last 8 weeks"
-      />
+      {/* Sets This Week - hidden on mobile */}
+      <div className="hidden lg:block">
+        <KPICard
+          title="Sets"
+          value={rolling7d.current.totalSets}
+          subtitle="lst 7d"
+          icon={Dumbbell}
+          iconColor="text-purple-400"
+          delta={rolling7d.sets ?? undefined}
+          deltaContext="vs prev 7d"
+          sparkline={setsSparkline}
+          sparklineColor="#a855f7"
+          sparklineTitle="Training volume over last 8 weeks"
+        />
+      </div>
 
       {/* PRs */}
       <KPICard

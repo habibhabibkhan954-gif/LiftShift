@@ -2,11 +2,15 @@ import React, { Suspense } from 'react';
 import { ChartSkeleton } from '../../ui/ChartSkeleton';
 import { LazyRender } from '../../ui/LazyRender';
 import type { BodyMapGender } from '../../bodyMap/BodyMap';
+import type { DailySummary, ExerciseStats, WorkoutSet } from '../../../types';
+import type { WeightUnit } from '../../../utils/storage/localStorage';
+import { DashboardAIAnalysisCard } from './DashboardAIAnalysisCard';
 
 const WeeklySetsCard = React.lazy(() => import('../weeklySets/WeeklySetsCard').then((m) => ({ default: m.WeeklySetsCard })));
 const MuscleTrendCard = React.lazy(() => import('../muscleTrend/MuscleTrendCard').then((m) => ({ default: m.MuscleTrendCard })));
 const PrTrendCard = React.lazy(() => import('../prTrend/PrTrendCard').then((m) => ({ default: m.PrTrendCard })));
 const IntensityEvolutionCard = React.lazy(() => import('../intensityEvolution/IntensityEvolutionCard').then((m) => ({ default: m.IntensityEvolutionCard })));
+const VolumeDensityCard = React.lazy(() => import('../volumeDensity/VolumeDensityCard').then((m) => ({ default: m.VolumeDensityCard })));
 
 interface DashboardPrimaryChartsProps {
   isMounted: boolean;
@@ -42,6 +46,16 @@ interface DashboardPrimaryChartsProps {
   muscleTrendInsight: any;
   muscleVsLabel: string;
   tooltipStyle: any;
+  volumeView: 'area' | 'bar';
+  setVolumeView: (v: 'area' | 'bar') => void;
+  weightUnit: WeightUnit;
+  volumeDurationData: any[];
+  volumeDensityTrend: any;
+  fullData: WorkoutSet[];
+  dailyData: DailySummary[];
+  exerciseStats: ExerciseStats[];
+  effectiveNow: Date;
+  themeMode: string;
 }
 
 export const DashboardPrimaryCharts: React.FC<DashboardPrimaryChartsProps> = ({
@@ -78,6 +92,15 @@ export const DashboardPrimaryCharts: React.FC<DashboardPrimaryChartsProps> = ({
   muscleTrendInsight,
   muscleVsLabel,
   tooltipStyle,
+  volumeView,
+  setVolumeView,
+  weightUnit,
+  volumeDurationData,
+  volumeDensityTrend,
+  fullData,
+  dailyData,
+  exerciseStats,
+  themeMode,
 }) => (
   <>
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-2">
@@ -111,6 +134,32 @@ export const DashboardPrimaryCharts: React.FC<DashboardPrimaryChartsProps> = ({
           trainingLevel={trainingLevel}
         />
       </Suspense>
+    </div>
+
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-2">
+      <DashboardAIAnalysisCard
+        fullData={fullData}
+        dailyData={dailyData}
+        exerciseStats={exerciseStats}
+        effectiveNow={effectiveNow}
+        themeMode={themeMode}
+      />
+
+      <LazyRender className="min-w-0" placeholder={<ChartSkeleton className="min-h-[400px] sm:min-h-[520px]" />}>
+        <Suspense fallback={<ChartSkeleton className="min-h-[400px] sm:min-h-[520px]" />}>
+          <VolumeDensityCard
+            isMounted={isMounted}
+            mode={chartModes.volumeVsDuration}
+            onToggle={(m) => toggleChartMode('volumeVsDuration', m)}
+            view={volumeView}
+            onViewToggle={setVolumeView}
+            weightUnit={weightUnit}
+            volumeDurationData={volumeDurationData}
+            volumeDensityTrend={volumeDensityTrend as any}
+            tooltipStyle={tooltipStyle as any}
+          />
+        </Suspense>
+      </LazyRender>
     </div>
 
     <LazyRender className="min-w-0" placeholder={<ChartSkeleton className="min-h-[400px] sm:min-h-[480px]" />}>

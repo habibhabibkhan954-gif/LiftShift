@@ -7,7 +7,6 @@ import { DashboardHeaderBar } from './DashboardHeaderBar';
 import { DashboardInsightsSection } from './DashboardInsightsSection';
 import { DashboardPrimaryCharts } from './DashboardPrimaryCharts';
 import { DashboardSecondaryCharts } from './DashboardSecondaryCharts';
-import { DashboardAIAnalysisCard } from './DashboardAIAnalysisCard';
 
 interface DashboardLayoutProps {
   isMounted: boolean;
@@ -212,9 +211,11 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
           muscleTrendInsight={muscleTrendInsight}
           muscleVsLabel={muscleVsLabel}
           tooltipStyle={tooltipStyle}
-        />
-
-        <DashboardAIAnalysisCard
+          volumeView={volumeView}
+          setVolumeView={setVolumeView}
+          weightUnit={weightUnit}
+          volumeDurationData={volumeDurationData}
+          volumeDensityTrend={volumeDensityTrend}
           fullData={fullData}
           dailyData={dailyData}
           exerciseStats={exerciseStats}
@@ -225,18 +226,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
 
       <div className="space-y-2">
         <DashboardSecondaryCharts
-          isMounted={isMounted}
-          weekShapeView={weekShapeView}
-          setWeekShapeView={setWeekShapeView}
-          weekShapeData={weekShapeData}
-          weeklyRhythmInsight={weeklyRhythmInsight}
-          chartModes={chartModes}
-          toggleChartMode={toggleChartMode}
-          volumeView={volumeView}
-          setVolumeView={setVolumeView}
-          weightUnit={weightUnit}
-          volumeDurationData={volumeDurationData}
-          volumeDensityTrend={volumeDensityTrend}
           topExerciseMode={topExerciseMode}
           setTopExerciseMode={setTopExerciseMode}
           topExercisesView={topExercisesView}

@@ -31,6 +31,8 @@ export const ActivityHeatmap = memo(({
     return d;
   }, []);
 
+  const currentMonthEnd = useMemo(() => endOfMonth(today), [today]);
+
   const heatmapData = useMemo(() => {
     return computationCache.getOrCompute(
       'heatmapData',
@@ -53,12 +55,14 @@ export const ActivityHeatmap = memo(({
           const key = format(day, 'yyyy-MM-dd');
           const activity = byDayKey.get(key);
           const isFuture = day.getTime() > today.getTime();
+          const isCurrentMonthFuture = isFuture && day.getTime() <= currentMonthEnd.getTime();
           return {
             date: day,
             count: activity?.sets ?? 0,
             totalVolume: activity?.totalVolume ?? 0,
             title: activity?.workoutTitle ?? null,
             isFuture,
+            isCurrentMonthFuture,
           };
         });
       },
@@ -96,7 +100,9 @@ export const ActivityHeatmap = memo(({
       for (let i = 0; i < days.length; i++) {
         const day = days[i];
         const existing = byKey.get(format(day, 'yyyy-MM-dd'));
-        cells[i] = existing || { date: day, count: 0, title: null, isFuture: day.getTime() > today.getTime() };
+        const isFuture = day.getTime() > today.getTime();
+        const isCurrentMonthFuture = isFuture && day.getTime() <= currentMonthEnd.getTime();
+        cells[i] = existing || { date: day, count: 0, title: null, isFuture, isCurrentMonthFuture };
       }
 
       blocks.push({
@@ -135,8 +141,9 @@ export const ActivityHeatmap = memo(({
   const todayInRange = heatmapData.some(d => format(d.date, 'yyyy-MM-dd') === todayStr);
   const maxVolume = Math.max(...heatmapData.map(d => d.totalVolume), 1);
 
-  const getColor = (volume: number, isFuture?: boolean) => {
-    if (isFuture) return { bgClass: 'bg-slate-700/30 border border-slate-600/30', style: {} };
+  const getColor = (volume: number, isFuture?: boolean, isCurrentMonthFuture?: boolean) => {
+    if (isCurrentMonthFuture) return { bgClass: 'bg-slate-800/20 border border-slate-700/20', style: { opacity: 0.6 } };
+    if (isFuture) return { bgClass: 'bg-slate-800/40 border border-slate-700/50', style: {} };
     if (volume === 0) return { bgClass: 'bg-slate-800/50', style: {} };
 
     const intensity = Math.min(volume / maxVolume, 1);
@@ -146,8 +153,9 @@ export const ActivityHeatmap = memo(({
     return { bgClass: '', style: { backgroundColor: `hsl(160, ${saturation}%, ${lightness}%)` } };
   };
 
-  const getDayTextColor = (volume: number, isFuture?: boolean) => {
-    if (isFuture) return 'text-slate-500';
+  const getDayTextColor = (volume: number, isFuture?: boolean, isCurrentMonthFuture?: boolean) => {
+    if (isCurrentMonthFuture) return 'text-slate-500/30';
+    if (isFuture) return 'text-slate-600';
     if (volume === 0) return 'text-slate-600';
 
     const intensity = Math.min(volume / maxVolume, 1);
@@ -247,9 +255,10 @@ export const ActivityHeatmap = memo(({
                       if (!day) return <div key={`${month.key}-empty-${idx}`} className={cellSizeClass} />;
                       const dayNum = day.date.getDate();
                       const isFuture = day.isFuture;
+                      const isCurrentMonthFuture = day.isCurrentMonthFuture;
                       const isToday = format(day.date, 'yyyy-MM-dd') === todayStr;
-                      const { bgClass, style } = getColor(day.totalVolume, isFuture);
-                      const textColor = isLatestMonth ? getDayTextColor(day.totalVolume, isFuture) : '';
+                      const { bgClass, style } = getColor(day.totalVolume, isFuture, isCurrentMonthFuture);
+                      const textColor = isLatestMonth ? getDayTextColor(day.totalVolume, isFuture, isCurrentMonthFuture) : '';
                       return (
                         <div
                           key={day.date.toISOString()}

@@ -22,10 +22,9 @@ export const AiAnalyzeModuleGrid: React.FC<AiAnalyzeModuleGridProps> = ({
   isLightTheme,
 }) => (
   <div
-    className={`border rounded-lg ${isLightTheme ? 'border-gray-300 bg-white' : 'border-slate-800/30 bg-slate-900/20'}`}
     style={{ height: '256px' }}
   >
-    <div className="overflow-y-auto h-full p-2">
+    <div className="overflow-y-auto h-full pt-6 px-2">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         {visibleModules.map((m) => {
           const selected = selectedIds.includes(m.id);
@@ -73,7 +72,7 @@ export const AiAnalyzeModuleGrid: React.FC<AiAnalyzeModuleGridProps> = ({
                   </div>
                 </div>
                 <Info
-                  className="w-3 h-3 text-slate-400 hover:text-slate-300 flex-shrink-0 cursor-help"
+                  className="w-5 h-5 text-slate-600 hover:text-slate-300 flex-shrink-0 cursor-help"
                   onMouseEnter={(e) =>
                     showTooltip(e, {
                       title: m.label,
