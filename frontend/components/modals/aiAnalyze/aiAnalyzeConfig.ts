@@ -116,12 +116,13 @@ export const buildPromptTemplate = (args: {
     'I want a high-signal training analysis with minimal fluff.',
     '',
     'Focus areas (treat these as add-ons; cover each clearly):',
-    focusLines || '- General analysis: Summarize the biggest patterns and highest-leverage fixes.',
+    focusLines || 'General analysis: Summarize the biggest patterns and highest-leverage fixes.',
     '',
     'Output requirements:',
-    '- Use clear headings and bullet points.',
-    '- When you make a claim, point to specific evidence from the logs (dates, exercises, patterns).',
-    '- If a requested check is not possible with the data, say what is missing and provide best-effort inference.',
-    '- End with a prioritized action list for the next 2-4 weeks.',
+    'Use clear headings and bullet points.',
+    'Sets could be warmup, dropset, myo, etc. (exporting logs strips it).',
+    'When you make a claim, point to specific evidence from the logs (dates, exercises, patterns).',
+    'If a requested check is not possible with the data, say what is missing and provide best-effort inference.',
+    'End with a prioritized action list for the next 2-4 weeks.',
   ].join('\n');
 };
