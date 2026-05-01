@@ -28,7 +28,7 @@ const InlineIcon: React.FC<{ text: string; index: number }> = ({ text, index }) 
     return <TrendingDown className="w-3.5 h-3.5 inline-block text-rose-400 ml-1 -mt-0.5" />;
   }
   if (lowerText.includes('needs attention') || lowerText.includes('stuck for')) {
-    return <AlertTriangle className="w-3.5 h-3.5 inline-block text-amber-400 ml-1 mr-1 -mt-0.5" />;
+    return <AlertTriangle className="w-3.5 h-3.5 inline-block text-amber-400 ml-1 -mt-0.5" />;
   }
   if (lowerText.includes('streak') || lowerText.includes('consistency')) {
     return <Target className="w-3.5 h-3.5 inline-block text-blue-400 ml-1 -mt-0.5" />;

@@ -239,7 +239,7 @@ const pushMomentumCandidates = (input: DashboardSummaryInput, candidates: Summar
     category: 'momentum',
     priority: 97,
     text: `Overall momentum is ${momentumLabel}: ${topSignals} over the last 7 days.`,
-    segments: [segText(`Overall momentum is ${momentumLabel}: ${topSignals} over the last 7 days.`)],
+    segments: [segText(` Overall momentum is ${momentumLabel}: ${topSignals} over the last 7 days.`)],
   });
 };
 
@@ -305,7 +305,7 @@ const pushWeeklyCandidates = (input: DashboardSummaryInput, candidates: SummaryC
       const absPct = Math.abs(Math.round(rolling7d.sets.deltaPercent));
       const text = isUp
         ? `Strong last 7 days: ${formatNumber(current.totalSets, { maxDecimals: 1 })} sets, up ${absPct}% from last week.`
-        : `Last week was lighter by ${absPct}% vs the previous week, so this is a good moment to rebuild momentum.`;
+        : ` Last week was lighter by ${absPct}% vs the previous week, so this is a good moment to rebuild momentum.`;
       candidates.push({
         category: 'weekly',
         priority: isUp ? 95 : 72,
@@ -319,7 +319,7 @@ const pushWeeklyCandidates = (input: DashboardSummaryInput, candidates: SummaryC
       const isUp = rolling7d.volume.direction === 'up';
       const absPct = Math.abs(Math.round(rolling7d.volume.deltaPercent));
       const text = isUp
-        ? `Volume is up ${absPct}% from last week, climbing to ${displayVolume}${input.weightUnit}.`
+        ? ` Volume is up ${absPct}% from last week, climbing to ${displayVolume}${input.weightUnit}.`
         : `Volume dipped by ${absPct}% vs last week to ${displayVolume}${input.weightUnit}. Time for a steady session next.`;
       candidates.push({
         category: 'weekly',
