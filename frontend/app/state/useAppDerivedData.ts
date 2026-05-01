@@ -2,26 +2,31 @@ import { useMemo } from 'react';
 import { getDailySummaries, getExerciseStats } from '../../utils/analysis/core';
 import { computationCache } from '../../utils/storage/computationCache';
 import { getEffectiveNowFromWorkoutData } from '../../utils/date/dateUtils';
-import { computeEffectiveNow, getDataAgeInfo } from '../../hooks/app';
+import { getDataAgeInfo } from '../../hooks/app';
 import type { WorkoutSet } from '../../types';
 
 interface AppDerivedDataArgs {
   parsedData: WorkoutSet[];
   filteredData: WorkoutSet[];
   filterCacheKey: string;
-  dateMode: 'actual' | 'effective';
 }
 
-export const useAppDerivedData = ({ parsedData, filteredData, filterCacheKey, dateMode }: AppDerivedDataArgs) => {
+export const useAppDerivedData = ({ parsedData, filteredData, filterCacheKey }: AppDerivedDataArgs) => {
+  // When filter is active, use filtered data's latest date as "now"
+  // Otherwise use actual current date
   const filteredEffectiveNow = useMemo(() => {
-    const dataBasedNow = getEffectiveNowFromWorkoutData(filteredData, new Date(0));
-    return computeEffectiveNow(dataBasedNow, dateMode);
-  }, [filteredData, dateMode]);
+    const isFilterActive = filteredData.length !== parsedData.length || filterCacheKey !== 'all';
+    if (isFilterActive) {
+      return getEffectiveNowFromWorkoutData(filteredData, new Date(0));
+    }
+    return new Date(); // Actual current date
+  }, [filteredData, parsedData, filterCacheKey]);
 
+  // Calendar uses actual current date (or latest data date if no data)
   const calendarEffectiveNow = useMemo(() => {
     const dataBasedNow = getEffectiveNowFromWorkoutData(parsedData, new Date(0));
-    return computeEffectiveNow(dataBasedNow, dateMode);
-  }, [parsedData, dateMode]);
+    return dataBasedNow.getTime() > 0 ? dataBasedNow : new Date();
+  }, [parsedData]);
 
   const dataAgeInfo = useMemo(() => {
     const dataBasedNow = getEffectiveNowFromWorkoutData(parsedData, new Date(0));
