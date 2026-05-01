@@ -50,7 +50,7 @@ export const SupportLinks: React.FC<{
             className={`${uniformButtonClass} gap-2 ${layout === 'header' ? 'border-transparent hover:border-emerald-400' : 'flex-1 sm:flex-none min-w-[140px] sm:min-w-0'}`}
           >
             <Github className="w-4 h-4" />
-            <span>{layout === 'header' ? 'Star' : 'Star on GitHub'}</span>
+            <span>{layout === 'header' ? 'STAR' : 'Star on GitHub'}</span>
           </a>
 
           <a
@@ -72,7 +72,7 @@ export const SupportLinks: React.FC<{
             className={`${uniformButtonClass} gap-2`}
           >
             <Coffee className="w-4 h-4" />
-            <span>Buy Me a Coffee</span>
+            <span>SUPPORT LIFTSHIFT</span>
           </a>
 
           {primaryMiddleSlot}
@@ -93,7 +93,7 @@ export const SupportLinks: React.FC<{
             className={`${uniformButtonClass} gap-2 border-transparent hover:border-emerald-400`}
           >
             <Mail className="w-4 h-4" />
-            <span>Let's Talk</span>
+            <span>HIRE ME</span>
           </a>
 
           {primaryRightSlot ? (
