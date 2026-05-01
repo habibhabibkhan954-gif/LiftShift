@@ -269,7 +269,7 @@ const formatSetsAsText = (
   parts.push('');
 
   if (meta) {
-    parts.push(`GeneratedAt: ${meta.generatedAt}`);
+    parts.push(`GeneratedAt: ${format(new Date(meta.generatedAt), 'yyyy-MM-dd HH:mm')}`);
     parts.push(`Scope: ${meta.scope}`);
     parts.push(`CountSets: ${meta.countSets}`);
     parts.push(`Experience: ${experience.level} (${experience.monthsTraining} months training)`);
