@@ -15,6 +15,7 @@ import { CHART_TOOLTIP_STYLE, RADAR_TICK_FILL } from '../../../utils/ui/uiConsta
 import { getVolumeZoneColor } from '../../../utils/muscle/hypertrophy/muscleParams';
 import type { WeeklySetsWindow } from '../../../utils/muscle/analytics';
 import type { MuscleVolumeThresholds } from '../../../utils/muscle/hypertrophy/muscleParams';
+import { SegmentControl } from '../../ui/SegmentControl';
 
 interface MuscleAnalysisBodyMapPanelProps {
   bodyMapGender: BodyMapGender;
@@ -71,45 +72,30 @@ export const MuscleAnalysisBodyMapPanel: React.FC<MuscleAnalysisBodyMapPanelProp
   return (
     <div className="bg-black/70 rounded-xl border border-slate-700/50 p-4 relative flex flex-col h-full">
       <div className="absolute top-3 left-3 right-3 z-10 flex items-center justify-end gap-2">
-        <div className="bg-black/70 p-0.5 rounded-lg inline-flex gap-0.5 border border-slate-700/50 shrink-0">
-          <button
-            onClick={() => setWeeklySetsChartView('heatmap')}
-            title="Heatmap"
-            aria-label="Heatmap"
-            className={`w-6 h-5 flex items-center justify-center rounded cursor-pointer ${weeklySetsChartView === 'heatmap' ? 'bg-cyan-600 text-white' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'}`}
-          >
-            <Grid3X3 className="w-3 h-3" />
-          </button>
-          <button
-            onClick={() => setWeeklySetsChartView('radar')}
-            title="Radar"
-            aria-label="Radar"
-            className={`w-6 h-5 flex items-center justify-center rounded cursor-pointer ${weeklySetsChartView === 'radar' ? 'bg-cyan-600 text-white' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'}`}
-          >
-            <Scan className="w-3 h-3" />
-          </button>
-        </div>
+        <SegmentControl
+          options={[
+            { value: 'heatmap', icon: <Grid3X3 className="w-3 h-3" />, title: 'Heatmap' },
+            { value: 'radar', icon: <Scan className="w-3 h-3" />, title: 'Radar' },
+          ]}
+          value={weeklySetsChartView}
+          onChange={setWeeklySetsChartView}
+        />
 
-        <div className="inline-flex bg-black/70 rounded-lg p-0.5 border border-slate-700/50">
-          {(['all', '7d', '30d', '365d'] as const).map((w) => (
-            <button
-              key={w}
-              onClick={() => {
-                setWeeklySetsWindow(w);
-                const svgId = selectedSvgIdForUrlRef.current;
-                if (!svgId) return;
-                updateSelectionUrl({ svgId, window: w });
-              }}
-              className={`px-1.5 py-0.5 rounded text-[9px] font-medium transition-all cursor-pointer ${weeklySetsWindow === w
-                ? 'bg-red-600 text-white'
-                : 'text-slate-400 hover:text-white'
-                }`}
-              title={w === 'all' ? 'All time' : w === '7d' ? 'Last week' : w === '30d' ? 'Last month' : 'Last year'}
-            >
-              {w === 'all' ? <Infinity className="w-2.5 h-2.5" /> : w === '7d' ? 'lst wk' : w === '30d' ? 'lst mo' : 'lst yr'}
-            </button>
-          ))}
-        </div>
+        <SegmentControl
+          options={[
+            { value: 'all', icon: <Infinity className="w-2.5 h-2.5" />, title: 'All time' },
+            { value: '7d', label: 'lst wk', title: 'Last week' },
+            { value: '30d', label: 'lst mo', title: 'Last month' },
+            { value: '365d', label: 'lst yr', title: 'Last year' },
+          ]}
+          value={weeklySetsWindow as 'all' | '7d' | '30d' | '365d'}
+          onChange={(v) => {
+            setWeeklySetsWindow(v);
+            const svgId = selectedSvgIdForUrlRef.current;
+            if (!svgId) return;
+            updateSelectionUrl({ svgId, window: v });
+          }}
+        />
       </div>
 
       {weeklySetsChartView === 'radar' ? (

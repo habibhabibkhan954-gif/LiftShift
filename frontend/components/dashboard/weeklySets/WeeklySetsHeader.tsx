@@ -1,5 +1,6 @@
 import React from 'react';
 import { Grid3X3, Infinity, Scan } from 'lucide-react';
+import { SegmentControl } from '../../ui/SegmentControl';
 import { WeeklySetsBodyIcon } from './WeeklySetsIcons';
 
 type WeeklySetsView = 'radar' | 'heatmap';
@@ -25,82 +26,27 @@ export const WeeklySetsHeader: React.FC<WeeklySetsHeaderProps> = ({
     </h3>
 
     <div className="flex items-center justify-end gap-1 flex-wrap sm:flex-nowrap overflow-x-auto sm:overflow-visible">
-      <div className="bg-black/70 p-0.5 rounded-lg inline-flex gap-0.5 border border-slate-800 shrink-0">
-        <button
-          onClick={() => setWeeklySetsView('radar')}
-          title="Radar"
-          aria-label="Radar"
-          className={`w-6 h-5 flex items-center justify-center rounded cursor-pointer ${
-            weeklySetsView === 'radar' ? 'bg-cyan-600 text-white' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-          }`}
-        >
-          <Scan className="w-3 h-3" />
-          <span className="sr-only">Radar</span>
-        </button>
-        <button
-          onClick={() => setWeeklySetsView('heatmap')}
-          title="Heatmap"
-          aria-label="Heatmap"
-          className={`w-6 h-5 flex items-center justify-center rounded cursor-pointer ${
-            weeklySetsView === 'heatmap'
-              ? 'bg-cyan-600 text-white'
-              : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-          }`}
-        >
-          <Grid3X3 className="w-3 h-3" />
-          <span className="sr-only">Heatmap</span>
-        </button>
-      </div>
+      <SegmentControl
+        options={[
+          { value: 'radar', icon: <Scan className="w-3 h-3" />, title: 'Radar' },
+          { value: 'heatmap', icon: <Grid3X3 className="w-3 h-3" />, title: 'Heatmap' },
+        ]}
+        value={weeklySetsView}
+        onChange={setWeeklySetsView}
+      />
 
-      <div className="bg-black/70 p-0.5 rounded-lg inline-flex gap-0.5 border border-slate-800 shrink-0">
-        <button
-          onClick={() => setMuscleCompQuick('all')}
-          title="All"
-          aria-label="All"
-          className={`w-6 h-5 flex items-center justify-center rounded cursor-pointer ${
-            muscleCompQuick === 'all'
-              ? 'bg-cyan-600 text-white'
-              : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-          }`}
-        >
-          <Infinity className="w-3 h-3" />
-          <span className="sr-only">All</span>
-        </button>
-        <button
-          onClick={() => setMuscleCompQuick('7d')}
-          title="Last week"
-          aria-label="Last week"
-          className={`px-1 h-5 flex items-center justify-center rounded text-[8px] font-bold leading-none whitespace-nowrap cursor-pointer ${
-            muscleCompQuick === '7d' ? 'bg-cyan-600 text-white' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-          }`}
-        >
-          lst wk
-        </button>
-        <button
-          onClick={() => setMuscleCompQuick('30d')}
-          title="Last month"
-          aria-label="Last month"
-          className={`px-1 h-5 flex items-center justify-center rounded text-[8px] font-bold leading-none whitespace-nowrap cursor-pointer ${
-            muscleCompQuick === '30d'
-              ? 'bg-cyan-600 text-white'
-              : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-          }`}
-        >
-          lst mo
-        </button>
-        <button
-          onClick={() => setMuscleCompQuick('365d')}
-          title="Last year"
-          aria-label="Last year"
-          className={`px-1 h-5 flex items-center justify-center rounded text-[8px] font-bold leading-none cursor-pointer ${
-            muscleCompQuick === '365d'
-              ? 'bg-cyan-600 text-white'
-              : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-          }`}
-        >
-          lst yr
-        </button>
-      </div>
+      <SegmentControl
+        options={[
+          { value: 'all', icon: <Infinity className="w-3 h-3" />, title: 'All' },
+          { value: '7d', label: 'lst wk', title: 'Last week' },
+          { value: '30d', label: 'lst mo', title: 'Last month' },
+          { value: '365d', label: 'lst yr', title: 'Last year' },
+        ]}
+        value={muscleCompQuick}
+        onChange={setMuscleCompQuick}
+      />
     </div>
   </div>
 );
+
+export default WeeklySetsHeader;

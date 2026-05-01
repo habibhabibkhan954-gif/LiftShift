@@ -25,6 +25,7 @@ import {
 } from '../insights/ChartBits';
 import { LazyRender } from '../../ui/LazyRender';
 import { ChartSkeleton } from '../../ui/ChartSkeleton';
+import { SegmentControl } from '../../ui/SegmentControl';
 import { getRechartsCategoricalTicks, getRechartsTickIndexMap, RECHARTS_XAXIS_PADDING, RECHARTS_YAXIS_MARGIN, ValueDot, calculateYAxisDomain, formatAxisNumber } from '../../../utils/chart/chartEnhancements';
 import { formatVsPrevRollingWindow, getRollingWindowDaysForMode } from '../../../utils/date/dateUtils';
 
@@ -81,71 +82,25 @@ export const PrTrendCard = ({
         </h3>
 
         <div className="flex items-center justify-end gap-0.5 sm:gap-1 flex-wrap sm:flex-nowrap overflow-x-auto sm:overflow-visible max-w-full">
-          <div className="bg-black/70 p-0.5 rounded-lg flex gap-0.5 border border-slate-800 transition-all duration-200 hover:border-slate-700 shrink-0">
-            <button
-              onClick={() => onViewToggle('area')}
-              title="Area"
-              aria-label="Area"
-              className={`w-6 h-5 flex items-center justify-center rounded transition-all duration-200 cursor-pointer ${
-                view === 'area' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-              }`}
-            >
-              <AreaChartIcon className="w-3 h-3" />
-            </button>
-            <button
-              onClick={() => onViewToggle('bar')}
-              title="Bar"
-              aria-label="Bar"
-              className={`w-6 h-5 flex items-center justify-center rounded transition-all duration-200 cursor-pointer ${
-                view === 'bar' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-              }`}
-            >
-              <BarChart3 className="w-3 h-3" />
-            </button>
-          </div>
+          <SegmentControl
+            options={[
+              { value: 'area', icon: <AreaChartIcon className="w-3 h-3" />, title: 'Area' },
+              { value: 'bar', icon: <BarChart3 className="w-3 h-3" />, title: 'Bar' },
+            ]}
+            value={view}
+            onChange={onViewToggle}
+          />
 
-          <div className="bg-black/70 p-0.5 rounded-lg flex gap-0.5 border border-slate-800 transition-all duration-200 hover:border-slate-700 shrink-0">
-            <button
-              onClick={() => onToggle('all')}
-              title="All"
-              aria-label="All"
-              className={`w-6 h-5 flex items-center justify-center rounded transition-all duration-200 cursor-pointer ${
-                mode === 'all' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-              }`}
-            >
-              <Infinity className="w-3 h-3" />
-            </button>
-            <button
-              onClick={() => onToggle('weekly')}
-              title="Last Week"
-              aria-label="Last Week"
-              className={`px-1 h-5 flex items-center justify-center rounded transition-all duration-200 text-[8px] font-bold leading-none whitespace-nowrap cursor-pointer ${
-                mode === 'weekly' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-              }`}
-            >
-              lst wk
-            </button>
-            <button
-              onClick={() => onToggle('monthly')}
-              title="Last Month"
-              aria-label="Last Month"
-              className={`px-1 h-5 flex items-center justify-center rounded transition-all duration-200 text-[8px] font-bold leading-none whitespace-nowrap cursor-pointer ${
-                mode === 'monthly' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-              }`}
-            >
-              lst mo
-            </button>
-            <button
-              onClick={() => onToggle('yearly')}
-              title="Last Year"
-              aria-label="Last Year"
-              className={`px-1 h-5 flex items-center justify-center rounded transition-all duration-200 text-[8px] font-bold leading-none whitespace-nowrap cursor-pointer ${
-                mode === 'yearly' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-              }`}
-            >
-              lst yr
-            </button>
-          </div>
+          <SegmentControl
+            options={[
+              { value: 'all', icon: <Infinity className="w-3 h-3" />, title: 'All' },
+              { value: 'weekly', label: 'lst wk', title: 'Last Week' },
+              { value: 'monthly', label: 'lst mo', title: 'Last Month' },
+              { value: 'yearly', label: 'lst yr', title: 'Last Year' },
+            ]}
+            value={mode}
+            onChange={onToggle}
+          />
         </div>
       </div>
 

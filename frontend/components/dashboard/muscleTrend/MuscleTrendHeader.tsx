@@ -1,5 +1,6 @@
 import React from 'react';
 import { AreaChart as AreaChartIcon, ChartColumnStacked, Infinity } from 'lucide-react';
+import { SegmentControl } from '../../ui/SegmentControl';
 import { MuscleTrendBodyIcon, MuscleTrendIcon } from './MuscleTrendIcons';
 
 type MuscleGrouping = 'groups' | 'muscles';
@@ -30,115 +31,36 @@ export const MuscleTrendHeader: React.FC<MuscleTrendHeaderProps> = ({
     </h3>
 
     <div className="flex items-center justify-end gap-1 flex-wrap sm:flex-nowrap overflow-x-auto w-full sm:w-auto sm:overflow-visible">
-      <div className="bg-black/70 p-0.5 rounded-lg inline-flex gap-0.5 border border-slate-800 shrink-0">
-        <button
-          onClick={() => setMuscleGrouping('groups')}
-          title="Groups"
-          aria-label="Groups"
-          className={`w-5 h-5 flex items-center justify-center rounded cursor-pointer ${
-            muscleGrouping === 'groups'
-              ? 'bg-blue-600 text-white'
-              : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-          }`}
-        >
-          <MuscleTrendBodyIcon className="w-3.5 h-3.5" />
-          <span className="sr-only">Groups</span>
-        </button>
-        <button
-          onClick={() => setMuscleGrouping('muscles')}
-          title="Muscles"
-          aria-label="Muscles"
-          className={`w-5 h-5 flex items-center justify-center rounded cursor-pointer ${
-            muscleGrouping === 'muscles'
-              ? 'bg-blue-600 text-white'
-              : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-          }`}
-        >
-          <MuscleTrendIcon className="w-3.5 h-3.5" />
-          <span className="sr-only">Muscles</span>
-        </button>
-      </div>
+      <SegmentControl
+        options={[
+          { value: 'groups', icon: <MuscleTrendBodyIcon className="w-3.5 h-3.5" />, title: 'Groups' },
+          { value: 'muscles', icon: <MuscleTrendIcon className="w-3.5 h-3.5" />, title: 'Muscles' },
+        ]}
+        value={muscleGrouping}
+        onChange={setMuscleGrouping}
+      />
 
-      <div className="bg-black/70 p-0.5 rounded-lg inline-flex gap-0.5 border border-slate-800 shrink-0">
-        <button
-          onClick={() => setMusclePeriod('all')}
-          title="All"
-          aria-label="All"
-          className={`w-5 h-5 flex items-center justify-center rounded cursor-pointer ${
-            musclePeriod === 'all'
-              ? 'bg-purple-600 text-white'
-              : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-          }`}
-        >
-          <Infinity className="w-3 h-3" />
-          <span className="sr-only">All</span>
-        </button>
-        <button
-          onClick={() => setMusclePeriod('weekly')}
-          title="Last Week"
-          aria-label="Last Week"
-          className={`px-1 h-5 flex items-center justify-center rounded text-[8px] font-bold leading-none whitespace-nowrap cursor-pointer ${
-            musclePeriod === 'weekly'
-              ? 'bg-purple-600 text-white'
-              : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-          }`}
-        >
-          lst wk
-        </button>
-        <button
-          onClick={() => setMusclePeriod('monthly')}
-          title="Last Month"
-          aria-label="Last Month"
-          className={`px-1 h-5 flex items-center justify-center rounded text-[8px] font-bold leading-none whitespace-nowrap cursor-pointer ${
-            musclePeriod === 'monthly'
-              ? 'bg-purple-600 text-white'
-              : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-          }`}
-        >
-          lst mo
-        </button>
-        <button
-          onClick={() => setMusclePeriod('yearly')}
-          title="Last Year"
-          aria-label="Last Year"
-          className={`px-1 h-5 flex items-center justify-center rounded text-[8px] font-bold leading-none whitespace-nowrap cursor-pointer ${
-            musclePeriod === 'yearly'
-              ? 'bg-purple-600 text-white'
-              : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-          }`}
-        >
-          lst yr
-        </button>
-      </div>
+      <SegmentControl
+        options={[
+          { value: 'all', icon: <Infinity className="w-3 h-3" />, title: 'All' },
+          { value: 'weekly', label: 'lst wk', title: 'Last Week' },
+          { value: 'monthly', label: 'lst mo', title: 'Last Month' },
+          { value: 'yearly', label: 'lst yr', title: 'Last Year' },
+        ]}
+        value={musclePeriod}
+        onChange={setMusclePeriod}
+      />
 
-      <div className="bg-black/70 p-0.5 rounded-lg inline-flex gap-0.5 border border-slate-800 shrink-0">
-        <button
-          onClick={() => setMuscleTrendView('stackedBar')}
-          title="Stacked"
-          aria-label="Stacked"
-          className={`w-5 h-5 flex items-center justify-center rounded cursor-pointer ${
-            muscleTrendView === 'stackedBar'
-              ? 'bg-emerald-600 text-white'
-              : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-          }`}
-        >
-          <ChartColumnStacked className="w-3.5 h-3.5" />
-          <span className="sr-only">Stacked</span>
-        </button>
-        <button
-          onClick={() => setMuscleTrendView('area')}
-          title="Area"
-          aria-label="Area"
-          className={`w-5 h-5 flex items-center justify-center rounded cursor-pointer ${
-            muscleTrendView === 'area'
-              ? 'bg-emerald-600 text-white'
-              : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-          }`}
-        >
-          <AreaChartIcon className="w-3.5 h-3.5" />
-          <span className="sr-only">Area</span>
-        </button>
-      </div>
+      <SegmentControl
+        options={[
+          { value: 'stackedBar', icon: <ChartColumnStacked className="w-3.5 h-3.5" />, title: 'Stacked' },
+          { value: 'area', icon: <AreaChartIcon className="w-3.5 h-3.5" />, title: 'Area' },
+        ]}
+        value={muscleTrendView}
+        onChange={setMuscleTrendView}
+      />
     </div>
   </div>
 );
+
+export default MuscleTrendHeader;

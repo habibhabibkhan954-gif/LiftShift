@@ -13,6 +13,7 @@ import { Activity, Infinity } from 'lucide-react';
 import { ExerciseStats } from '../../../types';
 import { LazyRender } from '../../ui/LazyRender';
 import { ChartSkeleton } from '../../ui/ChartSkeleton';
+import { SegmentControl } from '../../ui/SegmentControl';
 import { formatNumber } from '../../../utils/format/formatters';
 import { RECHARTS_XAXIS_PADDING, RECHARTS_YAXIS_MARGIN, calculateYAxisDomain, formatAxisNumber } from '../../../utils/chart/chartEnhancements';
 import type { ExerciseSessionEntry } from '../../../utils/analysis/exerciseTrend';
@@ -129,40 +130,16 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
       <div className="sm:hidden flex flex-col gap-1 mb-2 shrink-0">
         <div className="flex items-center justify-between gap-2">
           <h3 className="text-base font-semibold text-white">{isBodyweightLike ? 'Reps Progression' : 'Strength Progression'}</h3>
-          <div className="bg-black/70 p-1 rounded-lg flex gap-1 border border-slate-700/50">
-            <button
-              onClick={() => setViewMode('all')}
-              title="All"
-              aria-label="All"
-              className={`px-2 py-1 rounded text-[10px] font-bold cursor-pointer ${viewMode === 'all' ? 'bg-blue-600 text-white' : 'text-slate-500 hover:text-slate-300 hover:bg-black/60'}`}
-            >
-              <Infinity className="w-3 h-3" />
-            </button>
-            <button
-              onClick={() => setViewMode('weekly')}
-              title="Last Week"
-              aria-label="Last Week"
-              className={`px-2 py-1 rounded text-[9px] font-bold whitespace-nowrap cursor-pointer ${viewMode === 'weekly' ? 'bg-blue-600 text-white' : 'text-slate-500 hover:text-slate-300 hover:bg-black/60'}`}
-            >
-              lst wk
-            </button>
-            <button
-              onClick={() => setViewMode('monthly')}
-              title="Last Month"
-              aria-label="Last Month"
-              className={`px-2 py-1 rounded text-[9px] font-bold whitespace-nowrap cursor-pointer ${viewMode === 'monthly' ? 'bg-blue-600 text-white' : 'text-slate-500 hover:text-slate-300 hover:bg-black/60'}`}
-            >
-              lst mo
-            </button>
-            <button
-              onClick={() => setViewMode('yearly')}
-              title="Last Year"
-              aria-label="Last Year"
-              className={`px-2 py-1 rounded text-[9px] font-bold whitespace-nowrap cursor-pointer ${viewMode === 'yearly' ? 'bg-blue-600 text-white' : 'text-slate-500 hover:text-slate-300 hover:bg-black/60'}`}
-            >
-              lst yr
-            </button>
-          </div>
+          <SegmentControl
+            options={[
+              { value: 'all', icon: <Infinity className="w-3 h-3" />, title: 'All' },
+              { value: 'weekly', label: 'lst wk', title: 'Last Week' },
+              { value: 'monthly', label: 'lst mo', title: 'Last Month' },
+              { value: 'yearly', label: 'lst yr', title: 'Last Year' },
+            ]}
+            value={viewMode}
+            onChange={setViewMode}
+          />
         </div>
         <div className="flex items-center justify-between gap-2 text-[10px]">
           <span className="text-slate-500">
@@ -276,40 +253,16 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
             </button>
           )}
 
-          <div className="bg-black/70 p-1 rounded-lg flex gap-1 border border-slate-700/50">
-            <button
-              onClick={() => setViewMode('all')}
-              title="All"
-              aria-label="All"
-              className={`px-2 py-1 rounded text-[10px] font-bold cursor-pointer ${viewMode === 'all' ? 'bg-blue-600 text-white' : 'text-slate-500 hover:text-slate-300 hover:bg-black/60'}`}
-            >
-              <Infinity className="w-3 h-3" />
-            </button>
-            <button
-              onClick={() => setViewMode('weekly')}
-              title="Last Week"
-              aria-label="Last Week"
-              className={`px-2 py-1 rounded text-[9px] font-bold whitespace-nowrap cursor-pointer ${viewMode === 'weekly' ? 'bg-blue-600 text-white' : 'text-slate-500 hover:text-slate-300 hover:bg-black/60'}`}
-            >
-              lst wk
-            </button>
-            <button
-              onClick={() => setViewMode('monthly')}
-              title="Last Month"
-              aria-label="Last Month"
-              className={`px-2 py-1 rounded text-[9px] font-bold whitespace-nowrap cursor-pointer ${viewMode === 'monthly' ? 'bg-blue-600 text-white' : 'text-slate-500 hover:text-slate-300 hover:bg-black/60'}`}
-            >
-              lst mo
-            </button>
-            <button
-              onClick={() => setViewMode('yearly')}
-              title="Last Year"
-              aria-label="Last Year"
-              className={`px-2 py-1 rounded text-[9px] font-bold whitespace-nowrap cursor-pointer ${viewMode === 'yearly' ? 'bg-blue-600 text-white' : 'text-slate-500 hover:text-slate-300 hover:bg-black/60'}`}
-            >
-              lst yr
-            </button>
-          </div>
+          <SegmentControl
+            options={[
+              { value: 'all', icon: <Infinity className="w-3 h-3" />, title: 'All' },
+              { value: 'weekly', label: 'lst wk', title: 'Last Week' },
+              { value: 'monthly', label: 'lst mo', title: 'Last Month' },
+              { value: 'yearly', label: 'lst yr', title: 'Last Year' },
+            ]}
+            value={viewMode}
+            onChange={setViewMode}
+          />
         </div>
       </div>
 
