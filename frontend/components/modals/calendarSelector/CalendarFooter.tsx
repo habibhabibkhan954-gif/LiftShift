@@ -17,7 +17,7 @@ export const CalendarFooter: React.FC<CalendarFooterProps> = ({
         onClick={onApply}
         disabled={!hasSelection}
         className={`flex-1 text-[11px] px-3 py-2 rounded-lg font-semibold transition-colors ${
-          hasSelection ? 'bg-emerald-500/10 hover:bg-emerald-500/15 border border-emerald-500/30 text-emerald-100' : 'bg-black/40 border border-slate-800/60 text-slate-500 cursor-not-allowed'
+          hasSelection ? 'bg-emerald-500/520 hover:bg-emerald-500/10 border border-emerald-500/20 text-emerald-500/100' : 'bg-slate-900/40 border border-slate-700/40 text-slate-600 cursor-not-allowed'
         }`}
       >
         Apply
