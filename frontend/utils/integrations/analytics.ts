@@ -19,20 +19,18 @@ const shouldEnableAnalytics = (): boolean => {
 };
 
 const getGaMeasurementId = (): string | null => {
-  const id = (import.meta.env.VITE_GA_MEASUREMENT_ID ?? (import.meta.env as any).VITE_PUBLIC_GA_MEASUREMENT_ID) as
-    | string
-    | undefined;
+  const id = import.meta.env.VITE_GA_MEASUREMENT_ID ?? import.meta.env.VITE_PUBLIC_GA_MEASUREMENT_ID;
   return typeof id === 'string' && id.trim() ? id.trim() : null;
 };
 
 const getPosthogConfig = (): { key: string; host: string; uiHost: string } | null => {
-  const key = ((import.meta.env as any).VITE_PUBLIC_POSTHOG_KEY ?? (import.meta.env as any).VITE_POSTHOG_KEY) as string | undefined;
-  const host = ((import.meta.env as any).VITE_PUBLIC_POSTHOG_HOST ??
-    (import.meta.env as any).VITE_POSTHOG_HOST ??
-    'https://us.i.posthog.com') as string | undefined;
-  const uiHost = ((import.meta.env as any).VITE_PUBLIC_POSTHOG_UI_HOST ??
-    (import.meta.env as any).VITE_POSTHOG_UI_HOST ??
-    'https://us.posthog.com') as string | undefined;
+  const key = import.meta.env.VITE_PUBLIC_POSTHOG_KEY ?? import.meta.env.VITE_POSTHOG_KEY;
+  const host = import.meta.env.VITE_PUBLIC_POSTHOG_HOST ??
+    import.meta.env.VITE_POSTHOG_HOST ??
+    'https://us.i.posthog.com';
+  const uiHost = import.meta.env.VITE_PUBLIC_POSTHOG_UI_HOST ??
+    import.meta.env.VITE_POSTHOG_UI_HOST ??
+    'https://us.posthog.com';
   if (!key || !key.trim()) return null;
   return {
     key: key.trim(),
@@ -162,7 +160,7 @@ const getCommonProperties = (): AnalyticsProperties => {
   return {
     app: 'LiftShift',
     client_id: getAnalyticsClientId(),
-    env: (import.meta.env.MODE ?? (import.meta.env.PROD ? 'production' : import.meta.env.DEV ? 'development' : 'unknown')) as string,
+    env: import.meta.env.MODE ?? (import.meta.env.PROD ? 'production' : import.meta.env.DEV ? 'development' : 'unknown'),
   };
 };
 

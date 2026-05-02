@@ -4,7 +4,7 @@ import React from 'react';
 import type { PageContext } from 'vike/types';
 
 function Head() {
-  const baseUrl = (import.meta as any).env?.BASE_URL;
+  const baseUrl = import.meta.env.BASE_URL;
   const base = typeof baseUrl === 'string' ? baseUrl : '/';
   const withBase = (path: string) => `${base}${path.replace(/^\/+/, '')}`;
   const themeInitScript = `

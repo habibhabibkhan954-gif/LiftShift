@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Github, Info, ArrowUp } from 'lucide-react';
+import { Info, ArrowUp } from 'lucide-react';
 import type { DataSourceChoice } from '../../../utils/storage/dataSourceStorage';
 import { Navigation } from '../../layout/Navigation';
 import PlatformDock from './PlatformDock';

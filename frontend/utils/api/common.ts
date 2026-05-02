@@ -69,11 +69,11 @@ const stripTrailingApiPath = (url: string): string => {
 };
 
 export const getBackendBaseUrl = (): string => {
-  const envUrl = (import.meta as any).env?.VITE_BACKEND_URL as string | undefined;
+  const envUrl = import.meta.env.VITE_BACKEND_URL as string | undefined;
   if (envUrl && typeof envUrl === 'string' && envUrl.trim()) {
     const normalized = stripTrailingApiPath(envUrl.trim());
     // In dev, prefer same-origin + Vite proxy so the app works on LAN devices.
-    if ((import.meta as any).env?.DEV && isLocalhostUrl(normalized)) return '';
+    if (import.meta.env.DEV && isLocalhostUrl(normalized)) return '';
 
     // If you built with a localhost backend URL and then open the app from another device
     // (e.g. phone on LAN), "localhost" will point at the phone. Rewrite to the current
@@ -84,7 +84,7 @@ export const getBackendBaseUrl = (): string => {
 
     return normalized;
   }
-  if ((import.meta as any).env?.DEV) return '';
+  if (import.meta.env.DEV) return '';
   return '';
 };
 
@@ -105,6 +105,6 @@ export const parseError = async (res: Response): Promise<string> => {
 
 export const buildBackendUrl = (path: string): string => {
   const base = getBackendBaseUrl();
-  if (!base && !(import.meta as any).env?.DEV) throw new Error('Missing VITE_BACKEND_URL (backend API).');
+  if (!base && !import.meta.env.DEV) throw new Error('Missing VITE_BACKEND_URL (backend API).');
   return base ? `${base}${path}` : path;
 };

@@ -134,7 +134,7 @@ export default defineConfig(({ mode }) => {
       minify: 'terser',
       target: 'esnext',
       sourcemap: false,
-      rollupOptions: {
+      rolldownOptions: {
         output: {
           // Code splitting for better caching (Vike requires manualChunks to be a function)
           manualChunks: (id: string) => {
