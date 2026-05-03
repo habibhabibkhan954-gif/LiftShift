@@ -23,6 +23,9 @@ import { useDashboardPlateaus } from '../hooks/useDashboardPlateaus';
 import { useWeeklyRhythm } from '../hooks/useWeeklyRhythm';
 import { useTrainingLevel } from '../../../hooks/app/useTrainingLevel';
 import { useTrainingTimeline } from '../../../hooks/app/useTrainingTimeline';
+import { calculateHypertrophyScoresWithExerciseTrends } from '../../../utils/muscle/hypertrophy/hypertrophyScore';
+import { toHeadlessVolumeMap } from '../../../utils/muscle/volume/muscleVolumeUtils';
+import { computeWeeklySetsDashboardData } from '../../../utils/muscle/analytics/dashboardWeeklySets';
 
 interface DashboardProps {
   dailyData: DailySummary[];
@@ -64,6 +67,17 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const { mode: themeMode } = useTheme();
 
   const effectiveNow = useMemo(() => now ?? getEffectiveNowFromWorkoutData(parsedData), [now, parsedData]);
+
+  // For hypertrophy: use filteredData's max date so calendar filter is respected
+  const hypertrophyEffectiveNow = useMemo(() => {
+    if (now) return now;
+    if (!filteredData.length) return effectiveNow;
+    let max = new Date(0);
+    for (const s of filteredData) {
+      if (s.parsedDate && s.parsedDate > max) max = s.parsedDate;
+    }
+    return max.getTime() > 0 ? max : effectiveNow;
+  }, [filteredData, effectiveNow, now]);
 
   const { trainingLevel } = useTrainingLevel(parsedData, effectiveNow);
 
@@ -131,6 +145,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const [muscleTrendView, setMuscleTrendView] = useState<'area' | 'stackedBar'>('stackedBar');
   const [muscleCompQuick, setMuscleCompQuick] = useState<'all' | '7d' | '30d' | '365d'>('30d');
   const [weeklySetsView, setWeeklySetsView] = useState<'radar' | 'heatmap'>('heatmap');
+  const [hypertrophyPeriod, setHypertrophyPeriod] = useState<'7d' | '30d'>('30d');
   // Always use 'muscles' grouping for weekly sets (group view toggle removed from UI)
   const compositionGrouping = 'muscles' as const;
 
@@ -247,6 +262,38 @@ export const Dashboard: React.FC<DashboardProps> = ({
     secondarySetMultiplier,
   });
 
+  const hypertrophyWindowStart = useMemo(() => {
+    const days = hypertrophyPeriod === '7d' ? 7 : 30;
+    return new Date(hypertrophyEffectiveNow.getTime() - days * 24 * 60 * 60 * 1000);
+  }, [hypertrophyPeriod, hypertrophyEffectiveNow]);
+
+  const hypertrophyHeadlessRatesMap = useMemo(() => {
+    if (!assetsMap) return null;
+    const result = computeWeeklySetsDashboardData(
+      parsedData,
+      assetsMap,
+      hypertrophyEffectiveNow,
+      hypertrophyPeriod,
+      'muscles',
+      secondarySetMultiplier
+    );
+    return toHeadlessVolumeMap(result.heatmap.volumes);
+  }, [assetsMap, parsedData, hypertrophyEffectiveNow, hypertrophyPeriod, secondarySetMultiplier]);
+
+  const hypertrophyData = useMemo(() => {
+    if (!parsedData.length || !assetsMap) return [];
+    return calculateHypertrophyScoresWithExerciseTrends(
+      exerciseStats,
+      hypertrophyHeadlessRatesMap,
+      assetsMap,
+      trainingLevel,
+      hypertrophyPeriod,
+      hypertrophyEffectiveNow,
+      parsedData,
+      hypertrophyWindowStart
+    );
+  }, [parsedData, assetsMap, exerciseStats, hypertrophyEffectiveNow, trainingLevel, hypertrophyPeriod, hypertrophyHeadlessRatesMap, hypertrophyWindowStart]);
+
   const dashboardSummary = useMemo(() => buildDashboardSummary({
     dashboardInsights,
     filteredData,
@@ -347,6 +394,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
       exerciseStats={exerciseStats}
       themeMode={themeMode}
       animationKeyframes={ANIMATION_KEYFRAMES}
+      hypertrophyData={hypertrophyData}
+      hypertrophyPeriod={hypertrophyPeriod}
+      setHypertrophyPeriod={setHypertrophyPeriod}
     />
   );
 };

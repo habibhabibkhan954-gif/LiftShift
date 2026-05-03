@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Sprout, Leaf, TreePine, Hammer, Pickaxe, Gem, Target, Crown, Zap, TrendingUp, BarChart3, ScatterChart } from 'lucide-react';
 import {
   ScatterChart as ReScatterChart,
@@ -352,8 +352,8 @@ export const LifetimeAchievementCard: React.FC<LifetimeAchievementCardProps> = (
   hypertrophyScores,
 }) => {
   const { tooltip, showTooltip, hideTooltip } = useTooltip();
-  const [viewMode, setViewMode] = useState<'lifetime' | 'hypertrophy'>('hypertrophy');
-  const [hypertrophyChartMode, setHypertrophyChartMode] = useState<'bar' | 'scatter'>('scatter');
+  const viewMode = 'lifetime' as const;
+  const hypertrophyChartMode = 'bar' as const;
 
   // Support both data prop and direct muscles prop
   const muscles = data?.muscles ?? musclesProp ?? [];
@@ -485,29 +485,14 @@ export const LifetimeAchievementCard: React.FC<LifetimeAchievementCardProps> = (
 
   return (
     <div className="bg-black/70 rounded-xl border border-slate-700/50 overflow-hidden h-full min-h-0 flex flex-col">
-      {/* Header with SegmentControl */}
+      {/* Header */}
       <div className="p-3 flex-shrink-0">
-        {/* Title row with SegmentControls */}
         <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <SegmentControl
-              options={viewOptions}
-              value={viewMode}
-              onChange={(v) => setViewMode(v as 'lifetime' | 'hypertrophy')}
-            />
-            {viewMode === 'hypertrophy' && (
-              <SegmentControl
-                options={chartModeOptions}
-                value={hypertrophyChartMode}
-                onChange={(v) => setHypertrophyChartMode(v as 'bar' | 'scatter')}
-              />
-            )}
-          </div>
+          <h2 className="text-xs font-bold text-white">Lifetime Progress</h2>
         </div>
 
-        {/* Content based on view mode — hide stats ring when scatter mode is active */}
-        {(viewMode === 'hypertrophy' && hypertrophyChartMode === 'scatter') ? null : (
-          viewMode === 'lifetime' ? (
+        {/* Content — always lifetime */}
+        {overallData && (
           <div className="flex items-start gap-3">
             <div className="relative flex-shrink-0">
               <svg width="56" height="56" className="transform -rotate-90">
@@ -559,78 +544,12 @@ export const LifetimeAchievementCard: React.FC<LifetimeAchievementCardProps> = (
               </p>
             </div>
           </div>
-        ) : hypertrophyStats ? (
-          <div className="flex items-start gap-3">
-            <div className="relative flex-shrink-0">
-              <svg width="56" height="56" className="transform -rotate-90">
-                <circle
-                  cx="28"
-                  cy="28"
-                  r="24"
-                  fill="none"
-                  strokeWidth="5"
-                  stroke="rgba(100, 100, 100, 0.1)"
-                />
-                <circle
-                  cx="28"
-                  cy="28"
-                  r="24"
-                  fill="none"
-                  strokeWidth="5"
-                  stroke={getScoreRating(hypertrophyStats.avgScore).color}
-                  strokeLinecap="round"
-                  strokeDasharray={2 * Math.PI * 24}
-                  strokeDashoffset={2 * Math.PI * 24 * (1 - hypertrophyStats.avgScore / 100)}
-                  className="transition-all duration-700 ease-out"
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-[13px] font-bold text-white">
-                  {Math.round(hypertrophyStats.avgScore)}%
-                </span>
-              </div>
-            </div>
-
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5 mt-0.5">
-                {(() => {
-                  const rating = getScoreRating(hypertrophyStats.avgScore);
-                  return (
-                    <span
-                      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold"
-                      style={{ 
-                        backgroundColor: `${rating.color}20`,
-                        color: rating.color 
-                      }}
-                    >
-                      <TrendingUp className="w-3 h-3" />
-                      {rating.label}
-                    </span>
-                  );
-                })()}
-              </div>
-              <p className="text-[10px] text-slate-500 mt-1 leading-tight">
-                {hypertrophyStats.count} muscles tracked
-              </p>
-              <p className="text-[10px] text-slate-500 mt-0.5">
-                {Math.round(hypertrophyStats.avgScore)}% average · Best: {hypertrophyStats.bestMuscle?.muscleName} ({hypertrophyStats.bestMuscle?.score.totalScore}%)
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div className="text-[10px] text-slate-500 py-2">
-            No workout data available for hypertrophy scoring.
-          </div>
-        ))}
+        )}
       </div>
 
       {/* Per-muscle breakdown */}
-      <div className={`px-3 pb-3 flex-1 min-h-0 ${
-        viewMode === 'hypertrophy' && hypertrophyChartMode === 'scatter' 
-          ? 'overflow-hidden flex flex-col' 
-          : 'overflow-y-auto'
-      }`}>
-        {viewMode === 'lifetime' ? (
+      <div className="px-3 pb-3 flex-1 min-h-0 overflow-y-auto">
+        {muscleData.length > 0 ? (
           <div className="space-y-2 pr-3">
             {muscleData.map((m) => {
               const isSelected = m.muscleId === selectedMuscleId;
@@ -680,86 +599,8 @@ export const LifetimeAchievementCard: React.FC<LifetimeAchievementCardProps> = (
               );
             })}
           </div>
-        ) : hypertrophyData.length > 0 ? (
-          <div className={`space-y-2 pr-3 ${hypertrophyChartMode === 'scatter' ? 'flex flex-col h-full' : ''}`}>
-            {/* Color legend — hidden in scatter mode */}
-            {hypertrophyChartMode !== 'scatter' && (
-            <div className="flex items-center gap-3 px-1">
-              {([
-                { color: FACTOR_COLORS.volumeScore, label: 'Volume', desc: 'Volume: weekly sets mapped to possible gains % using a diminishing-returns model. 50% weight — doing enough weekly sets for growth.' },
-                { color: FACTOR_COLORS.progressiveOverload, label: 'Progress', desc: 'Progress: per-exercise strength trend weighted by set distribution. 40% weight — ±10% trend maps 0–100 score (0% = maintaining, +10% = max).' },
-                { color: FACTOR_COLORS.frequency, label: 'Frequency', desc: 'Frequency: training days per week for this muscle. 10% weight — optimal at 2–3 sessions per week.' },
-              ] as const).map((item) => (
-                <div
-                  key={item.label}
-                  className="flex items-center gap-1 cursor-help"
-                  onMouseEnter={(e) => showTooltip(e, { title: item.label, body: item.desc, status: 'info' })}
-                  onMouseLeave={hideTooltip}
-                >
-                  <div className="w-2 h-2 rounded-sm flex-shrink-0" style={{ backgroundColor: item.color }} />
-                  <span className="text-[8px] text-slate-500">{item.label}</span>
-                </div>
-              ))}
-            </div>
-            )}
-            {hypertrophyChartMode === 'scatter' ? (
-              <div className="flex-1 min-h-[180px]" style={{ position: 'relative' }}>
-                <HypertrophyScatterChart data={hypertrophyData} />
-              </div>
-            ) : (
-              hypertrophyData.map((m) => {
-              const isSelected = m.muscleId === selectedMuscleId;
-              const rating = getScoreRating(m.score.totalScore);
-
-              return (
-                <div
-                  key={m.muscleId}
-                  className="flex items-center gap-2 rounded px-1 py-0.5 -mx-1 group relative cursor-pointer"
-                  onClick={() => {
-                    if (window.innerWidth >= 1024) {
-                      onMuscleClick?.(m.muscleId);
-                    }
-                  }}
-                  onMouseEnter={(e) => handleHypertrophyMouseEnter(e, m)}
-                  onMouseLeave={hideTooltip}
-                >
-                  <span
-                    className={`text-[10px] w-[15%] lg:w-[12%] truncate flex-shrink-0 ${
-                      isSelected ? 'font-semibold text-white' : 'text-slate-500'
-                    }`}
-                  >
-                    {m.muscleName}
-                  </span>
-                  <div className="w-[43%] lg:w-[55%]">
-                    <FactorProgressBar
-                      volumeScore={m.score.volumeScore}
-                      progressiveOverload={m.score.progressiveOverload}
-                      frequency={m.score.frequency}
-                    />
-                  </div>
-                  <span
-                    className={`text-[10px] font-semibold w-[10%] text-right flex-shrink-0 ${
-                      isSelected ? 'text-white' : 'text-slate-500'
-                    }`}
-                  >
-                    {m.score.totalScore}%
-                  </span>
-                  <span
-                    className="text-[9px] flex items-center gap-1 w-[20%] lg:w-[12%] flex-shrink-0"
-                    style={{ color: rating.color }}
-                  >
-                    <span className="truncate">{rating.label}</span>
-                    <TrendingUp className="w-3 h-3" />
-                  </span>
-                </div>
-              );
-            })
-          )}
-          </div>
         ) : (
-          <div className="text-[10px] text-slate-500 py-4 text-center">
-            No muscle data available.
-          </div>
+          <div className="text-[10px] text-slate-500 py-4 text-center">No muscle data available.</div>
         )}
       </div>
       {tooltip && <Tooltip data={tooltip} />}

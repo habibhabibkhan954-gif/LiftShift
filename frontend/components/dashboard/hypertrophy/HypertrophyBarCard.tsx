@@ -1,0 +1,235 @@
+import React, { useMemo } from 'react';
+import { TrendingUp, BarChart3 } from 'lucide-react';
+import { Tooltip, useTooltip } from '../../ui/Tooltip';
+import { SegmentControl } from '../../ui/SegmentControl';
+import { useIsMobile } from '../../insights/useIsMobile';
+import {
+  FACTOR_COLORS,
+  FACTOR_WEIGHTS,
+  getScoreRating,
+  type MuscleHypertrophyData,
+} from '../../../utils/muscle/hypertrophy/hypertrophyScore';
+
+const FactorProgressBar: React.FC<{
+  volumeScore: number;
+  progressiveOverload: number;
+  frequency: number;
+}> = ({ volumeScore, progressiveOverload, frequency }) => {
+  const isMobile = useIsMobile(768);
+  const TOTAL_PILLS = isMobile ? 15 : 30;
+
+  const pillData = useMemo(() =>
+    Array.from({ length: TOTAL_PILLS }).map(() => {
+      const flexGrow = Math.floor(Math.random() * 3) + 1;
+      return { flexGrow, marginLeft: flexGrow > 1 ? '1px' : '2px' };
+    }),
+    [TOTAL_PILLS]
+  );
+
+  const totalFlex = pillData.reduce((sum, p) => sum + p.flexGrow, 0);
+  const segs = [
+    { color: FACTOR_COLORS.volumeScore, filled: (volumeScore / 100) * FACTOR_WEIGHTS.volumeScore * totalFlex },
+    { color: FACTOR_COLORS.progressiveOverload, filled: (progressiveOverload / 40) * FACTOR_WEIGHTS.progressiveOverload * totalFlex },
+    { color: FACTOR_COLORS.frequency, filled: (frequency / 100) * FACTOR_WEIGHTS.frequency * totalFlex },
+  ];
+
+  let segAcc = 0;
+  const segBounds = segs
+    .filter(s => s.filled > 0)
+    .map(s => { const start = segAcc; segAcc += s.filled; return { ...s, start, end: segAcc }; });
+  const totalFilled = segAcc;
+
+  let accumulatedFlex = 0;
+  return (
+    <div className="flex items-center h-2.5">
+      {pillData.map((pill, idx) => {
+        const pillStart = accumulatedFlex;
+        const pillEnd = accumulatedFlex + pill.flexGrow;
+        accumulatedFlex += pill.flexGrow;
+        const fillStart = Math.max(pillStart, 0);
+        const fillEnd = Math.min(pillEnd, totalFilled);
+        const fillAmount = Math.max(0, fillEnd - fillStart);
+        const fillPercent = pill.flexGrow > 0 ? ((fillAmount / pill.flexGrow) * 100) : 0;
+        const seg = segBounds.find(s => pillStart < s.end);
+        return (
+          <div key={idx} className="h-full rounded-sm relative overflow-hidden"
+            style={{ flexGrow: pill.flexGrow, marginLeft: idx === 0 ? 0 : pill.marginLeft, backgroundColor: 'rgba(100, 100, 100, 0.15)' }}>
+            {fillPercent > 0 && (
+              <div className="absolute top-0 left-0 h-full rounded-sm"
+                style={{ width: `${fillPercent}%`, backgroundColor: seg?.color ?? 'rgba(100,100,100,0.3)' }} />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+interface HypertrophyBarCardProps {
+  hypertrophyData: MuscleHypertrophyData[];
+  selectedMuscleId?: string | null;
+  onMuscleClick?: (muscleId: string) => void;
+  hypertrophyPeriod: '7d' | '30d';
+  setHypertrophyPeriod: (v: '7d' | '30d') => void;
+}
+
+const HypertrophySortSelect: React.FC<{
+  value: 'total' | 'volume' | 'progress';
+  onChange: (v: 'total' | 'volume' | 'progress') => void;
+}> = ({ value, onChange }) => {
+  const options = [
+    { value: 'total', label: 'Score', title: 'Sort by total score' },
+    { value: 'volume', label: 'Volume', title: 'Sort by volume' },
+    { value: 'progress', label: 'Progress', title: 'Sort by progress' },
+  ] as const;
+  return (
+    <SegmentControl
+      options={options}
+      value={value}
+      onChange={(v) => onChange(v as typeof value)}
+    />
+  );
+};
+
+export const HypertrophyBarCard: React.FC<HypertrophyBarCardProps> = ({
+  hypertrophyData,
+  selectedMuscleId,
+  onMuscleClick,
+  hypertrophyPeriod,
+  setHypertrophyPeriod,
+}) => {
+  const { tooltip, showTooltip, hideTooltip } = useTooltip();
+
+  const stats = useMemo(() => {
+    if (hypertrophyData.length === 0) return null;
+    const avgScore = hypertrophyData.reduce((sum, m) => sum + m.score.totalScore, 0) / hypertrophyData.length;
+    return { avgScore, bestMuscle: hypertrophyData[0], count: hypertrophyData.length };
+  }, [hypertrophyData]);
+
+  const handleMouseEnter = (e: React.MouseEvent, m: MuscleHypertrophyData) => {
+    const raw = m.score.raw;
+    const volW = Math.round(m.score.volumeScore * FACTOR_WEIGHTS.volumeScore);
+    const progW = Math.round(m.score.progressiveOverload);
+    const freqW = Math.round(m.score.frequency * FACTOR_WEIGHTS.frequency);
+    const trendSign = raw.oneRMTrend > 0 ? '+' : '';
+    const trendLabel = `${trendSign}${raw.oneRMTrend.toFixed(1)}%`;
+    const volMax = Math.round(FACTOR_WEIGHTS.volumeScore * 100);
+    const progMax = Math.round(FACTOR_WEIGHTS.progressiveOverload * 100);
+    const freqMax = Math.round(FACTOR_WEIGHTS.frequency * 100);
+    showTooltip(e, {
+      title: m.muscleName,
+      body: `Volume: ${volW}/${volMax} → ${raw.weeklySets.toFixed(1)} sets/week\n` +
+        `Progress: ${progW}/${progMax} → ${trendLabel} trend\n` +
+        `Frequency: ${freqW}/${freqMax} → ${raw.daysPerWeek.toFixed(1)} days/week`,
+      status: m.score.totalScore >= 60 ? 'success' : m.score.totalScore >= 40 ? 'info' : 'warning',
+    });
+  };
+
+  return (
+    <div className="bg-black/70 rounded-xl border border-slate-700/50 overflow-hidden h-[300px] sm:h-[450px] lg:h-full flex flex-col">
+      <div className="p-3 flex-shrink-0">
+        <div className="flex items-center justify-between mb-2">
+          <div>
+            <h2 className="text-xs font-bold text-white">Hypertrophy Scores</h2>
+            <p className="text-[10px] text-slate-500 mt-0.5">Per muscle breakdown</p>
+          </div>
+          <SegmentControl
+            options={[
+              { value: '7d', label: 'lst wk', title: 'Last 7 days' },
+              { value: '30d', label: 'lst mo', title: 'Last 30 days' },
+            ]}
+            value={hypertrophyPeriod}
+            onChange={(v) => setHypertrophyPeriod(v as '7d' | '30d')}
+          />
+        </div>
+
+        {stats && (
+          <div className="flex items-start gap-3">
+            <div className="relative flex-shrink-0">
+              <svg width="56" height="56" className="transform -rotate-90">
+                <circle cx="28" cy="28" r="24" fill="none" strokeWidth="5" stroke="rgba(100, 100, 100, 0.1)" />
+                <circle cx="28" cy="28" r="24" fill="none" strokeWidth="5"
+                  stroke={getScoreRating(stats.avgScore).color} strokeLinecap="round"
+                  strokeDasharray={2 * Math.PI * 24}
+                  strokeDashoffset={2 * Math.PI * 24 * (1 - stats.avgScore / 100)}
+                  className="transition-all duration-700 ease-out" />
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-[13px] font-bold text-white">{Math.round(stats.avgScore)}%</span>
+              </div>
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-1.5 mt-0.5">
+                {(() => {
+                  const rating = getScoreRating(stats.avgScore);
+                  return (
+                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold"
+                      style={{ backgroundColor: `${rating.color}20`, color: rating.color }}>
+                      <TrendingUp className="w-3 h-3" />
+                      {rating.label}
+                    </span>
+                  );
+                })()}
+              </div>
+              <p className="text-[10px] text-slate-500 mt-1 leading-tight">{stats.count} muscles tracked</p>
+              <p className="text-[10px] text-slate-500 mt-0.5">
+                {Math.round(stats.avgScore)}% average · Best: {stats.bestMuscle?.muscleName} ({stats.bestMuscle?.score.totalScore}%)
+              </p>
+            </div>
+          </div>
+        )}
+
+        {!stats && (
+          <div className="text-[10px] text-slate-500 py-2">No workout data available for hypertrophy scoring.</div>
+        )}
+      </div>
+
+      <div className="px-3 pb-3 flex-1 min-h-0 overflow-y-auto">
+        {hypertrophyData.length > 0 ? (
+          <div className="space-y-2 pr-3">
+            <div className="flex items-center gap-3 px-1">
+              {([
+                { color: FACTOR_COLORS.volumeScore, label: 'Volume' },
+                { color: FACTOR_COLORS.progressiveOverload, label: 'Progress' },
+                { color: FACTOR_COLORS.frequency, label: 'Frequency' },
+              ] as const).map((item) => (
+                <div key={item.label} className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-sm flex-shrink-0" style={{ backgroundColor: item.color }} />
+                  <span className="text-[8px] text-slate-500">{item.label}</span>
+                </div>
+              ))}
+            </div>
+            {hypertrophyData.map((m) => {
+              const isSelected = m.muscleId === selectedMuscleId;
+              const rating = getScoreRating(m.score.totalScore);
+              return (
+                <div key={m.muscleId}
+                  className="flex items-center gap-2 rounded px-1 py-0.5 -mx-1 group relative cursor-pointer"
+                  onClick={() => { if (window.innerWidth >= 1024) onMuscleClick?.(m.muscleId); }}
+                  onMouseEnter={(e) => handleMouseEnter(e, m)}
+                  onMouseLeave={hideTooltip}>
+                  <span className={`text-[10px] w-[15%] lg:w-[12%] truncate flex-shrink-0 ${isSelected ? 'font-semibold text-white' : 'text-slate-500'}`}>
+                    {m.muscleName}
+                  </span>
+                  <div className="w-[43%] lg:w-[55%]">
+                    <FactorProgressBar volumeScore={m.score.volumeScore} progressiveOverload={m.score.progressiveOverload} frequency={m.score.frequency} />
+                  </div>
+                  <span className={`text-[10px] font-semibold w-[10%] text-right flex-shrink-0 ${isSelected ? 'text-white' : 'text-slate-500'}`}>
+                    {m.score.totalScore}%
+                  </span>
+                  <span className="text-[9px] flex items-center gap-1 w-[20%] lg:w-[12%] flex-shrink-0" style={{ color: rating.color }}>
+                    <span className="truncate">{rating.label}</span>
+                    <TrendingUp className="w-3 h-3" />
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-[10px] text-slate-500 py-4 text-center">No muscle data available.</div>
+        )}
+      </div>
+      {tooltip && <Tooltip data={tooltip} />}
+    </div>
+  );
+};

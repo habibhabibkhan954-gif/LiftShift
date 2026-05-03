@@ -148,10 +148,10 @@ export const MuscleAnalysis: React.FC<MuscleAnalysisProps> = ({
 
   // Compute hypertrophy scores for all muscles (used by card, body map tooltip, graph)
   const hypertrophyScores = useMemo(() => {
-    if (!data || !assetsMap || data.length === 0) return [];
+    if (!lifetimeData || !assetsMap || lifetimeData.length === 0) return [];
     const windowedData = windowStart
-      ? data.filter(s => s.parsedDate && s.parsedDate >= windowStart)
-      : data;
+      ? lifetimeData.filter(s => s.parsedDate && s.parsedDate >= windowStart)
+      : lifetimeData;
     if (windowedData.length === 0) return [];
 
     const refNow = effectiveNow ?? new Date();
@@ -178,7 +178,7 @@ export const MuscleAnalysis: React.FC<MuscleAnalysisProps> = ({
       scores.sort((a, b) => b.score.totalScore - a.score.totalScore);
     }
     return scores;
-  }, [data, assetsMap, effectiveNow, windowStart, headlessRatesMap, trainingLevel]);
+  }, [lifetimeData, assetsMap, effectiveNow, windowStart, headlessRatesMap, trainingLevel]);
 
   // Fast lookup map: muscleId → total hypertrophy score
   const hypertrophyScoreMap = useMemo(() => {

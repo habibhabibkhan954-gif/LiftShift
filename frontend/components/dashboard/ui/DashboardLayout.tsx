@@ -79,6 +79,9 @@ interface DashboardLayoutProps {
   exerciseStats: ExerciseStats[];
   themeMode: string;
   animationKeyframes: string;
+  hypertrophyData: any[];
+  hypertrophyPeriod: '7d' | '30d';
+  setHypertrophyPeriod: (v: '7d' | '30d') => void;
 }
 
 export const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
@@ -152,6 +155,9 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
     exerciseStats,
     themeMode,
     animationKeyframes,
+    hypertrophyData,
+    hypertrophyPeriod,
+    setHypertrophyPeriod,
   } = props;
 
   return (
@@ -225,6 +231,9 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
           exerciseStats={exerciseStats}
           effectiveNow={effectiveNow}
           themeMode={themeMode}
+          hypertrophyData={hypertrophyData}
+          hypertrophyPeriod={hypertrophyPeriod}
+          setHypertrophyPeriod={setHypertrophyPeriod}
         />
       </div>
 

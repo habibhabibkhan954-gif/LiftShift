@@ -10,6 +10,8 @@ const WeeklySetsCard = React.lazy(() => import('../weeklySets/WeeklySetsCard').t
 const MuscleTrendCard = React.lazy(() => import('../muscleTrend/MuscleTrendCard').then((m) => ({ default: m.MuscleTrendCard })));
 const PrTrendCard = React.lazy(() => import('../prTrend/PrTrendCard').then((m) => ({ default: m.PrTrendCard })));
 const IntensityEvolutionCard = React.lazy(() => import('../intensityEvolution/IntensityEvolutionCard').then((m) => ({ default: m.IntensityEvolutionCard })));
+const HypertrophyScatterCard = React.lazy(() => import('../hypertrophy/HypertrophyScatterCard').then((m) => ({ default: m.HypertrophyScatterCard })));
+const HypertrophyBarCard = React.lazy(() => import('../hypertrophy/HypertrophyBarCard').then((m) => ({ default: m.HypertrophyBarCard })));
 const VolumeDensityCard = React.lazy(() => import('../volumeDensity/VolumeDensityCard').then((m) => ({ default: m.VolumeDensityCard })));
 
 interface DashboardPrimaryChartsProps {
@@ -56,6 +58,9 @@ interface DashboardPrimaryChartsProps {
   exerciseStats: ExerciseStats[];
   effectiveNow: Date;
   themeMode: string;
+  hypertrophyData: any[];
+  hypertrophyPeriod: '7d' | '30d';
+  setHypertrophyPeriod: (v: '7d' | '30d') => void;
 }
 
 export const DashboardPrimaryCharts: React.FC<DashboardPrimaryChartsProps> = ({
@@ -101,6 +106,9 @@ export const DashboardPrimaryCharts: React.FC<DashboardPrimaryChartsProps> = ({
   dailyData,
   exerciseStats,
   themeMode,
+  hypertrophyData,
+  hypertrophyPeriod,
+  setHypertrophyPeriod,
 }) => (
   <>
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-2">
@@ -134,6 +142,30 @@ export const DashboardPrimaryCharts: React.FC<DashboardPrimaryChartsProps> = ({
           trainingLevel={trainingLevel}
         />
       </Suspense>
+</div>
+
+<div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-2">
+      <LazyRender className="min-w-0 h-[400px] sm:h-[450px] lg:h-auto" placeholder={<ChartSkeleton className="h-[350px] sm:h-[450px]" />}>
+        <Suspense fallback={<ChartSkeleton className="h-[350px] sm:h-[450px]" />}>
+          <HypertrophyScatterCard
+            hypertrophyData={hypertrophyData}
+            hypertrophyPeriod={hypertrophyPeriod}
+            setHypertrophyPeriod={setHypertrophyPeriod}
+          />
+        </Suspense>
+      </LazyRender>
+
+      <LazyRender className="min-w-0 h-[400px] sm:h-[450px] lg:h-auto" placeholder={<ChartSkeleton className="h-[350px] sm:h-[450px]" />}>
+        <Suspense fallback={<ChartSkeleton className="h-[350px] sm:h-[450px]" />}>
+          <HypertrophyBarCard
+            hypertrophyData={hypertrophyData}
+            selectedMuscleId={null}
+            onMuscleClick={(muscleId) => onMuscleClick?.(muscleId, muscleCompQuick)}
+            hypertrophyPeriod={hypertrophyPeriod}
+            setHypertrophyPeriod={setHypertrophyPeriod}
+          />
+        </Suspense>
+      </LazyRender>
     </div>
 
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-2">
