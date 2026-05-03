@@ -248,7 +248,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
             onClick={onToggleCalendarOpen}
             className={`sm:hidden w-full h-full relative flex flex-col items-center justify-center px-2 py-1.5 rounded-lg transition-all duration-200 cursor-pointer ${
               hasActiveCalendarFilter
-                ? 'bg-white/10 border border-slate-700/50 text-white shadow-sm'
+                ? 'bg-white/10 border border-yellow-500/50 text-white shadow-sm'
                 : 'bg-black/30 hover:bg-black/60 text-slate-200'
             }`}
             title="Calendar"

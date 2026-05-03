@@ -111,62 +111,17 @@ export const usePreferences = (): PreferencesActions => {
  *   if data is old (e.g., if last workout was 3 months ago, "last 7 days" is empty)
  */
 
-/**
- * Information about the data age relative to actual current date.
- * Useful for showing warnings or adjusting UI when data is stale.
- */
 export interface DataAgeInfo {
-  /** Number of days between the latest data and actual current date */
-  daysSinceLastData: number;
-  /** Whether data is considered "stale" (more than 7 days old) */
+  /** Whether data is considered "stale" (more than 14 days old) */
   isStale: boolean;
-  /** Whether data is considered "old" (more than 30 days old) */
-  isOld: boolean;
-  /** Whether data is considered "very old" (more than 90 days old) */
-  isVeryOld: boolean;
-  /** Human-readable description of data age */
-  ageDescription: string;
 }
 
-/**
- * Calculate information about how old the workout data is.
- * Useful for showing warnings when using "actual date" mode with old data.
- * 
- * @param dataBasedNow - The date of the most recent workout
- * @returns Information about the data age
- */
 export const getDataAgeInfo = (dataBasedNow: Date): DataAgeInfo => {
   const actualNow = new Date();
   const diffMs = actualNow.getTime() - dataBasedNow.getTime();
   const daysSinceLastData = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
   
-  const isStale = daysSinceLastData > 7;
-  const isOld = daysSinceLastData > 30;
-  const isVeryOld = daysSinceLastData > 90;
-  
-  let ageDescription: string;
-  if (daysSinceLastData === 0) {
-    ageDescription = 'Data is from today';
-  } else if (daysSinceLastData === 1) {
-    ageDescription = 'Data is from yesterday';
-  } else if (daysSinceLastData < 7) {
-    ageDescription = `Data is ${daysSinceLastData} days old`;
-  } else if (daysSinceLastData < 30) {
-    const weeks = Math.floor(daysSinceLastData / 7);
-    ageDescription = `Data is ${weeks} week${weeks > 1 ? 's' : ''} old`;
-  } else if (daysSinceLastData < 365) {
-    const months = Math.floor(daysSinceLastData / 30);
-    ageDescription = `Data is ${months} month${months > 1 ? 's' : ''} old`;
-  } else {
-    const years = Math.floor(daysSinceLastData / 365);
-    ageDescription = `Data is ${years} year${years > 1 ? 's' : ''} old`;
-  }
-  
   return {
-    daysSinceLastData,
-    isStale,
-    isOld,
-    isVeryOld,
-    ageDescription,
+    isStale: daysSinceLastData > 14,
   };
 };
