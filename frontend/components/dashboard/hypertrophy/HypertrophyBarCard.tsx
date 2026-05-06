@@ -3,6 +3,7 @@ import { TrendingUp, BarChart3 } from 'lucide-react';
 import { Tooltip, useTooltip } from '../../ui/Tooltip';
 import { SegmentControl } from '../../ui/SegmentControl';
 import { useIsMobile } from '../../insights/useIsMobile';
+import { ChartDescription, InsightText } from '../../dashboard/insights/ChartBits';
 import {
   FACTOR_COLORS,
   FACTOR_WEIGHTS,
@@ -117,6 +118,10 @@ export const HypertrophyBarCard: React.FC<HypertrophyBarCardProps> = ({
     return map;
   }, [hypertrophyData30d, hypertrophyPeriod]);
 
+  const volColor = (v: number) => v <= 15 ? '#ef4444' : v <= 35 ? '#f59e0b' : '#22c55e';
+  const progColor = (v: number) => v <= 11 ? '#ef4444' : v <= 22 ? '#f59e0b' : '#22c55e';
+  const freqColor = (v: number) => v <= 3 ? '#ef4444' : v <= 6 ? '#f59e0b' : '#22c55e';
+
   const handleMouseEnter = (e: React.MouseEvent, m: MuscleHypertrophyData) => {
     const raw = m.score.raw;
     const volW = Math.round(m.score.volumeScore * FACTOR_WEIGHTS.volumeScore);
@@ -127,19 +132,22 @@ export const HypertrophyBarCard: React.FC<HypertrophyBarCardProps> = ({
     const volMax = Math.round(FACTOR_WEIGHTS.volumeScore * 100);
     const progMax = Math.round(FACTOR_WEIGHTS.progressiveOverload * 100);
     const freqMax = Math.round(FACTOR_WEIGHTS.frequency * 100);
+
     showTooltip(e, {
       title: m.muscleName,
-      body: `Volume: ${volW}/${volMax} → ${raw.weeklySets.toFixed(1)} sets/week\n` +
-        `Progress: ${progW}/${progMax} → ${trendLabel} trend\n` +
-        `Frequency: ${freqW}/${freqMax} → ${raw.daysPerWeek.toFixed(1)} days/week`,
+      bodySections: [
+        { text: `Volume: ${volW}/${volMax} → ${raw.weeklySets.toFixed(1)} sets/week`, color: volColor(volW) },
+        { text: `Progress: ${progW}/${progMax} → ${trendLabel} trend`, color: progColor(progW) },
+        { text: `Frequency: ${freqW}/${freqMax} → ${raw.daysPerWeek.toFixed(1)} days/week`, color: freqColor(freqW) },
+      ],
       status: m.score.totalScore >= 60 ? 'success' : m.score.totalScore >= 40 ? 'info' : 'warning',
     });
   };
 
   return (
-    <div className="bg-black/70 rounded-xl border border-slate-700/50 overflow-hidden h-[300px] sm:h-[450px] lg:h-full flex flex-col">
-      <div className="p-3 flex-shrink-0">
-        <div className="flex items-center justify-between mb-2">
+    <div className="bg-black/70 rounded-xl border border-slate-700/50 px-2 sm:px-3 py-4 sm:py-6 min-h-[400px] sm:min-h-[520px] lg:min-h-0 lg:h-full flex flex-col">
+      <div className="flex-shrink-0">
+        <div className="flex items-center justify-between mb-3 gap-3">
           <div>
             <h2 className="text-xs font-bold text-white">Hypertrophy Scores</h2>
             <p className="text-[10px] text-slate-500 mt-0.5">Per muscle breakdown</p>
@@ -195,7 +203,7 @@ export const HypertrophyBarCard: React.FC<HypertrophyBarCardProps> = ({
         )}
       </div>
 
-      <div className="px-3 pb-3 flex-1 min-h-0 overflow-y-auto">
+      <div className="flex-1 min-h-0 overflow-y-auto pb-3">
         {hypertrophyData.length > 0 ? (
           <div className="space-y-2 pr-3">
             <div className="flex items-center gap-3 px-1">
@@ -256,6 +264,9 @@ export const HypertrophyBarCard: React.FC<HypertrophyBarCardProps> = ({
           <div className="text-[10px] text-slate-500 py-4 text-center">No muscle data available.</div>
         )}
       </div>
+      <ChartDescription>
+        <InsightText text="The hypertrophy score estimates muscle growth potential from 0 to 100 percent. It combines three factors: volume how many weekly sets, progress how much your strength is trending up, and frequency how often you train each muscle. Higher scores mean a better stimulus for growth." />
+      </ChartDescription>
       {tooltip && <Tooltip data={tooltip} />}
     </div>
   );

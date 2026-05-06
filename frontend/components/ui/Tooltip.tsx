@@ -7,7 +7,8 @@ export interface TooltipData {
   mouseX?: number;
   mouseY?: number;
   title: string;
-  body: string;
+  body?: string;
+  bodySections?: Array<{ text: string; color: string }>;
   footer?: string;
   status: AnalysisStatus | 'default';
   metrics?: Array<{ label: string; value: string }>;
@@ -18,7 +19,7 @@ interface TooltipProps {
 }
 
 export const Tooltip: React.FC<TooltipProps> = ({ data }) => {
-  const { rect, mouseX, mouseY, title, body, footer, status, metrics } = data;
+  const { rect, mouseX, mouseY, title, body, bodySections, footer, status, metrics } = data;
   const theme = TOOLTIP_THEMES[status];
   
   let positionStyle;
@@ -42,7 +43,15 @@ export const Tooltip: React.FC<TooltipProps> = ({ data }) => {
         <div className="flex items-center gap-2 mb-1 pb-1 border-b border-white/10">
           <span className="font-bold uppercase text-[10px] tracking-wider">{title}</span>
         </div>
-        <div className="text-xs leading-relaxed opacity-90 whitespace-pre-line break-words">{body}</div>
+        {bodySections ? (
+          <div className="text-xs leading-relaxed whitespace-pre-line break-words">
+            {bodySections.map((s, i) => (
+              <div key={i} style={{ color: s.color }}>{s.text}</div>
+            ))}
+          </div>
+        ) : body ? (
+          <div className="text-xs leading-relaxed opacity-90 whitespace-pre-line break-words">{body}</div>
+        ) : null}
         {metrics && metrics.length > 0 && (
           <div className="mt-3 pt-2 border-t border-white/10 flex gap-4 text-xs font-mono opacity-80">
             {metrics.map((m, i) => (

@@ -242,6 +242,9 @@ const FactorProgressBar: React.FC<{
 
 const SCATTER_DOT_COLORS = ['#22c55e', '#84cc16', '#f59e0b', '#f97316', '#ef4444'];
 
+const volColor = (v: number) => v <= 15 ? '#ef4444' : v <= 35 ? '#f59e0b' : '#22c55e';
+const progColor = (v: number) => v <= 11 ? '#ef4444' : v <= 22 ? '#f59e0b' : '#22c55e';
+
 const HypertrophyScatterChart: React.FC<{ data: MuscleHypertrophyData[] }> = ({ data }) => {
   const chartData = useMemo(() =>
     data.map(m => ({
@@ -295,8 +298,8 @@ const HypertrophyScatterChart: React.FC<{ data: MuscleHypertrophyData[] }> = ({ 
         }}>
         <p className="font-semibold mb-1.5">{d?.name} <span className="opacity-60 font-normal">({d?.total}/100)</span></p>
         <div className="flex items-center gap-3">
-          <span style={{ color: '#3b82f6' }}>Progress <b>{d?.progress}/40</b></span>
-          <span style={{ color: '#22c55e' }}>Volume <b>{d?.volume}/50</b></span>
+          <span>Progress <b style={{ color: progColor(d?.progress) }}>{d?.progress}/40</b></span>
+          <span>Volume <b style={{ color: volColor(d?.volume) }}>{d?.volume}/50</b></span>
         </div>
       </div>
     );

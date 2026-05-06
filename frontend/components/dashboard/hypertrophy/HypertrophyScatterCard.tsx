@@ -18,12 +18,16 @@ import {
 const PROGRESS_MID = 25;
 const VOLUME_MID = 25;
 
-const QUADRANT_COLORS: Record<string, string> = {
-  'Volume Focus': '#ef4444',
-  'Optimal Growth': '#22c55e',
-  'Undertrained': '#f59e0b',
-  'Strength Focus': '#3b82f6',
+const SCORE_COLORS = ['#ef4444', '#f59e0b', '#22c55e'] as const;
+
+const getDotColor = (total: number) => {
+  if (total <= 30) return SCORE_COLORS[0];
+  if (total <= 60) return SCORE_COLORS[1];
+  return SCORE_COLORS[2];
 };
+
+const volColor = (v: number) => v <= 15 ? '#ef4444' : v <= 35 ? '#f59e0b' : '#22c55e';
+const progColor = (v: number) => v <= 11 ? '#ef4444' : v <= 22 ? '#f59e0b' : '#22c55e';
 
 interface ChartPoint {
   name: string;
@@ -100,24 +104,26 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
     const d: ChartPoint | undefined = payload[0]?.payload;
     if (!d) return null;
 
-    const quadrantDesc: Record<string, string> = {
-      'Volume Focus': 'High volume but lagging strength progress, add progressive overload',
-      'Optimal Growth': 'High volume + strong progress, ideal for hypertrophy',
-      'Undertrained': 'Low volume + low progress, increase training frequency',
-      'Strength Focus': 'Strong progress despite low volume, great strength adaptation',
+    const quadrantDesc: Record<string, { desc: string; advice: string }> = {
+      'Volume Focus': { desc: 'High volume but lagging strength progress', advice: 'Focus on progressive overload, add weight or reps slowly' },
+      'Optimal Growth': { desc: 'High volume + strong progress, ideal for hypertrophy', advice: 'Keep it up! Maintain this balance for gains' },
+      'Undertrained': { desc: 'Low volume + low progress', advice: 'If prioritizing this muscle, add sets and train 2-3x/week' },
+      'Strength Focus': { desc: 'Strong progress despite low volume', advice: 'Consider increasing volume for more size gains' },
     };
 
+    const q = quadrantDesc[d.quadrant];
     return (
       <div className="rounded-lg px-3 py-2 shadow-2xl border text-xs"
         style={{ backgroundColor: 'rgb(var(--panel-rgb) / 0.95)', borderColor: 'rgb(var(--border-rgb) / 0.5)', color: 'var(--text-primary)' }}>
         <p className="font-semibold mb-1.5">{d.name} <span className="opacity-60 font-normal">({d.total}/100)</span></p>
         <div className="flex items-center gap-3 mb-1.5">
-          <span style={{ color: '#3b82f6' }}>Progress <b>{d.progress}/40</b></span>
-          <span style={{ color: '#22c55e' }}>Volume <b>{d.volume}/50</b></span>
+          <span>Progress <b style={{ color: progColor(d.progress) }}>{d.progress}/40</b></span>
+          <span>Volume <b style={{ color: volColor(d.volume) }}>{d.volume}/50</b></span>
         </div>
-        <div className="border-t pt-1.5" style={{ borderColor: 'rgb(var(--border-rgb) / 0.3)' }}>
-          <p className="font-semibold text-[10px]" style={{ color: QUADRANT_COLORS[d.quadrant] }}>{d.quadrant}</p>
-          <p className="text-[9px] opacity-70 leading-tight mt-0.5">{quadrantDesc[d.quadrant]}</p>
+        <div className="border-t pt-1.5 text-slate-400" style={{ borderColor: 'rgb(var(--border-rgb) / 0.3)' }}>
+          <p className="font-semibold text-[10px]">{d.quadrant}</p>
+          <p className="text-[9px] leading-tight mt-0.5">{q.desc}</p>
+          <p className="text-[8px] mt-1">{q.advice}</p>
         </div>
       </div>
     );
@@ -142,7 +148,7 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
         </div>
       </div>
 
-      <div className="flex-1 px-3 pb-3 relative" style={{ minHeight: 350 }}>
+      <div className="flex-1 w-full relative" style={{ minHeight: 300 }}>
         {hypertrophyData.length > 0 ? (
           <>
             <ResponsiveContainer width="100%" height="100%">
@@ -160,16 +166,19 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
                 <RechartsTooltip content={<CustomScatterTooltip />} />
 
                 <Scatter data={chartData} shape="circle" isAnimationActive={false}>
-                  {chartData.map((entry) => (
-                    <Cell
-                      key={entry.muscleId}
-                      fill={QUADRANT_COLORS[entry.quadrant]}
-                      fillOpacity={0.85}
-                      stroke={QUADRANT_COLORS[entry.quadrant]}
-                      strokeWidth={0.5}
-                      style={{ cursor: 'pointer' }}
-                    />
-                  ))}
+                  {chartData.map((entry) => {
+                    const c = getDotColor(entry.total);
+                    return (
+                      <Cell
+                        key={entry.muscleId}
+                        fill={c}
+                        fillOpacity={0.85}
+                        stroke={c}
+                        strokeWidth={0.5}
+                        style={{ cursor: 'pointer' }}
+                      />
+                    );
+                  })}
                 </Scatter>
 
                 <Scatter data={chartData.filter(d => labeledIds.includes(d.muscleId))} shape="circle" isAnimationActive={false} legendType="none"
@@ -187,6 +196,7 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
           <div className="text-[10px] text-slate-500 py-4 text-center">No muscle data available.</div>
         )}
       </div>
+   
     </div>
   );
 };
