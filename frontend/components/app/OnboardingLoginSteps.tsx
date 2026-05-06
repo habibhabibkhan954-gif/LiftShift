@@ -14,6 +14,7 @@ interface HevyLoginStepProps {
   onHevyApiKeyLogin: (apiKey: string) => void;
   onHevySyncSaved: () => void;
   onClearCacheAndRestart: () => void;
+  onForceRefreshAndRelogin?: () => void;
   onSetOnboarding: (next: OnboardingFlow | null) => void;
   onOpenAddSourcePicker?: () => void;
   backToCombinePicker?: boolean;
@@ -27,6 +28,7 @@ export const HevyLoginStep: React.FC<HevyLoginStepProps> = ({
   onHevyApiKeyLogin,
   onHevySyncSaved,
   onClearCacheAndRestart,
+  onForceRefreshAndRelogin,
   onSetOnboarding,
   onOpenAddSourcePicker,
   backToCombinePicker = false,
@@ -43,6 +45,7 @@ export const HevyLoginStep: React.FC<HevyLoginStepProps> = ({
     hasSavedSession={Boolean(getHevyAuthToken() || getHevyProApiKey()) && getPreferencesConfirmed()}
     onSyncSaved={onHevySyncSaved}
     onClearCache={onClearCacheAndRestart}
+    onForceRefresh={onForceRefreshAndRelogin}
     onImportCsv={() => onSetOnboarding({ intent, step: 'hevy_csv', platform: 'hevy', backStep: 'hevy_login' })}
     onAddDataSource={onOpenAddSourcePicker}
     onBack={
@@ -61,6 +64,7 @@ interface LyftaLoginStepProps {
   onLyfatLogin: (apiKey: string) => void;
   onLyfatSyncSaved: () => void;
   onClearCacheAndRestart: () => void;
+  onForceRefreshAndRelogin?: () => void;
   onSetOnboarding: (next: OnboardingFlow | null) => void;
   onOpenAddSourcePicker?: () => void;
   backToCombinePicker?: boolean;
@@ -73,6 +77,7 @@ export const LyftaLoginStep: React.FC<LyftaLoginStepProps> = ({
   onLyfatLogin,
   onLyfatSyncSaved,
   onClearCacheAndRestart,
+  onForceRefreshAndRelogin,
   onSetOnboarding,
   onOpenAddSourcePicker,
   backToCombinePicker = false,
@@ -86,6 +91,7 @@ export const LyftaLoginStep: React.FC<LyftaLoginStepProps> = ({
     hasSavedSession={Boolean(getLyftaApiKey()) && getPreferencesConfirmed()}
     onSyncSaved={onLyfatSyncSaved}
     onClearCache={onClearCacheAndRestart}
+    onForceRefresh={onForceRefreshAndRelogin}
     onImportCsv={() => onSetOnboarding({ intent, step: 'lyfta_csv', platform: 'lyfta', backStep: 'lyfta_login' })}
     onAddDataSource={onOpenAddSourcePicker}
     onBack={

@@ -45,7 +45,7 @@ export const CSVImportFooter: React.FC<CSVImportFooterProps> = ({
             className={`${UNIFORM_HEADER_BUTTON_CLASS} h-10 text-sm font-semibold disabled:opacity-60 gap-2`}
           >
             <Trash2 className="w-4 h-4" />
-            <span>Clear cache</span>
+            <span>Clear Data</span>
           </button>
         ) : null}
 
@@ -74,7 +74,7 @@ export const CSVImportFooter: React.FC<CSVImportFooterProps> = ({
         className={`${UNIFORM_HEADER_BUTTON_CLASS} h-10 text-sm font-semibold disabled:opacity-60 gap-2`}
       >
         <Trash2 className="w-4 h-4" />
-        <span>Clear cache</span>
+        <span>Clear Data</span>
       </button>
       {onAddDataSource ? (
         <button

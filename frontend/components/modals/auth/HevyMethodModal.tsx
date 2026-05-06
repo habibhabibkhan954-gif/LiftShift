@@ -76,8 +76,8 @@ export const HevyMethodModal: React.FC<HevyMethodModalProps> = ({
                 onClick={onClearCache}
                 className="group rounded-xl border border-slate-700/60 bg-white/5 hover:bg-white/10 px-4 py-4 text-left transition-colors"
               >
-                <div className="text-white font-semibold text-lg">Clear cache</div>
-                <div className="mt-1 text-xs text-slate-200/90">Reset tokens + preferences and restart setup.</div>
+                <div className="text-white font-semibold text-lg">Unload Data</div>
+                <div className="mt-1 text-xs text-slate-200/90">Re-download workout data and restart setup.</div>
               </button>
             ) : null}
           </div>
@@ -88,8 +88,8 @@ export const HevyMethodModal: React.FC<HevyMethodModalProps> = ({
               onClick={onClearCache}
               className="w-full rounded-xl border border-slate-700/60 bg-white/5 hover:bg-white/10 px-4 py-3 text-left transition-colors"
             >
-              <div className="text-white font-semibold">Clear cache</div>
-              <div className="mt-1 text-xs text-slate-200/90">Reset tokens + preferences and restart setup.</div>
+              <div className="text-white font-semibold">Unload Data</div>
+              <div className="mt-1 text-xs text-slate-200/90">Re-download workout data and restart setup.</div>
             </button>
           </div>
         ) : null}

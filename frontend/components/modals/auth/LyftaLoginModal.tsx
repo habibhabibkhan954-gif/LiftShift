@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowLeft, ArrowRight, HelpCircle, Key, RefreshCw, Trash2, Upload } from 'lucide-react';
+import { ArrowLeft, ArrowRight, HelpCircle, Key, MinusCircle, RefreshCw, Upload } from 'lucide-react';
 import { UNIFORM_HEADER_BUTTON_CLASS, UNIFORM_HEADER_ICON_BUTTON_CLASS } from '../../../utils/ui/uiConstants';
 import { OnboardingModalShell } from '../ui/OnboardingModalShell';
 import { getLyftaApiKey } from '../../../utils/storage/hevyCredentialsStorage';
@@ -16,6 +16,7 @@ interface LyftaLoginModalProps {
   hasSavedSession?: boolean;
   onSyncSaved?: () => void;
   onClearCache?: () => void;
+  onForceRefresh?: () => void;
   onImportCsv?: () => void;
   onAddDataSource?: () => void;
   onBack?: () => void;
@@ -31,6 +32,7 @@ export const LyftaLoginModal: React.FC<LyftaLoginModalProps> = ({
   hasSavedSession = false,
   onSyncSaved,
   onClearCache,
+  onForceRefresh,
   onImportCsv,
   onAddDataSource,
   onBack,
@@ -85,15 +87,15 @@ export const LyftaLoginModal: React.FC<LyftaLoginModalProps> = ({
           onLogin(trimmedKey);
         }}
       >
-        {hasSavedSession && onSyncSaved ? (
+        {hasSavedSession && onClearCache ? (
           <button
             type="button"
-            onClick={onSyncSaved}
+            onClick={onClearCache}
             disabled={isLoading}
             className={`${UNIFORM_HEADER_BUTTON_CLASS} w-full h-10 text-sm font-semibold disabled:opacity-60 gap-2`}
           >
-            <RefreshCw className="w-4 h-4" />
-            <span>{isLoading ? 'Syncing…' : 'Sync your data'}</span>
+            <MinusCircle className="w-4 h-4" />
+            <span>Unload Data</span>
           </button>
         ) : null}
 
@@ -127,24 +129,6 @@ export const LyftaLoginModal: React.FC<LyftaLoginModalProps> = ({
 
         <div className="pt-2">
           <div className="grid grid-cols-3 gap-2 items-center">
-            <div className="flex">
-              {onClearCache ? (
-                <button
-                  type="button"
-                  onClick={onClearCache}
-                  disabled={isLoading}
-                  className={`${UNIFORM_HEADER_BUTTON_CLASS} h-10 px-2.5 w-full text-[12px] font-semibold disabled:opacity-60 gap-2 justify-center`}
-                  title="Clear cache"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  <span className="hidden sm:inline">Clear cache</span>
-                  <span className="sm:hidden">Clear</span>
-                </button>
-              ) : (
-                <div />
-              )}
-            </div>
-
             <button
               type="button"
               onClick={() => setShowLoginHelp((v) => !v)}
@@ -153,6 +137,20 @@ export const LyftaLoginModal: React.FC<LyftaLoginModalProps> = ({
               <HelpCircle className="w-4 h-4" />
               <span className="whitespace-nowrap">How to get key</span>
             </button>
+
+            {onAddDataSource ? (
+              <button
+                type="button"
+                onClick={onAddDataSource}
+                disabled={isLoading}
+                className={`${UNIFORM_HEADER_BUTTON_CLASS} h-10 px-2.5 w-full text-[12px] font-semibold disabled:opacity-60 gap-2 justify-center`}
+                title="Combine data"
+              >
+                <span>Combine data</span>
+              </button>
+            ) : (
+              <div />
+            )}
 
             {onImportCsv ? (
               <button
@@ -172,17 +170,6 @@ export const LyftaLoginModal: React.FC<LyftaLoginModalProps> = ({
               <div />
             )}
           </div>
-          {onAddDataSource ? (
-            <button
-              type="button"
-              onClick={onAddDataSource}
-              disabled={isLoading}
-              className={`${UNIFORM_HEADER_BUTTON_CLASS} mt-2 h-10 w-full text-[12px] font-semibold disabled:opacity-60 gap-2 justify-center`}
-              title="Combine data"
-            >
-              <span>Combine data</span>
-            </button>
-          ) : null}
         </div>
       </form>
 

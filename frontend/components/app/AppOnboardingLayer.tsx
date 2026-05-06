@@ -20,6 +20,7 @@ interface AppOnboardingLayerProps {
   onSetHevyLoginError: (msg: string | null) => void;
   onSetLyfatLoginError: (msg: string | null) => void;
   onClearCacheAndRestart: () => void;
+  onForceRefreshAndRelogin?: () => void;
   onProcessFile: (file: File, platform: 'strong' | 'hevy' | 'lyfta' | 'other', unitOverride?: WeightUnit) => void;
   onHevyLogin: (emailOrUsername: string, password: string) => void;
   onHevyApiKeyLogin: (apiKey: string) => void;
@@ -44,6 +45,7 @@ export const AppOnboardingLayer: React.FC<AppOnboardingLayerProps> = ({
   onSetHevyLoginError,
   onSetLyfatLoginError,
   onClearCacheAndRestart,
+  onForceRefreshAndRelogin,
   onProcessFile,
   onHevyLogin,
   onHevyApiKeyLogin,
@@ -70,6 +72,7 @@ export const AppOnboardingLayer: React.FC<AppOnboardingLayerProps> = ({
       onSetHevyLoginError={onSetHevyLoginError}
       onSetLyfatLoginError={onSetLyfatLoginError}
       onClearCacheAndRestart={onClearCacheAndRestart}
+      onForceRefreshAndRelogin={onForceRefreshAndRelogin}
       onProcessFile={onProcessFile}
       onHevyLogin={onHevyLogin}
       onHevyApiKeyLogin={onHevyApiKeyLogin}

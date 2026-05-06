@@ -8,7 +8,7 @@ import { UserPreferencesModal } from './components/modals/userPreferences/UserPr
 import type { OnboardingFlow } from './app/onboarding/types';
 import { getEffectiveNowFromWorkoutData } from './utils/date/dateUtils';
 import { getDataSourceChoice, getSetupComplete } from './utils/storage/dataSourceStorage';
-import { clearCacheAndRestart as clearCacheAndRestartNow } from './app/state';
+import { clearCacheAndRestart as clearCacheAndRestartNow, forceRefreshAndRelogin as forceRefreshNow } from './app/state';
 import { usePrefetchHeavyViews } from './app/navigation';
 import { useStartupAutoLoad } from './app/startup';
 import { usePlatformDeepLink } from './app/navigation';
@@ -415,6 +415,10 @@ const App: React.FC = () => {
     clearCacheAndRestartNow();
   }, []);
 
+  const forceRefreshAndRelogin = useCallback(() => {
+    forceRefreshNow();
+  }, []);
+
   const handleHistoryDayTitleClick = useCallback(
     (date: Date) => {
       setSelectedDay(date);
@@ -531,6 +535,7 @@ const App: React.FC = () => {
         onSetHevyLoginError={clearHevyLoginError}
         onSetLyfatLoginError={clearLyfatLoginError}
         onClearCacheAndRestart={clearCacheAndRestart}
+        onForceRefreshAndRelogin={forceRefreshAndRelogin}
         onProcessFile={processFile}
         onHevyLogin={handleHevyLogin}
         onHevyApiKeyLogin={handleHevyApiKeyLogin}

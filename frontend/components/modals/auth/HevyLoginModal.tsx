@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, Eye, EyeOff, HelpCircle, Key, LogIn, RefreshCw, Trash2, Upload } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Eye, EyeOff, HelpCircle, Key, LogIn, MinusCircle, RefreshCw, Upload } from 'lucide-react';
 import { UNIFORM_HEADER_BUTTON_CLASS, UNIFORM_HEADER_ICON_BUTTON_CLASS } from '../../../utils/ui/uiConstants';
 import { OnboardingModalShell } from '../ui/OnboardingModalShell';
 import { HevyLoginHelp } from './HevyLoginHelp';
@@ -26,6 +26,7 @@ interface HevyLoginModalProps {
   hasSavedSession?: boolean;
   onSyncSaved?: () => void;
   onClearCache?: () => void;
+  onForceRefresh?: () => void;
   onImportCsv?: () => void;
   onAddDataSource?: () => void;
   onBack?: () => void;
@@ -44,6 +45,7 @@ export const HevyLoginModal: React.FC<HevyLoginModalProps> = ({
   hasSavedSession = false,
   onSyncSaved,
   onClearCache,
+  onForceRefresh,
   onImportCsv,
   onAddDataSource,
   onBack,
@@ -222,15 +224,15 @@ export const HevyLoginModal: React.FC<HevyLoginModalProps> = ({
           onLogin(trimmed, password);
         }}
       >
-              {hasSavedSession && onSyncSaved && loginMode === 'credentials' ? (
+              {hasSavedSession && onClearCache ? (
                 <button
                   type="button"
-                  onClick={onSyncSaved}
+                  onClick={onClearCache}
                   disabled={isLoading}
                   className={`${UNIFORM_HEADER_BUTTON_CLASS} w-full h-10 text-sm font-semibold disabled:opacity-60 gap-2`}
                 >
-                  <RefreshCw className="w-4 h-4" />
-                  <span>{isLoading ? 'Syncing…' : 'Sync your data'}</span>
+                  <MinusCircle className="w-4 h-4" />
+                  <span>Unload Data</span>
                 </button>
               ) : null}
 
@@ -318,46 +320,29 @@ export const HevyLoginModal: React.FC<HevyLoginModalProps> = ({
               </button>
 
               <div className="pt-2">
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 items-center">
-                  <div className="flex">
-                    {onClearCache ? (
-                      <button
-                        type="button"
-                        onClick={onClearCache}
-                        disabled={isLoading}
-                        className={`${UNIFORM_HEADER_BUTTON_CLASS} h-10 px-2.5 w-full text-[12px] font-semibold disabled:opacity-60 gap-2 justify-center`}
-                        title="Clear cache"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        <span className="hidden sm:inline">Clear cache</span>
-                        <span className="sm:hidden">Clear</span>
-                      </button>
-                    ) : (
-                      <div />
-                    )}
-                  </div>
-
+                <div className="grid grid-cols-3 gap-2 items-center">
                   <button
                     type="button"
                     onClick={() => setShowLoginHelp((v) => !v)}
                     className={`${UNIFORM_HEADER_BUTTON_CLASS} h-10 px-2 w-full text-[11px] font-semibold gap-1.5 justify-center`}
                   >
                     <HelpCircle className="w-4 h-4" />
-                    <span className="whitespace-nowrap">How to login</span>
+                    <span className="whitespace-nowrap">How to get key</span>
                   </button>
 
-                  <button
-                    type="button"
-                    onClick={() => setLoginMode((m) => (m === 'apiKey' ? 'credentials' : 'apiKey'))}
-                    disabled={isLoading}
-                    className={`${UNIFORM_HEADER_BUTTON_CLASS} h-10 px-2.5 w-full text-[12px] font-semibold disabled:opacity-60 gap-2 justify-center ${
-                      loginMode === 'apiKey' ? 'border-emerald-500/60' : ''
-                    }`}
-                    title={loginMode === 'apiKey' ? 'Use email + password instead' : 'Use API key instead'}
-                  >
-                    {loginMode === 'apiKey' ? <LogIn className="w-4 h-4" /> : <Key className="w-4 h-4" />}
-                    <span className="whitespace-nowrap">{loginMode === 'apiKey' ? 'Login' : 'API key'}</span>
-                  </button>
+                  {onAddDataSource ? (
+                    <button
+                      type="button"
+                      onClick={onAddDataSource}
+                      disabled={isLoading}
+                      className={`${UNIFORM_HEADER_BUTTON_CLASS} h-10 px-2.5 w-full text-[12px] font-semibold disabled:opacity-60 gap-2 justify-center`}
+                      title="Combine data"
+                    >
+                      <span>Combine data</span>
+                    </button>
+                  ) : (
+                    <div />
+                  )}
 
                   {onImportCsv ? (
                     <button
@@ -377,17 +362,6 @@ export const HevyLoginModal: React.FC<HevyLoginModalProps> = ({
                     <div />
                   )}
                 </div>
-                {onAddDataSource ? (
-                  <button
-                    type="button"
-                    onClick={onAddDataSource}
-                    disabled={isLoading}
-                    className={`${UNIFORM_HEADER_BUTTON_CLASS} mt-2 h-10 w-full text-[12px] font-semibold disabled:opacity-60 gap-2 justify-center`}
-                    title="Combine data"
-                  >
-                    <span>Combine data</span>
-                  </button>
-                ) : null}
               </div>
             </form>
 

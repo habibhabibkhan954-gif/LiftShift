@@ -32,7 +32,7 @@ export const AI_PRIVACY_SECTIONS: HowItWorksSection[] = [
         type: 'ul',
         items: [
           'Workout data is stored locally (compressed) so reloads are instant.',
-          'You can clear cache from the import flow if you want to reset everything.',
+          'You can unload data from the import flow to re-download all workout data.',
           '“Update data” lets you re-sync and refresh your charts when you’ve logged new workouts.',
         ],
       },

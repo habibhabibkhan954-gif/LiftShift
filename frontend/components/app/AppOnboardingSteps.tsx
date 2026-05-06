@@ -63,6 +63,7 @@ interface AppOnboardingStepsProps {
   onSetHevyLoginError: (msg: string | null) => void;
   onSetLyfatLoginError: (msg: string | null) => void;
   onClearCacheAndRestart: () => void;
+  onForceRefreshAndRelogin?: () => void;
   onProcessFile: (file: File, platform: 'strong' | 'hevy' | 'lyfta' | 'other', unitOverride?: WeightUnit) => void;
   onHevyLogin: (emailOrUsername: string, password: string) => void;
   onHevyApiKeyLogin: (apiKey: string) => void;
@@ -86,6 +87,7 @@ export const AppOnboardingSteps: React.FC<AppOnboardingStepsProps> = ({
   onSetHevyLoginError,
   onSetLyfatLoginError,
   onClearCacheAndRestart,
+  onForceRefreshAndRelogin,
   onProcessFile,
   onHevyLogin,
   onHevyApiKeyLogin,
@@ -227,6 +229,7 @@ export const AppOnboardingSteps: React.FC<AppOnboardingStepsProps> = ({
         onHevyApiKeyLogin={onHevyApiKeyLogin}
         onHevySyncSaved={onHevySyncSaved}
         onClearCacheAndRestart={onClearCacheAndRestart}
+        onForceRefreshAndRelogin={onForceRefreshAndRelogin}
         onSetOnboarding={onSetOnboarding}
         backToCombinePicker={onboarding.backStep === 'add_source_platform'}
         onOpenAddSourcePicker={onboarding.backStep === 'add_source_platform' ? undefined : () => onSetOnboarding({ intent: 'update', step: 'add_source_platform' })}
@@ -243,6 +246,7 @@ export const AppOnboardingSteps: React.FC<AppOnboardingStepsProps> = ({
         onLyfatLogin={onLyfatLogin}
         onLyfatSyncSaved={onLyfatSyncSaved}
         onClearCacheAndRestart={onClearCacheAndRestart}
+        onForceRefreshAndRelogin={onForceRefreshAndRelogin}
         onSetOnboarding={onSetOnboarding}
         backToCombinePicker={onboarding.backStep === 'add_source_platform'}
         onOpenAddSourcePicker={onboarding.backStep === 'add_source_platform' ? undefined : () => onSetOnboarding({ intent: 'update', step: 'add_source_platform' })}

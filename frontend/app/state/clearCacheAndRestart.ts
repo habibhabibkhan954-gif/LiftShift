@@ -1,14 +1,7 @@
 import { trackEvent, resetUser } from '../../utils/integrations/analytics';
 import { computationCache } from '../../utils/storage/computationCache';
 import { browserCache } from '../../utils/storage/browserCache';
-import {
-  clearBodyMapGender,
-  clearCSVData,
-  clearDateMode,
-  clearPreferencesConfirmed,
-  clearThemeMode,
-  clearWeightUnit,
-} from '../../utils/storage/localStorage';
+import { clearCSVData } from '../../utils/storage/localStorage';
 import {
   clearDataSourceChoice,
   clearHevyAuthToken,
@@ -23,7 +16,22 @@ import {
 } from '../../utils/storage/hevyCredentialsStorage';
 
 export const clearCacheAndRestart = (): void => {
-  trackEvent('cache_clear', {});
+  trackEvent('unload_data', {});
+  resetUser();
+  clearCSVData();
+  clearHevyAuthToken();
+  clearDataSourceChoice();
+  clearLastCsvPlatform();
+  clearLastLoginMethod();
+  clearCombinedDataSources();
+  clearSetupComplete();
+  computationCache.clear();
+  browserCache.clearAllCache();
+  window.location.reload();
+};
+
+export const forceRefreshAndRelogin = (): void => {
+  trackEvent('force_refresh', {});
   resetUser();
   clearCSVData();
   clearHevyAuthToken();
@@ -34,11 +42,6 @@ export const clearCacheAndRestart = (): void => {
   clearLastLoginMethod();
   clearCombinedDataSources();
   clearSetupComplete();
-  clearWeightUnit();
-  clearBodyMapGender();
-  clearPreferencesConfirmed();
-  clearThemeMode();
-  clearDateMode();
   computationCache.clear();
   browserCache.clearAllCache();
   window.location.reload();
