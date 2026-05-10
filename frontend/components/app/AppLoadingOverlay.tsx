@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CheckCircle2, Loader2 } from 'lucide-react';
+import { SEMI_FANCY_FONT } from '../../utils/ui/uiConstants';
 import { CsvLoadingAnimation, PuzzleLoadingAnimation } from '../modals/csvImport';
 
 interface AppLoadingOverlayProps {
@@ -121,7 +122,7 @@ export const AppLoadingOverlay: React.FC<AppLoadingOverlayProps> = ({
     <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-sm flex flex-col items-center justify-center animate-fade-in px-4 sm:px-6">
       <div className="w-full max-w-md p-8 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl flex flex-col items-center">
         <CsvLoadingAnimation className="mb-6" size={160} />
-        <h2 className="text-2xl font-bold text-white mb-2">Crunching your numbers</h2>
+        <h2 className="text-2xl font-bold text-white mb-2" style={SEMI_FANCY_FONT}>Crunching your numbers</h2>
         <p className="text-slate-400 mb-6 text-center">
           Syncing your workouts and preparing your dashboard.
         </p>

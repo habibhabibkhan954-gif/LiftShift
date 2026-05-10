@@ -7,6 +7,7 @@ import { CHART_TOOLTIP_STYLE } from '../../../utils/ui/uiConstants';
 import { formatNumber } from '../../../utils/format/formatters';
 import { getRechartsXAxisInterval, RECHARTS_XAXIS_PADDING } from '../../../utils/chart/chartEnhancements';
 import { HEADLESS_MUSCLE_NAMES } from '../../../utils/muscle/mapping';
+import { SEMI_FANCY_FONT } from '../../../utils/ui/uiConstants';
 import { SVG_MUSCLE_NAMES } from '../../../utils/muscle/mapping';
 import type { WeeklySetsWindow } from '../../../utils/muscle/analytics';
 import type { ExerciseAsset } from '../../../utils/data/exerciseAssets';
@@ -67,7 +68,7 @@ export const MuscleAnalysisDetailPanel: React.FC<MuscleAnalysisDetailPanelProps>
     <div data-muscle-detail-panel className="bg-black/70 rounded-xl border border-slate-700/50 overflow-hidden flex flex-col">
       <div className="bg-black/70  p-3 flex items-center justify-between">
         <div className="flex items-center gap-2 min-w-0 flex-wrap">
-          <h2 className="text-lg font-bold text-white truncate">{title}</h2>
+          <h2 className="text-lg font-bold text-white truncate" style={SEMI_FANCY_FONT}>{title}</h2>
           <span
             className="text-red-400 text-sm font-semibold whitespace-nowrap"
             title={selectedMuscle ? 'sets in current filter' : ''}

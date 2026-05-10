@@ -10,6 +10,7 @@ import {
   Tooltip,
 } from 'recharts';
 import { FlexCard, type CardTheme, FlexCardFooter } from './FlexCard';
+import { SEMI_FANCY_FONT } from '../../../utils/ui/uiConstants';
 import { FANCY_FONT, RADAR_TICK_FILL } from '../../../utils/ui/uiConstants';
 import { type NormalizedMuscleGroup } from '../../../utils/muscle/analytics';
 import { BodyMap, type BodyMapGender } from '../../bodyMap/BodyMap';
@@ -146,7 +147,7 @@ export const MuscleFocusCard: React.FC<{
           </div>
         )}
 
-        <div className={`text-2xl sm:text-3xl font-bold ${isDark ? 'text-cyan-400' : 'text-cyan-600'}`} style={FANCY_FONT}>
+        <div className={`text-2xl sm:text-3xl font-bold ${isDark ? 'text-cyan-400' : 'text-cyan-600'}`} style={SEMI_FANCY_FONT}>
           {topMuscles.length > 0 ? topMuscles.join(', ') : 'All muscles'}
         </div>
       </div>

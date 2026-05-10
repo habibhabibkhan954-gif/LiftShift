@@ -4,6 +4,7 @@ import type { ExerciseAsset } from '../../../utils/data/exerciseAssets';
 import type { ExerciseMuscleData } from '../../../utils/muscle/mapping';
 import type { MuscleVolumeThresholds } from '../../../utils/muscle/hypertrophy/muscleParams';
 import type { BodyMapGender } from '../../bodyMap/BodyMap';
+import { SEMI_FANCY_FONT } from '../../../utils/ui/uiConstants';
 
 interface MuscleAnalysisExerciseListPanelProps {
   contributingExercises: Array<{ name: string; sets: number; primarySets: number; secondarySets: number; strengthTrend: number | null; strengthLabel: string | null }>;
@@ -34,7 +35,7 @@ export const MuscleAnalysisExerciseListPanel: React.FC<MuscleAnalysisExerciseLis
     <div className="bg-black/70 rounded-xl border border-slate-700/50 overflow-hidden flex flex-col h-[300px] md:h-auto lg:h-full min-h-0">
       <div className="bg-black/70  p-2 flex-shrink-0">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-bold text-white">{displayTitle}</span>
+          <span className="text-sm font-bold text-white" style={SEMI_FANCY_FONT}>{displayTitle}</span>
           <span className="text-xs text-slate-500">
             {contributingExercises.length} total
           </span>

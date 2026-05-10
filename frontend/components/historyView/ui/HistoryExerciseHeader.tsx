@@ -2,7 +2,7 @@ import React from 'react';
 import { ExerciseAsset } from '../../../utils/data/exerciseAssets';
 import { convertWeight } from '../../../utils/format/units';
 import type { WeightUnit } from '../../../utils/storage/localStorage';
-import { FANCY_FONT } from '../../../utils/ui/uiConstants';
+import { SEMI_FANCY_FONT } from '../../../utils/ui/uiConstants';
 import { ExerciseThumbnail } from '../../common/ExerciseThumbnail';
 import { Sparkline } from './HistorySparkline';
 import type { GroupedExercise } from '../utils/historySessions';
@@ -42,7 +42,7 @@ export const HistoryExerciseHeader: React.FC<HistoryExerciseHeaderProps> = ({
       <div className="flex items-center gap-2 min-w-0 col-start-2 row-start-1">
         <h4
           className="text-slate-200 text-sm sm:text-lg line-clamp-1 min-w-0 flex-1"
-          style={FANCY_FONT}
+          style={SEMI_FANCY_FONT}
           title={group.exerciseName}
         >
           {group.exerciseName}

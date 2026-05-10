@@ -1,6 +1,7 @@
 import React from 'react';
 import { Info, Sparkles, Menu } from 'lucide-react';
 import { assetPath } from '../../constants';
+import { SEMI_FANCY_FONT } from '../../utils/ui/uiConstants';
 
 const GithubIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -24,7 +25,7 @@ export const Navigation: React.FC<NavigationProps> = ({
       {/* Logo on the left */}
       <a href={assetPath('/')} className="flex items-center gap-2 sm:gap-3 rounded-xl px-1.5 sm:px-2 py-1 hover:bg-white/5 transition-colors">
         <img src={assetPath('/UI/logo.png')} alt="LiftShift Logo" className="w-6 h-6 sm:w-8 sm:h-8" />
-        <span className="text-white font-semibold text-sm sm:text-xl">LiftShift</span>
+        <span className="text-white font-semibold text-sm sm:text-xl" style={SEMI_FANCY_FONT}>LiftShift</span>
       </a>
 
       {/* Navigation buttons grouped on the right - Desktop */}

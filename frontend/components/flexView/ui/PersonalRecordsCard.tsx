@@ -3,7 +3,7 @@ import { Trophy } from 'lucide-react';
 import { WeightUnit } from '../../../utils/storage/localStorage';
 import { PRInsights } from '../../../utils/analysis/insights';
 import { assetPath } from '../../../constants';
-import { FANCY_FONT, FANCY_FONT_NUMBERS } from '../../../utils/ui/uiConstants';
+import { FANCY_FONT, FANCY_FONT_NUMBERS, SEMI_FANCY_FONT } from '../../../utils/ui/uiConstants';
 import CountUp from '../../ui/CountUp';
 import { FlexCard, type CardTheme, FlexCardFooter } from './FlexCard';
 
@@ -205,7 +205,7 @@ export const PersonalRecordsCard: React.FC<{
                               className="relative z-10 h-full flex items-center pl-4"
                               style={{ paddingRight: `${avatar + 14}px` }}
                             >
-                              <div className="text-white font-semibold text-sm truncate">
+                              <div className="text-white font-semibold text-sm truncate" style={SEMI_FANCY_FONT}>
                                 {medalEmoji} {exercise.name}
                               </div>
                             </div>

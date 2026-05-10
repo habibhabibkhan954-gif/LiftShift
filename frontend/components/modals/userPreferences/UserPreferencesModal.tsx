@@ -1,9 +1,10 @@
 import React from 'react';
 import { Settings, X } from 'lucide-react';
-import { WeightUnit, ThemeMode, ExerciseTrendMode } from '../../../utils/storage/localStorage';
+import { FontChoice, WeightUnit, ThemeMode, ExerciseTrendMode } from '../../../utils/storage/localStorage';
 import { BodyMapGender } from '../../bodyMap/BodyMap';
 import {
   BodyMapGenderSection,
+  FontSection,
   ThemeSection,
   TrendModeSection,
   WeightUnitSection,
@@ -23,6 +24,8 @@ interface UserPreferencesModalProps {
   onExerciseTrendModeChange: (mode: ExerciseTrendMode) => void;
   secondarySetMultiplier: number;
   onSecondarySetMultiplierChange: (value: number) => void;
+  font: FontChoice;
+  onFontChange: (font: FontChoice) => void;
 }
 
 export const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({
@@ -37,7 +40,9 @@ export const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({
   exerciseTrendMode,
   onExerciseTrendModeChange,
   secondarySetMultiplier,
-  onSecondarySetMultiplierChange
+  onSecondarySetMultiplierChange,
+  font,
+  onFontChange,
 }) => {
   if (!isOpen) return null;
 
@@ -85,6 +90,7 @@ export const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({
                 secondarySetMultiplier={secondarySetMultiplier}
                 onSecondarySetMultiplierChange={onSecondarySetMultiplierChange}
               />
+              <FontSection font={font} onFontChange={onFontChange} />
               <ThemeSection themeMode={themeMode} onThemeModeChange={onThemeModeChange} />
             </div>
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { BodyMap, BodyMapGender } from '../../bodyMap/BodyMap';
 import { HEADLESS_MUSCLE_NAMES, MUSCLE_IDS } from '../../../utils/muscle/mapping';
 import type { TooltipState } from './HistoryTooltipPortal';
+import { SEMI_FANCY_FONT } from '../../../utils/ui/uiConstants';
 
 interface HistorySessionBodyMapProps {
   headlessVolumes: Map<string, number>;
@@ -40,7 +41,7 @@ export const MuscleSetsList: React.FC<{ headlessVolumes: Map<string, number> }> 
     <div className="flex flex-wrap gap-x-2 mt-15 gap-y-0.5 text-[12px] sm:text-sm">
       {sortedMuscles.map((muscle) => (
         <span key={muscle.id} className="text-slate-600 dark:text-slate-400">
-          <span className="capitalize">{muscle.name}</span>
+          <span className="capitalize" style={SEMI_FANCY_FONT}>{muscle.name}</span>
           <span className="text-slate-500 dark:text-slate-500">: </span>
           <span>{formatSets(muscle.sets)}</span>
           <span className="text-slate-500 dark:text-slate-500"> {Math.abs(muscle.sets - 1) < 0.000001 ? 'set' : 'sets'}</span>

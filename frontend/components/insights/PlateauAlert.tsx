@@ -6,6 +6,7 @@ import { convertWeight } from '../../utils/format/units';
 import { ExerciseThumbnail } from '../common/ExerciseThumbnail';
 import { getLoadProgressionDirection } from '../../utils/exercise/loadProgression';
 import type { LoadProgressionDirection } from '../../utils/exercise/loadProgression';
+import { SEMI_FANCY_FONT } from '../../utils/ui/uiConstants';
 
 // Compact Alert Card for Plateaus
 interface PlateauAlertProps {
@@ -50,7 +51,7 @@ export const PlateauAlert: React.FC<PlateauAlertProps> = ({
         />
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-medium text-white truncate">{exerciseName}</div>
+        <div className="text-sm font-medium text-white truncate" style={SEMI_FANCY_FONT}>{exerciseName}</div>
         {suggestion && (
           <div className="text-[10px] text-amber-400 mt-1 line-clamp-1 flex items-center gap-1">
             <svg width="12" height="12" viewBox="0 0 48 48" version="1" xmlns="http://www.w3.org/2000/svg" className="flex-shrink-0">

@@ -3,6 +3,7 @@ export { Layout };
 import React from 'react';
 import type { PageContext } from 'vike/types';
 import { ThemeProvider } from '../components/theme/ThemeProvider';
+import { FontProvider } from '../components/theme/FontProvider';
 import '../tailwind.css';
 
 type LayoutProps = {
@@ -11,5 +12,9 @@ type LayoutProps = {
 };
 
 function Layout({ children }: LayoutProps) {
-  return <ThemeProvider>{children}</ThemeProvider>;
+  return (
+    <ThemeProvider>
+      <FontProvider>{children}</FontProvider>
+    </ThemeProvider>
+  );
 }

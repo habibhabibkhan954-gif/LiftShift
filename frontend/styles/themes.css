@@ -232,6 +232,27 @@ html[data-theme='light'] .border-sky-500\/30 {
   border-color: #1d4ed84d !important;
 }
 
+html[data-font="loraItalic"] {
+  --font-sans: "Lora", serif;
+  font-family: "Lora", serif;
+  font-style: italic;
+  letter-spacing: 0.02em;
+}
+
+html[data-font="original"] {
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  letter-spacing: normal;
+}
+
+html[data-font="nunito"] {
+  --font-sans: "Nunito", sans-serif;
+  font-family: "Nunito", sans-serif;
+  font-style: normal;
+  letter-spacing: normal;
+}
+
 body {
   background: var(--app-bg);
   color: var(--app-fg);

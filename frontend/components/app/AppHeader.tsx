@@ -6,6 +6,7 @@ import { SupportLinks } from '../layout/SupportLinks';
 import { ThemeToggleButton } from '../theme/ThemeToggleButton';
 import type { OnboardingFlow } from '../../app/onboarding/types';
 import { clearCSVData } from '../../utils/storage/localStorage';
+import { SEMI_FANCY_FONT } from '../../utils/ui/uiConstants';
 
 const DEMO_MODE_KEY = 'hevy_analytics_demo_mode';
 
@@ -51,7 +52,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
                 className="font-bold text-base sm:text-lg tracking-tight inline-flex items-start whitespace-nowrap"
                 style={{ color: 'var(--app-fg)' }}
               >
-                <span>LiftShift</span>
+                <span style={SEMI_FANCY_FONT}>LiftShift</span>
                 <sup className="ml-1 inline-block rounded-full border border-amber-500/30 bg-amber-500/15 px-1 py-0.5 text-[7px] sm:text-[9px] font-semibold leading-none tracking-wide text-amber-400 align-super -translate-y-0.5 -translate-x-2">
                   BETA
                 </sup>

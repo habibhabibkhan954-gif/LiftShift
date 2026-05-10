@@ -22,6 +22,7 @@ import {
   getTierColor,
 } from '../../../utils/training/tierUtils';
 import { useIsMobile } from '../../insights/useIsMobile';
+import { SEMI_FANCY_FONT } from '../../../utils/ui/uiConstants';
 import type { WorkoutSet } from '../../../types';
 import type { ExerciseAsset } from '../../../utils/data/exerciseAssets';
 import {
@@ -574,6 +575,7 @@ export const LifetimeAchievementCard: React.FC<LifetimeAchievementCardProps> = (
                     className={`text-[10px] w-[15%] lg:w-[12%] truncate flex-shrink-0 ${
                       isSelected ? 'font-semibold text-white' : 'text-slate-500'
                     }`}
+                    style={SEMI_FANCY_FONT}
                   >
                     {m.name}
                   </span>

@@ -12,6 +12,7 @@ import {
 } from '../insights/ChartBits';
 import { MuscleTrendHeader } from './MuscleTrendHeader';
 import { MuscleTrendChart } from './MuscleTrendChart';
+import { SEMI_FANCY_FONT } from '../../../utils/ui/uiConstants';
 
 type MuscleGrouping = 'groups' | 'muscles';
 type MusclePeriod = 'daily' | 'weekly' | 'monthly' | 'yearly' | 'all';
@@ -102,7 +103,7 @@ export const MuscleTrendCard = ({
                     main={
                       <span className="inline-flex items-center gap-1">
                         <TrendIcon direction={muscleTrendInsight.biggestMover.direction} />
-                        <span>{muscleTrendInsight.biggestMover.k}</span>
+                        <span style={SEMI_FANCY_FONT}>{muscleTrendInsight.biggestMover.k}</span>
                       </span>
                     }
                     meta={

@@ -1,7 +1,9 @@
 import { useState, useEffect, useLayoutEffect } from 'react';
 import { useTheme } from '../../components/theme/ThemeProvider';
+import { useFont } from '../../components/theme/FontProvider';
 import { setContext } from '../../utils/integrations/analytics';
 import {
+  FontChoice,
   WeightUnit,
   getWeightUnit,
   saveWeightUnit,
@@ -20,6 +22,10 @@ export interface UseAppPreferencesReturn {
   // Theme
   mode: string;
   setMode: (mode: string) => void;
+
+  // Font
+  font: FontChoice;
+  setFont: (font: FontChoice) => void;
   
   // Weight unit
   weightUnit: WeightUnit;
@@ -40,6 +46,7 @@ export interface UseAppPreferencesReturn {
 
 export function useAppPreferences(): UseAppPreferencesReturn {
   const { mode, setMode } = useTheme();
+  const { font, setFont } = useFont();
   
   const [weightUnit, setWeightUnitState] = useState<WeightUnit>(() => getWeightUnit());
   const [bodyMapGender, setBodyMapGenderState] = useState<BodyMapGender>(() => getBodyMapGender());
@@ -79,6 +86,8 @@ export function useAppPreferences(): UseAppPreferencesReturn {
   return {
     mode,
     setMode,
+    font,
+    setFont,
     weightUnit,
     setWeightUnit: setWeightUnitState,
     bodyMapGender,

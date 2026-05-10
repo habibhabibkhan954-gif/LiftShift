@@ -128,6 +128,8 @@ const App: React.FC = () => {
   const {
     mode,
     setMode,
+    font,
+    setFont,
     weightUnit,
     setWeightUnit,
     bodyMapGender,
@@ -517,6 +519,8 @@ const App: React.FC = () => {
         onExerciseTrendModeChange={setExerciseTrendMode}
         secondarySetMultiplier={secondarySetMultiplier}
         onSecondarySetMultiplierChange={setSecondarySetMultiplier}
+        font={font}
+        onFontChange={setFont}
       />
 
       <AppOnboardingLayer

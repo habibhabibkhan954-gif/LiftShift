@@ -9,6 +9,7 @@ import { convertWeight } from '../../utils/format/units';
 import { formatHumanReadableDate } from '../../utils/date/dateUtils';
 import { ExerciseThumbnail } from '../common/ExerciseThumbnail';
 import { getLoadProgressionDirection } from '../../utils/exercise/loadProgression';
+import { SEMI_FANCY_FONT } from '../../utils/ui/uiConstants';
 
 // Recent PR Card with image and improvement
 interface RecentPRCardProps {
@@ -55,7 +56,7 @@ export const RecentPRCard: React.FC<RecentPRCardProps> = ({
         />
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-medium text-[color:var(--text-primary)] truncate">{exercise}</div>
+        <div className="text-sm font-medium text-[color:var(--text-primary)] truncate" style={SEMI_FANCY_FONT}>{exercise}</div>
         <div className="text-[10px] text-slate-500">{formatHumanReadableDate(date, { now })}</div>
       </div>
       <div className="text-right">

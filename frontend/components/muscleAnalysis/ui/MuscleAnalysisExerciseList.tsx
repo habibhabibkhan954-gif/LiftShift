@@ -6,6 +6,7 @@ import type { ExerciseAsset } from '../../../utils/data/exerciseAssets';
 import type { MuscleVolumeThresholds } from '../../../utils/muscle/hypertrophy/muscleParams';
 import { ChevronDown } from 'lucide-react';
 import { stripExerciseSourceLabel } from '../../../utils/exercise/exerciseSourceLabel';
+import { SEMI_FANCY_FONT } from '../../../utils/ui/uiConstants';
 
 interface MuscleAnalysisExerciseListProps {
   contributingExercises: Array<{ name: string; sets: number; primarySets: number; secondarySets: number; strengthTrend: number | null; strengthLabel: string | null }>;
@@ -83,7 +84,7 @@ export const MuscleAnalysisExerciseList: React.FC<MuscleAnalysisExerciseListProp
                 </div>
 
                 <div className="min-w-0 flex flex-col justify-center">
-                  <div className="text-sm font-semibold text-white truncate">{ex.name}</div>
+                  <div className="text-sm font-semibold text-white truncate" style={SEMI_FANCY_FONT}>{ex.name}</div>
 
                   {ex.strengthLabel && (
                     <div className="my-0.5">

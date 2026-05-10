@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dumbbell, Trophy } from 'lucide-react';
 import { FlexCard, type CardTheme, FlexCardFooter } from './FlexCard';
-import { FANCY_FONT, FANCY_FONT_NUMBERS } from '../../../utils/ui/uiConstants';
+import { FANCY_FONT, FANCY_FONT_NUMBERS, SEMI_FANCY_FONT } from '../../../utils/ui/uiConstants';
 
 // ============================================================================
 // CARD 5: Top Exercises Card
@@ -100,7 +100,7 @@ export const TopExercisesCard: React.FC<{
                           className="relative z-10 h-full flex items-center pl-4"
                           style={{ paddingRight: `${avatar + 14}px` }}
                         >
-                          <div className="text-white font-semibold text-sm truncate">{`${medalEmoji} ${exercise.name}`}</div>
+                          <div className="text-white font-semibold text-sm truncate" style={SEMI_FANCY_FONT}>{`${medalEmoji} ${exercise.name}`}</div>
                         </div>
 
                         <div

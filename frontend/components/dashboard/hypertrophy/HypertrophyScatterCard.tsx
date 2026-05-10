@@ -10,6 +10,7 @@ import {
   Cell,
 } from 'recharts';
 import { SegmentControl } from '../../ui/SegmentControl';
+import { SEMI_FANCY_FONT } from '../../../utils/ui/uiConstants';
 import {
   FACTOR_WEIGHTS,
   type MuscleHypertrophyData,
@@ -115,7 +116,7 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
     return (
       <div className="rounded-lg px-3 py-2 shadow-2xl border text-xs"
         style={{ backgroundColor: 'rgb(var(--panel-rgb) / 0.95)', borderColor: 'rgb(var(--border-rgb) / 0.5)', color: 'var(--text-primary)' }}>
-        <p className="font-semibold mb-1.5">{d.name} <span className="opacity-60 font-normal">({d.total}/100)</span></p>
+        <p className="font-semibold mb-1.5" style={SEMI_FANCY_FONT}>{d.name} <span className="opacity-60 font-normal">({d.total}/100)</span></p>
         <div className="flex items-center gap-3 mb-1.5">
           <span>Progress <b style={{ color: progColor(d.progress) }}>{d.progress}/40</b></span>
           <span>Volume <b style={{ color: volColor(d.volume) }}>{d.volume}/50</b></span>
@@ -182,7 +183,7 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
                 </Scatter>
 
                 <Scatter data={chartData.filter(d => labeledIds.includes(d.muscleId))} shape="circle" isAnimationActive={false} legendType="none"
-                  label={{ dataKey: 'name', position: 'top', fontSize: 10, fill: '#7f7b7b', offset: 2, fontWeight: 600 }} >
+                  label={{ dataKey: 'name', position: 'top', fontSize: 10, fill: '#7f7b7b', offset: 2, fontWeight: 600, fontFamily: '"Lora", serif', fontStyle: 'italic' }} >
                   {chartData.filter(d => labeledIds.includes(d.muscleId)).map((entry) => (
                     <Cell key={entry.muscleId} fill="transparent" stroke="none" />
                   ))}

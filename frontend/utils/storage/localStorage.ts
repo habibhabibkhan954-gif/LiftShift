@@ -121,6 +121,19 @@ export const saveSecondarySetMultiplier = secondarySetMultiplierStorage.set;
 export const getSecondarySetMultiplier = secondarySetMultiplierStorage.get;
 export const clearSecondarySetMultiplier = secondarySetMultiplierStorage.clear;
 
+// Font Choice
+export type FontChoice = 'original' | 'loraItalic' | 'nunito';
+
+const fontChoiceStorage = createStorageManager<FontChoice>({
+  key: 'hevy_analytics_font_choice',
+  defaultValue: 'nunito',
+  validator: (v) => (v === 'original' || v === 'loraItalic' || v === 'nunito') ? v : null,
+});
+
+export const saveFontChoice = fontChoiceStorage.set;
+export const getFontChoice = fontChoiceStorage.get;
+export const clearFontChoice = fontChoiceStorage.clear;
+
 // Time Filter Mode - for UI aggregation hints
 export type TimeFilterMode = 'all' | 'weekly' | 'monthly' | 'yearly';
 

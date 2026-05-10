@@ -8,7 +8,7 @@ import {
   YAxis,
 } from "recharts";
 import { TrendingDown, TrendingUp, X, Triangle } from "lucide-react";
-import { CHART_TOOLTIP_STYLE } from "../../../utils/ui/uiConstants";
+import { CHART_TOOLTIP_STYLE, SEMI_FANCY_FONT } from "../../../utils/ui/uiConstants";
 import {
   getRechartsCategoricalTicks,
   formatAxisNumber,
@@ -387,7 +387,7 @@ export const MuscleAnalysisGraphPanel: React.FC<MuscleAnalysisGraphPanelProps> =
         >
           <div className="bg-black/70 p-3 flex items-center justify-between flex-shrink-0 gap-2">
             <div className="flex items-center gap-2 min-w-0">
-              <h2 className="text-sm font-bold text-white truncate">{title}</h2>
+              <h2 className="text-sm font-bold text-white truncate" style={SEMI_FANCY_FONT}>{title}</h2>
               <span className="text-[10px] text-slate-400 whitespace-nowrap">
                 {volumeDelta && volumeDelta.direction !== "same" && (
                   <span

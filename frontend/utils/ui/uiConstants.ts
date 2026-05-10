@@ -14,6 +14,13 @@ export const FANCY_FONT: Readonly<React.CSSProperties> = {
   
 };
 
+/** Semi-decorative font style for exercise names, muscle names, and entity labels */
+export const SEMI_FANCY_FONT: Readonly<React.CSSProperties> = {
+  fontFamily: '"Lora", serif',
+  fontWeight: 500,
+  fontStyle: 'italic',
+};
+
 /** Decorative font style for numbers (non-italic) */
 export const FANCY_FONT_NUMBERS: Readonly<React.CSSProperties> = {
   fontFamily: '"Libre Baskerville", "Poppins", sans-serif',

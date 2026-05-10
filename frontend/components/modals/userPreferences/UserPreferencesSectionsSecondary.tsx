@@ -1,7 +1,7 @@
 import React from 'react';
-import { Moon, Palette, SlidersHorizontal, Sparkles, Sun } from 'lucide-react';
-import { ExerciseTrendMode, ThemeMode } from '../../../utils/storage/localStorage';
-import { CompactThemeOption } from './UserPreferencesThemeOption';
+import { Moon, Palette, SlidersHorizontal, Sparkles, Sun, Type } from 'lucide-react';
+import { ExerciseTrendMode, FontChoice, ThemeMode } from '../../../utils/storage/localStorage';
+import { CompactThemeOption, CompactFontOption } from './UserPreferencesThemeOption';
 
 const formatSecondaryInput = (value: number): string => {
   const fixed = value.toFixed(2);
@@ -109,6 +109,48 @@ export const ThemeSection: React.FC<ThemeSectionProps> = ({ themeMode, onThemeMo
         label="Light"
         icon={<Sun className="w-3.5 h-3.5" />}
       />
+    </div>
+  </div>
+);
+
+interface FontSectionProps {
+  font: FontChoice;
+  onFontChange: (font: FontChoice) => void;
+}
+
+const FONT_OPTIONS: { key: FontChoice; label: string; description: string }[] = [
+  { key: 'original', label: 'Classic', description: 'System default' },
+  { key: 'loraItalic', label: 'Journal', description: 'Elegant italic serif' },
+  { key: 'nunito', label: 'Modern', description: 'Warm rounded sans' },
+];
+
+export const FontSection: React.FC<FontSectionProps> = ({ font, onFontChange }) => (
+  <div className="space-y-2">
+    <div className="flex items-center gap-2 text-slate-200">
+      <Type className="w-3.5 h-3.5 text-slate-500" />
+      <span className="text-xs font-medium">Base Font</span>
+    </div>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+      {FONT_OPTIONS.map((opt) => (
+        <button
+          key={opt.key}
+          type="button"
+          onClick={() => onFontChange(opt.key)}
+          className={`flex items-center gap-2 p-2 rounded-lg border transition-all text-left ${
+            font === opt.key
+              ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400'
+              : 'bg-slate-900/20 border-slate-700/50 text-slate-300 hover:border-slate-600 hover:bg-slate-900/40'
+          }`}
+        >
+          <div className={`w-6 h-6 rounded flex items-center justify-center flex-shrink-0 ${font === opt.key ? 'bg-emerald-500/20' : 'bg-slate-800'}`}>
+            <Type className="w-3.5 h-3.5" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-xs font-medium truncate">{opt.label}</div>
+            <div className="text-[10px] text-slate-500 truncate">{opt.description}</div>
+          </div>
+        </button>
+      ))}
     </div>
   </div>
 );

@@ -3,6 +3,7 @@ import type { ExerciseAsset } from '../../../utils/data/exerciseAssets';
 import { ExerciseThumbnail } from '../../common/ExerciseThumbnail';
 import type { TopExerciseBarDatum } from './TopExercisesCard';
 import { stripExerciseSourceLabel } from '../../../utils/exercise/exerciseSourceLabel';
+import { SEMI_FANCY_FONT } from '../../../utils/ui/uiConstants';
 
 interface TopExercisesBarViewProps {
   topExercisesBarData: TopExerciseBarDatum[];
@@ -143,7 +144,7 @@ export const TopExercisesBarView: React.FC<TopExercisesBarViewProps> = ({
                         />
 
                         <div className="relative z-10 h-full flex items-center pl-4" style={{ paddingRight: `${avatar + 14}px` }}>
-                          <div className="text-white font-semibold text-sm sm:text-base truncate">
+                          <div className="text-white font-semibold text-sm sm:text-base truncate" style={SEMI_FANCY_FONT}>
                             {medalEmoji ? `${medalEmoji} ${exercise.name}` : exercise.name}
                           </div>
                         </div>
@@ -192,7 +193,7 @@ export const TopExercisesBarView: React.FC<TopExercisesBarViewProps> = ({
                         />
 
                         <div className="relative z-10 h-full flex items-center pl-4" style={{ paddingRight: `${avatar + 14}px` }}>
-                          <div className="text-white font-semibold text-sm sm:text-base truncate">
+                          <div className="text-white font-semibold text-sm sm:text-base truncate" style={SEMI_FANCY_FONT}>
                             {medalEmoji ? `${medalEmoji} ${exercise.name}` : exercise.name}
                           </div>
                         </div>

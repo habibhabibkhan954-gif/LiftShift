@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { TrendingUp, BarChart3 } from 'lucide-react';
 import { Tooltip, useTooltip } from '../../ui/Tooltip';
 import { SegmentControl } from '../../ui/SegmentControl';
+import { SEMI_FANCY_FONT } from '../../../utils/ui/uiConstants';
 import { useIsMobile } from '../../insights/useIsMobile';
 import { ChartDescription, InsightText } from '../../dashboard/insights/ChartBits';
 import {
@@ -232,9 +233,9 @@ export const HypertrophyBarCard: React.FC<HypertrophyBarCardProps> = ({
                   onClick={() => { if (window.innerWidth >= 1024) onMuscleClick?.(m.muscleId); }}
                   onMouseEnter={(e) => handleMouseEnter(e, m)}
                   onMouseLeave={hideTooltip}>
-                  <span className={`text-[10px] w-[15%] lg:w-[12%] truncate flex-shrink-0 ${isSelected ? 'font-semibold text-white' : 'text-slate-500'}`}>
-                    {m.muscleName}
-                  </span>
+              <span className={`text-[10px] w-[15%] lg:w-[12%] truncate flex-shrink-0 ${isSelected ? 'font-semibold text-white' : 'text-slate-500'}`} style={SEMI_FANCY_FONT}>
+                {m.muscleName}
+              </span>
                   <div className="w-[43%] lg:w-[55%]">
                     <FactorProgressBar volumeScore={m.score.volumeScore} progressiveOverload={m.score.progressiveOverload} frequency={m.score.frequency} />
                   </div>

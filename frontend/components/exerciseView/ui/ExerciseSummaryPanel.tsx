@@ -1,6 +1,6 @@
 import React from 'react';
 import { ExerciseStats } from '../../../types';
-import { FANCY_FONT } from '../../../utils/ui/uiConstants';
+import { SEMI_FANCY_FONT } from '../../../utils/ui/uiConstants';
 import type { ExerciseTrendCoreResult } from '../../../utils/analysis/exerciseTrend';
 import { ExerciseEmptyState } from './ExerciseEmptyState';
 import { ExerciseStatusCard } from './ExerciseStatusCard';
@@ -33,7 +33,7 @@ export const ExerciseSummaryPanel: React.FC<ExerciseSummaryPanelProps> = ({
       <div className="flex items-baseline gap-3">
         <h2
           className="text-xl sm:text-3xl text-white tracking-tight drop-shadow-lg"
-          style={FANCY_FONT}
+          style={SEMI_FANCY_FONT}
         >
           {selectedStats.name}
         </h2>
