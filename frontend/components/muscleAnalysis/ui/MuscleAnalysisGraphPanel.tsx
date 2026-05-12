@@ -48,8 +48,9 @@ const CustomMuscleTooltip: React.FC<CustomMuscleTooltipProps> = ({
 }) => {
   if (active && payload && payload.length) {
     const value = payload[0].value;
+    const p = payload[0].payload;
 
-    const ts = payload?.[0]?.payload?.timestamp;
+    const ts = p?.timestamp;
     const labelText = Number.isFinite(ts)
       ? new Date(ts).toLocaleDateString("en-US", {
           month: "short",
@@ -59,6 +60,10 @@ const CustomMuscleTooltip: React.FC<CustomMuscleTooltipProps> = ({
       : typeof label === "string"
         ? label
         : String(label ?? "");
+
+    const zoneLabel = p?.zoneLabel as string | undefined;
+    const zoneColor = p?.zoneColor as string | undefined;
+    const zoneExplanation = p?.zoneExplanation as string | undefined;
 
     return (
       <div
@@ -74,6 +79,12 @@ const CustomMuscleTooltip: React.FC<CustomMuscleTooltipProps> = ({
         <p className="text-xs text-slate-200">
           {formatAxisNumber(value)} sets/wk
         </p>
+        {zoneLabel && (
+          <div className="mt-1.5 pt-1.5 border-t border-slate-700/50">
+            <span className="text-xs font-semibold" style={{ color: zoneColor }}>{zoneLabel}</span>
+            <p className="text-[10px] text-slate-500 mt-0.5 leading-tight">{zoneExplanation}</p>
+          </div>
+        )}
       </div>
     );
   }
@@ -222,6 +233,15 @@ export const MuscleAnalysisGraphPanel: React.FC<MuscleAnalysisGraphPanelProps> =
         );
       }, [trendData, xTicks]);
 
+      // Enrich display data with volume zone info for the tooltip
+      const displayDataWithZone = useMemo(() =>
+        displayData.map(d => {
+          const zone = getVolumeZone(d.sets, volumeThresholds);
+          return { ...d, zoneLabel: zone.label, zoneColor: zone.color, zoneExplanation: zone.explanation };
+        }),
+        [displayData, volumeThresholds]
+      );
+
       const yAxisDomain = useMemo(() => {
         const maxFromData = Math.max(
           ...trendData.map((d) => d.sets),
@@ -248,14 +268,14 @@ export const MuscleAnalysisGraphPanel: React.FC<MuscleAnalysisGraphPanelProps> =
       // Show hypertrophy score bar when score is available
       const showScoreBar = hypertrophyScore !== undefined && hypertrophyScore > 0;
 
-      // Legend is ALWAYS based on FILTER (not selected muscle) - use maxSets from headlessRatesMap
-      const showOverdrive = legendMaxSets > zones.maxv;
+      // Arrow shows the selected muscle's value
+      const arrowValue = weeklySetsSummary ?? 0;
+
+      // Show overdrive indicator only when the actively viewed muscle (or average) exceeds maxv
+      const showOverdrive = arrowValue > zones.maxv;
 
       // Legend always scales to filter data max
       const legendMax = Math.max(legendMaxSets, zones.maxv);
-
-      // Arrow shows the selected muscle's value
-      const arrowValue = weeklySetsSummary ?? 0;
 
       // Calculate arrow position on legend
       const arrowPosition = useMemo(() => {
@@ -464,6 +484,11 @@ export const MuscleAnalysisGraphPanel: React.FC<MuscleAnalysisGraphPanelProps> =
                     )}
                   </div>
                 ))}
+                {showOverdrive && (
+                  <span className="ml-1 text-[7px] text-orange-400/60 cursor-help flex-shrink-0 border border-orange-400/30 rounded-full px-1 leading-none" title="Volume above max recoverable threshold &mdash; poor ROI, recovery suffers.">
+                    ?
+                  </span>
+                )}
               </div>
             </div>
 
@@ -483,7 +508,7 @@ export const MuscleAnalysisGraphPanel: React.FC<MuscleAnalysisGraphPanelProps> =
               <div className="h-[180px] sm:h-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart
-                    data={displayData}
+                    data={displayDataWithZone}
                     margin={{ top: 10, right: 20, left: 5, bottom: 0 }}
                   >
                     <defs>
