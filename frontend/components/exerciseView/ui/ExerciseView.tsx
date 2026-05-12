@@ -60,16 +60,6 @@ export const ExerciseView: React.FC<ExerciseViewProps> = ({
   const { trainingLevel } = useTrainingLevel(filteredData, effectiveNow);
 
   const {
-    selectedExerciseName,
-    setSelectedExerciseName,
-    exerciseButtonRefs,
-  } = useExerciseSelection({
-    stats,
-    highlightedExercise,
-    onHighlightApplied,
-  });
-
-  const {
     searchTerm,
     setSearchTerm,
     trendFilter,
@@ -92,6 +82,17 @@ export const ExerciseView: React.FC<ExerciseViewProps> = ({
     weightUnit: weightUnit ?? 'kg',
     exerciseTrendMode,
     effectiveNow,
+  });
+
+  const {
+    selectedExerciseName,
+    setSelectedExerciseName,
+    exerciseButtonRefs,
+  } = useExerciseSelection({
+    stats,
+    highlightedExercise,
+    onHighlightApplied,
+    defaultExerciseName: filteredExercises[0]?.name ?? '',
   });
 
   const [assetsMap, setAssetsMap] = useState<Map<string, ExerciseAsset> | null>(null);

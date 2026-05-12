@@ -1,12 +1,10 @@
-import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ExerciseStats } from '../../../types';
-import { summarizeExerciseHistory, type ExerciseSessionEntry } from '../../../utils/analysis/exerciseTrend';
 
 export interface UseExerciseSelectionReturn {
   selectedExerciseName: string;
   setSelectedExerciseName: (name: string) => void;
   exerciseButtonRefs: React.MutableRefObject<Record<string, HTMLButtonElement | null>>;
-  mostRecentExerciseName: string;
   scrollToExercise: (exerciseName: string) => void;
 }
 
@@ -14,38 +12,17 @@ export interface UseExerciseSelectionProps {
   stats: ExerciseStats[];
   highlightedExercise?: string | null;
   onHighlightApplied?: () => void;
+  defaultExerciseName?: string;
 }
 
 export function useExerciseSelection({
   stats,
   highlightedExercise,
   onHighlightApplied,
+  defaultExerciseName = '',
 }: UseExerciseSelectionProps): UseExerciseSelectionReturn {
-  // Find most recent exercise
-  const mostRecentExerciseName = useMemo(() => {
-    if (stats.length === 0) return '';
-    let mostRecentName = stats[0].name;
-    let mostRecentDate: Date | null = null;
-
-    for (const stat of stats) {
-      const lastSession = stat.history[0]?.date || null;
-      if (lastSession && (!mostRecentDate || lastSession > mostRecentDate)) {
-        mostRecentDate = lastSession;
-        mostRecentName = stat.name;
-      }
-    }
-    return mostRecentName;
-  }, [stats]);
-
-  const [selectedExerciseName, setSelectedExerciseName] = useState<string>(highlightedExercise || mostRecentExerciseName || '');
+  const [selectedExerciseName, setSelectedExerciseName] = useState<string>(highlightedExercise || defaultExerciseName || '');
   const exerciseButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-
-  // Auto-select most recent on load
-  useEffect(() => {
-    if (!selectedExerciseName && mostRecentExerciseName) {
-      setSelectedExerciseName(mostRecentExerciseName);
-    }
-  }, [selectedExerciseName, mostRecentExerciseName]);
 
   // Handle highlight from URL param
   useEffect(() => {
@@ -76,7 +53,6 @@ export function useExerciseSelection({
     selectedExerciseName,
     setSelectedExerciseName,
     exerciseButtonRefs,
-    mostRecentExerciseName,
     scrollToExercise,
   };
 }
