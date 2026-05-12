@@ -413,20 +413,23 @@ export const LifetimeAchievementCard: React.FC<LifetimeAchievementCardProps> = (
   }, [hypertrophyData]);
 
   const muscleData = useMemo(() => {
-    return muscles.map(m => {
-      const achievement = calculateAchievement(m.lifetimeSets);
-      const tier = findTierByAchievement(achievement);
-      const nextTier = getNextTier(achievement);
-      const weeksToNext = nextTier ? estimateWeeksToNextTier(achievement, m.weeklySets) : null;
-      
-      return {
-        ...m,
-        achievement,
-        tier,
-        nextTier,
-        weeksToNext,
-      };
-    });
+    return muscles
+      .map(m => {
+        let achievement = calculateAchievement(m.lifetimeSets);
+        if (m.muscleId === 'shoulders') achievement *= 0.75;
+        const tier = findTierByAchievement(achievement);
+        const nextTier = getNextTier(achievement);
+        const weeksToNext = nextTier ? estimateWeeksToNextTier(achievement, m.weeklySets) : null;
+
+        return {
+          ...m,
+          achievement,
+          tier,
+          nextTier,
+          weeksToNext,
+        };
+      })
+      .sort((a, b) => b.achievement - a.achievement);
   }, [muscles]);
 
   const overallData = useMemo(() => {
