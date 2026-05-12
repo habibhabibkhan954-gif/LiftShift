@@ -1,10 +1,9 @@
-import React, { useCallback } from 'react';
-import { ArrowUpDown, Search } from 'lucide-react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
+import { Search, TrendingUp, Calendar, ChevronDown } from 'lucide-react';
 import { ExerciseStats } from '../../../types';
 import { ExerciseAssetLookup } from '../../../utils/exercise/exerciseAssetLookup';
-import type { UseExerciseFiltersReturn } from '../hooks/useExerciseFilters';
+import type { ExerciseListSortMode, UseExerciseFiltersReturn } from '../hooks/useExerciseFilters';
 import { ExerciseListRow } from './ExerciseListRow';
-import { SegmentControl } from '../../ui/SegmentControl';
 
 interface ExerciseListPanelProps {
   searchTerm: string;
@@ -64,6 +63,35 @@ export const ExerciseListPanel: React.FC<ExerciseListPanelProps> = ({
     }
   }, [onExerciseClick, setSelectedExerciseName]);
 
+  const [isSortOpen, setIsSortOpen] = useState(false);
+  const sortRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
+        setIsSortOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  const sortOptions = [
+    { value: 'trend-asc', label: 'Strength (low to high)', icon: TrendingUp },
+    { value: 'trend-desc', label: 'Strength (high to low)', icon: TrendingUp },
+    { value: 'recent-desc', label: 'Date (new to old)', icon: Calendar },
+    { value: 'recent-asc', label: 'Date (old to new)', icon: Calendar },
+  ] as const;
+
+  const currentValue = `${exerciseListSortMode}-${exerciseListSortDir}`;
+
+  const handleSortChange = (value: string) => {
+    const [mode, dir] = value.split('-') as [ExerciseListSortMode, 'desc' | 'asc'];
+    setExerciseListSortMode(mode);
+    setExerciseListSortDir(dir);
+    setIsSortOpen(false);
+  };
+
   return (
     <div className="lg:col-span-1 flex flex-col gap-1 h-[25vh] lg:h-0 lg:min-h-full">
       <div className="relative shrink-0">
@@ -76,27 +104,46 @@ export const ExerciseListPanel: React.FC<ExerciseListPanelProps> = ({
           onChange={(e) => setSearchTerm(e.target.value)}
         />
 
-        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-          <SegmentControl
-            options={[
-              { value: 'recent', label: 'recent', title: 'Sort by most recently trained' },
-              { value: 'trend', label: '%', title: 'Sort by % strength change' },
-            ]}
-            value={exerciseListSortMode}
-            onChange={setExerciseListSortMode}
-          />
-
+        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center" ref={sortRef}>
           <button
             type="button"
-            onClick={() => setExerciseListSortDir(exerciseListSortDir === 'desc' ? 'asc' : 'desc')}
-            title={exerciseListSortMode === 'trend'
-              ? (exerciseListSortDir === 'desc' ? 'Highest % to lowest' : 'Lowest % to highest')
-              : (exerciseListSortDir === 'desc' ? 'Latest to oldest' : 'Oldest to latest')}
-            aria-label="Reverse sort direction"
-            className="p-2 rounded-lg bg-black/70 border border-slate-700/50 text-slate-500 hover:text-slate-300 hover:bg-black/60 transition-colors cursor-pointer"
+            onClick={() => setIsSortOpen(!isSortOpen)}
+            className="flex items-center gap-1 p-1.5 rounded-lg bg-black/70 border border-slate-700/50 text-slate-400 hover:text-slate-200 hover:bg-black/60 transition-colors cursor-pointer"
+            aria-label="Sort exercises"
           >
-            <ArrowUpDown className="w-3 h-3" />
+            {exerciseListSortMode === 'trend' ? (
+              <TrendingUp className="w-3 h-3" />
+            ) : (
+              <Calendar className="w-3 h-3" />
+            )}
+            <span className="text-[9px] leading-none">{exerciseListSortDir === 'desc' ? '↓' : '↑'}</span>
+            <ChevronDown className={`w-2.5 h-2.5 transition-transform ${isSortOpen ? 'rotate-180' : ''}`} />
           </button>
+
+          {isSortOpen && (
+            <div className="absolute right-0 top-full mt-1.5 w-48 bg-slate-900 border border-slate-700/50 rounded-lg shadow-xl overflow-hidden z-50 py-1">
+              {sortOptions.map(opt => {
+                const OptionIcon = opt.icon;
+                const isActive = currentValue === opt.value;
+                const [, oDir] = opt.value.split('-') as [ExerciseListSortMode, 'desc' | 'asc'];
+                return (
+                  <button
+                    key={opt.value}
+                    onClick={() => handleSortChange(opt.value)}
+                    className={`w-full flex items-center gap-2 px-3 py-1.5 text-xs text-left transition-colors ${
+                      isActive
+                        ? 'bg-blue-500/15 text-blue-400'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                    }`}
+                  >
+                    <OptionIcon className="w-3.5 h-3.5 shrink-0" />
+                    <span className="w-3 text-center shrink-0">{oDir === 'desc' ? '↓' : '↑'}</span>
+                    <span>{opt.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
 
