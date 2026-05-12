@@ -41,12 +41,6 @@ export interface MuscleHypertrophyParams {
   readonly name: string;
   /** Size bucket */
   readonly size: MuscleSizeCategory;
-
-  // --- Weekly stimulus (logistic) ---
-  /** Steepness of logistic curve */
-  readonly weeklySteepness: number;
-  /** Inflection point in sets/wk */
-  readonly weeklyInflection: number;
 }
 
 export const DEFAULT_VOLUME_THRESHOLDS: MuscleVolumeThresholds = {
@@ -171,7 +165,7 @@ export function getVolumeZone(sets: number, thresholds: MuscleVolumeThresholds):
 }
 
 // ---------------------------------------------------------------------------
-// Per-muscle hypertrophy parameters (weekly stimulus only)
+// Per-muscle hypertrophy parameters
 // ---------------------------------------------------------------------------
 /**
  * Central muscle parameter table.
@@ -185,38 +179,26 @@ export const MUSCLE_PARAMS: Readonly<Record<HeadlessMuscleId, MuscleHypertrophyP
   quads: {
     name: 'Quads',
     size: 'large',
-    weeklySteepness: 0.25,
-    weeklyInflection: 12,
   },
   lats: {
     name: 'Lats',
     size: 'large',
-    weeklySteepness: 0.25,
-    weeklyInflection: 12,
   },
   glutes: {
     name: 'Glutes',
     size: 'large',
-    weeklySteepness: 0.25,
-    weeklyInflection: 11,
   },
   hamstrings: {
     name: 'Hamstrings',
     size: 'large',
-    weeklySteepness: 0.27,
-    weeklyInflection: 11,
   },
   chest: {
     name: 'Chest',
     size: 'large',
-    weeklySteepness: 0.28,
-    weeklyInflection: 10,
   },
-    shoulders: {
+  shoulders: {
     name: 'Shoulders',
     size: 'large',
-    weeklySteepness: 0.30,
-    weeklyInflection: 10,
   },
 
   // ── Medium muscles ───────────────────────────────────────────────────
@@ -224,70 +206,48 @@ export const MUSCLE_PARAMS: Readonly<Record<HeadlessMuscleId, MuscleHypertrophyP
   traps: {
     name: 'Traps',
     size: 'medium',
-    weeklySteepness: 0.30,
-    weeklyInflection: 9,
   },
   triceps: {
     name: 'Triceps',
     size: 'medium',
-    weeklySteepness: 0.32,
-    weeklyInflection: 9,
   },
   biceps: {
     name: 'Biceps',
     size: 'medium',
-    weeklySteepness: 0.32,
-    weeklyInflection: 9,
   },
   abdominals: {
     name: 'Abs',
     size: 'medium',
-    weeklySteepness: 0.30,
-    weeklyInflection: 9,
   },
   lowerback: {
     name: 'Lower Back',
     size: 'medium',
-    weeklySteepness: 0.30,
-    weeklyInflection: 8,
   },
   adductors: {
     name: 'Adductors',
     size: 'medium',
-    weeklySteepness: 0.30,
-    weeklyInflection: 8,
   },
   abductors: {
     name: 'Abductors',
     size: 'medium',
-    weeklySteepness: 0.30,
-    weeklyInflection: 8,
   },
   neck: {
     name: 'Neck',
     size: 'small',
-    weeklySteepness: 0.35,
-    weeklyInflection: 7,
   },
 
   // ── Small muscles ────────────────────────────────────────────────────
   calves: {
     name: 'Calves',
     size: 'small',
-    weeklySteepness: 0.35,
-    weeklyInflection: 8,
   },
   forearms: {
     name: 'Forearms',
     size: 'small',
-    weeklySteepness: 0.35,
-    weeklyInflection: 7,
   },
   obliques: {
     name: 'Obliques',
     size: 'small',
-    weeklySteepness: 0.35,
-    weeklyInflection: 7,
   },
 };
 
