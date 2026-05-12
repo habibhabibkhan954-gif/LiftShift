@@ -1,4 +1,4 @@
-import type { AnalysisResult } from '../../../types';
+import type { AnalysisResult, AnalysisStatus } from '../../../types';
 import { roundTo } from '../../format/formatters';
 import { resolveSetCommentary } from '../setCommentary/setCommentaryLibrary';
 import { calculatePercentChange } from './masterAlgorithmMath';
@@ -6,6 +6,13 @@ import { buildStructured, line } from './masterAlgorithmTooltips';
 import { createAnalysisResult } from './masterAlgorithmResults';
 import type { ExpectedRepsRange } from './masterAlgorithmTypes';
 import type { LoadProgressionDirection } from '../../exercise/loadProgression';
+import type { SetTypeId } from '../setCommentary/setTypeConfig';
+import { INTENTIONAL_DROP_TYPES } from '../setCommentary/setCommentarySetTypes';
+
+const getDecreaseStatus = (original: AnalysisStatus, setTypeId: SetTypeId): AnalysisStatus => {
+  if (INTENTIONAL_DROP_TYPES.has(setTypeId)) return 'info';
+  return original;
+};
 
 export const analyzeWeightDecrease = (
   transition: string,
@@ -15,7 +22,9 @@ export const analyzeWeightDecrease = (
   prevReps: number,
   currReps: number,
   expected: ExpectedRepsRange,
-  loadDirection: LoadProgressionDirection = 'higher'
+  loadDirection: LoadProgressionDirection = 'higher',
+  currSetType: SetTypeId = 'normal',
+  _prevSetType: SetTypeId = 'normal'
 ): AnalysisResult => {
   const isLowerWeightBetter = loadDirection === 'lower';
   const expectedLabel = expected.label;
@@ -37,10 +46,12 @@ export const analyzeWeightDecrease = (
   };
 
   if (currReps >= expected.min) {
+    const weightDecreaseType = isLowerWeightBetter ? null : currSetType;
     const commentary = resolveSetCommentary(
       isLowerWeightBetter ? 'supportIncrease_met' : 'weightDecrease_met',
       seedBase,
       templateVars,
+      weightDecreaseType,
       { whyCount: 2 }
     );
     const whyLines = commentary.whyLines;
@@ -51,9 +62,10 @@ export const analyzeWeightDecrease = (
     const thirdReason = isLowerWeightBetter
       ? 'Adjustment size matched current fatigue and support needs'
       : 'Adjustment size matched current set fatigue';
+    const decStatus = getDecreaseStatus('success', currSetType);
     return createAnalysisResult(
       transition,
-      'success',
+      decStatus,
       weightChangePct,
       volChangePct,
       currReps,
@@ -73,10 +85,12 @@ export const analyzeWeightDecrease = (
   }
 
   if (currReps >= expectedTarget - 3) {
+    const weightDecreaseType = isLowerWeightBetter ? null : currSetType;
     const commentary = resolveSetCommentary(
       isLowerWeightBetter ? 'supportIncrease_slightlyBelow' : 'weightDecrease_slightlyBelow',
       seedBase,
       templateVars,
+      weightDecreaseType,
       { whyCount: 2 }
     );
     const whyLines = commentary.whyLines;
@@ -87,9 +101,10 @@ export const analyzeWeightDecrease = (
     const thirdReason = isLowerWeightBetter
       ? 'Current fatigue still needs a slightly bigger support reset'
       : 'Current fatigue still needs a slightly deeper reset';
+    const decStatus = getDecreaseStatus('info', currSetType);
     return createAnalysisResult(
       transition,
-      'info',
+      decStatus,
       weightChangePct,
       volChangePct,
       currReps,
@@ -109,10 +124,12 @@ export const analyzeWeightDecrease = (
     );
   }
 
+  const weightDecreaseType = isLowerWeightBetter ? null : currSetType;
   const commentary = resolveSetCommentary(
     isLowerWeightBetter ? 'supportIncrease_significantlyBelow' : 'weightDecrease_significantlyBelow',
     seedBase,
     templateVars,
+    weightDecreaseType,
     { whyCount: 2, improveCount: 2 }
   );
   const whyLines = commentary.whyLines;
@@ -130,9 +147,10 @@ export const analyzeWeightDecrease = (
   const improveTwo = isLowerWeightBetter
     ? 'Restore rep quality first, then reduce support gradually'
     : 'Restore rep quality first, then build weight back gradually';
+  const decStatus = getDecreaseStatus('warning', currSetType);
   return createAnalysisResult(
     transition,
-    'warning',
+    decStatus,
     weightChangePct,
     volChangePct,
     currReps,

@@ -1,4 +1,6 @@
 import { pickDeterministic, pickDeterministicIndex } from '../common/messageVariations';
+import type { SetTypeId } from './setTypeConfig';
+import { getSetTypeOverride } from './setCommentarySetTypes';
 import {
   SAME_WEIGHT_REPS_INCREASED,
   SAME_WEIGHT_REPS_SAME,
@@ -121,30 +123,25 @@ const pickLines = (seed: string, lines: readonly string[] | undefined, count: nu
   return selected;
 };
 
-export const getSetCommentary = (
-  scenario: SetScenario,
-  seedBase: string,
-  templateVars?: Record<string, string | number>
-): SetCommentaryOptions => {
-  void seedBase;
-  return interpolateOptions(scenarioOptions[scenario], templateVars);
-};
-
 export const resolveSetCommentary = (
   scenario: SetScenario,
   seedBase: string,
   templateVars?: Record<string, string | number>,
+  setTypeId?: SetTypeId | null,
   options?: { whyCount?: number; improveCount?: number }
 ): ResolvedSetCommentary => {
-  const scenarioCommentary = getSetCommentary(scenario, seedBase, templateVars);
+  const typeOverride = setTypeId ? getSetTypeOverride(setTypeId, scenario) : null;
+  const baseOptions = typeOverride ?? scenarioOptions[scenario];
+  const scenarioCommentary = interpolateOptions(baseOptions, templateVars);
   const whyCount = options?.whyCount ?? 2;
   const improveCount = options?.improveCount ?? 2;
+  const typeSeed = setTypeId ? `${seedBase}|${setTypeId}` : seedBase;
 
   return {
-    shortMessage: pickDeterministic(`${seedBase}|short`, scenarioCommentary.shortMessages),
-    tooltip: pickDeterministic(`${seedBase}|tooltip`, scenarioCommentary.tooltips),
-    whyLines: pickLines(`${seedBase}|why`, scenarioCommentary.whyLines, whyCount),
-    improveLines: pickLines(`${seedBase}|improve`, scenarioCommentary.improveLines, improveCount),
+    shortMessage: pickDeterministic(`${typeSeed}|short`, scenarioCommentary.shortMessages),
+    tooltip: pickDeterministic(`${typeSeed}|tooltip`, scenarioCommentary.tooltips),
+    whyLines: pickLines(`${typeSeed}|why`, scenarioCommentary.whyLines, whyCount),
+    improveLines: pickLines(`${typeSeed}|improve`, scenarioCommentary.improveLines, improveCount),
   };
 };
 

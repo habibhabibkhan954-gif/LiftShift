@@ -1,5 +1,5 @@
 import { WorkoutSet, AnalysisResult } from '../../../types';
-import { isWarmupSet } from '../classification';
+import { isWarmupSet, getSetTypeId } from '../classification';
 import { analyzeSameWeight } from './masterAlgorithmSameWeight';
 import { analyzeWeightIncrease } from './masterAlgorithmWeightIncrease';
 import { analyzeWeightDecrease } from './masterAlgorithmWeightDecrease';
@@ -14,6 +14,7 @@ import type { WeightUnit } from '../../../utils/storage/localStorage';
 import type { TrainingLevel } from '../config/commentaryConfig';
 import { getTrainingParams } from '../userProfile';
 import { directionalPercentChange, getLoadProgressionDirection, toDirectionalLoadKg } from '../../exercise/loadProgression';
+import type { SetTypeId } from '../setCommentary/setTypeConfig';
 
 export { isWarmupSet } from '../classification';
 export { analyzeSession } from './masterAlgorithmSession';
@@ -92,6 +93,8 @@ export const analyzeSetProgression = (
     );
     const repChangePct = calculatePercentChange(prev.reps, curr.reps);
 
+    const currSetType: SetTypeId = getSetTypeId(workingSets[i]);
+    const prevSetType: SetTypeId = getSetTypeId(workingSets[i - 1]);
     let result: AnalysisResult;
 
     if (Math.abs(rawWeightChangePct) < 1.0 || Math.abs(directionalWeightChangePct) < 1.0) {
@@ -101,7 +104,9 @@ export const analyzeSetProgression = (
         prev.reps,
         curr.reps,
         i + 1,
-        isLowerWeightBetter ? 'lower' : 'higher'
+        isLowerWeightBetter ? 'lower' : 'higher',
+        currSetType,
+        prevSetType
       );
     } else if (directionalWeightChangePct > 0) {
       const expected = buildExpectedRepsRange(priorMetrics, curr.weight, i + 1, userProfile);
@@ -113,7 +118,9 @@ export const analyzeSetProgression = (
         prev.reps,
         curr.reps,
         expected,
-        isLowerWeightBetter ? 'lower' : 'higher'
+        isLowerWeightBetter ? 'lower' : 'higher',
+        currSetType,
+        prevSetType
       );
     } else {
       const expected = buildExpectedRepsRange(priorMetrics, curr.weight, i + 1, userProfile);
@@ -125,7 +132,9 @@ export const analyzeSetProgression = (
         prev.reps,
         curr.reps,
         expected,
-        isLowerWeightBetter ? 'lower' : 'higher'
+        isLowerWeightBetter ? 'lower' : 'higher',
+        currSetType,
+        prevSetType
       );
     }
 

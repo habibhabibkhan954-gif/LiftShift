@@ -7,6 +7,7 @@ import { buildStructured, line } from './masterAlgorithmTooltips';
 import { createAnalysisResult } from './masterAlgorithmResults';
 import type { ExpectedRepsRange } from './masterAlgorithmTypes';
 import type { LoadProgressionDirection } from '../../exercise/loadProgression';
+import type { SetTypeId } from '../setCommentary/setTypeConfig';
 
 export const analyzeWeightIncrease = (
   transition: string,
@@ -16,7 +17,9 @@ export const analyzeWeightIncrease = (
   prevReps: number,
   currReps: number,
   expected: ExpectedRepsRange,
-  loadDirection: LoadProgressionDirection = 'higher'
+  loadDirection: LoadProgressionDirection = 'higher',
+  currSetType: SetTypeId = 'normal',
+  _prevSetType: SetTypeId = 'normal'
 ): AnalysisResult => {
   const isLowerWeightBetter = loadDirection === 'lower';
   const expectedLabel = expected.label;
@@ -38,10 +41,12 @@ export const analyzeWeightIncrease = (
   };
 
   if (currReps > expected.max) {
+    const overrideType = isLowerWeightBetter ? null : currSetType;
     const commentary = resolveSetCommentary(
       isLowerWeightBetter ? 'supportDecrease_exceeded' : 'weightIncrease_exceeded',
       seedBase,
       templateVars,
+      overrideType,
       { whyCount: 2 }
     );
     const whyLines = commentary.whyLines;
@@ -74,10 +79,12 @@ export const analyzeWeightIncrease = (
   }
 
   if (currReps >= (expected.center - FATIGUE_BUFFER) || (currReps >= expected.min && currReps <= expected.max)) {
+    const overrideType = isLowerWeightBetter ? null : currSetType;
     const commentary = resolveSetCommentary(
       isLowerWeightBetter ? 'supportDecrease_met' : 'weightIncrease_met',
       seedBase,
       templateVars,
+      overrideType,
       { whyCount: 2 }
     );
     const whyLines = commentary.whyLines;
@@ -110,10 +117,12 @@ export const analyzeWeightIncrease = (
   }
 
   if (currReps >= expectedTarget - 3) {
+    const overrideType = isLowerWeightBetter ? null : currSetType;
     const commentary = resolveSetCommentary(
       isLowerWeightBetter ? 'supportDecrease_slightlyBelow' : 'weightIncrease_slightlyBelow',
       seedBase,
       templateVars,
+      overrideType,
       { whyCount: 2, improveCount: 2 }
     );
     const whyLines = commentary.whyLines;
@@ -157,10 +166,12 @@ export const analyzeWeightIncrease = (
     );
   }
 
+  const overrideType = isLowerWeightBetter ? null : currSetType;
   const commentary = resolveSetCommentary(
     isLowerWeightBetter ? 'supportDecrease_significantlyBelow' : 'weightIncrease_significantlyBelow',
     seedBase,
     templateVars,
+    overrideType,
     { whyCount: 2, improveCount: 2 }
   );
   const whyLines = commentary.whyLines;

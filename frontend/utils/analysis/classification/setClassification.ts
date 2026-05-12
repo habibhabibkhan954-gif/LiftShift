@@ -49,6 +49,22 @@ export const isWorkingSet = (set: Pick<WorkoutSet, 'set_type'>): boolean => {
   return getSetTypeConfig(set).isWorkingSet;
 };
 
+const TECHNIQUE_SET_TYPES: Set<SetTypeId> = new Set([
+  'myoreps', 'dropset', 'restpause', 'cluster', 'backoff',
+  'negative', 'partial', 'feederset', 'giantset', 'superset',
+]);
+
+/**
+ * Check if a set qualifies for standard progression analysis.
+ * Excludes technique sets (myoreps, dropset, restpause, cluster, backoff, etc.)
+ * that use intentional weight/rep manipulation and would skew progression metrics.
+ * Only normal, topset, failure, amrap, left, right sets are included.
+ */
+export const isStandardProgressionSet = (set: Pick<WorkoutSet, 'set_type'>): boolean => {
+  const id = getSetTypeId(set);
+  return !TECHNIQUE_SET_TYPES.has(id) && getSetTypeConfig(set).isWorkingSet;
+};
+
 /**
  * Check if a set is a unilateral (left or right) set.
  */
