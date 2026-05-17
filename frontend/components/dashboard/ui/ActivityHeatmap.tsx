@@ -184,7 +184,7 @@ export const ActivityHeatmap = memo(({
         <div className="flex flex-col gap-3 lg:flex-1">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400">
+              <div className="p-1.5 rounded-md bg-emerald-500/10 text-emerald-400">
                 <Target className="w-4 h-4" />
               </div>
               <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Consistency</span>
@@ -218,7 +218,7 @@ export const ActivityHeatmap = memo(({
                       const saturation = 70 + (intensity * 20);
                       const bgClass = intensity === 0 ? 'bg-slate-800/50' : '';
                       const style = intensity === 0 ? {} : { backgroundColor: `hsl(160, ${saturation}%, ${lightness}%)` };
-                      return <div key={i} className={`w-2.5 h-2.5 rounded ${bgClass}`} style={style} />;
+                      return <div key={i} className={`w-2.5 h-2.5 rounded-sm ${bgClass}`} style={style} />;
                     })}
                   </div>
                   <span>More</span>
@@ -267,7 +267,7 @@ export const ActivityHeatmap = memo(({
                       return (
                         <div
                           key={day.date.toISOString()}
-                          className={`${cellSizeClass} rounded flex items-center justify-center text-[8px] font-medium ${bgClass} ${textColor} transition-all duration-300 ${day.totalVolume > 0 && !isFuture ? 'cursor-pointer hover:ring-2 hover:ring-white/30' : 'cursor-default'} ${isToday ? 'ring-2 ring-blue-400/70' : ''}`}
+                          className={`${cellSizeClass} rounded-full flex items-center justify-center text-[8px] font-medium ${bgClass} ${textColor} transition-all duration-300 ${day.totalVolume > 0 && !isFuture ? 'cursor-pointer hover:ring-2 hover:ring-white/30' : 'cursor-default'} ${isToday ? 'ring-2 ring-blue-400/70' : ''}`}
                           style={style}
                           onClick={() => day.count > 0 && !isFuture && onDayClick?.(day.date)}
                           onMouseEnter={(e) => !isFuture && handleMouseEnter(e, day)}
