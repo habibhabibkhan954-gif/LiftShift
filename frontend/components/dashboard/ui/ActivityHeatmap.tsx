@@ -3,6 +3,7 @@ import { format, startOfMonth, endOfMonth, addMonths, eachDayOfInterval, getDay 
 import { Target } from 'lucide-react';
 import type { DailySummary } from '../../../types';
 import { computationCache } from '../../../utils/storage/computationCache';
+import { useTheme } from '../../theme/ThemeProvider';
 import { formatHumanReadableDate, formatMonthYearContraction } from '../../../utils/date/dateUtils';
 import { Tooltip as HoverTooltip, type TooltipData } from '../../ui/Tooltip';
 import { Sparkline, StreakBadge } from '../../insights/InsightCards';
@@ -136,11 +137,22 @@ export const ActivityHeatmap = memo(({
     });
   }, [heatmapData]);
 
+  const { mode } = useTheme();
+  const isLight = mode === 'light';
+
   if (heatmapData.length === 0) return null;
 
   const todayStr = format(today, 'yyyy-MM-dd');
   const todayInRange = heatmapData.some(d => format(d.date, 'yyyy-MM-dd') === todayStr);
   const maxVolume = Math.max(...heatmapData.map(d => d.totalVolume), 1);
+
+  const getHSLForIntensity = (intensity: number) => {
+    const lightness = isLight
+      ? 88 - (intensity * 48)
+      : 25 + (intensity * 40);
+    const saturation = 70 + (intensity * 20);
+    return { lightness, saturation };
+  };
 
   const getColor = (volume: number, isFuture?: boolean, isCurrentMonthFuture?: boolean) => {
     if (isCurrentMonthFuture) return { bgClass: 'bg-slate-800/20 border border-slate-700/20', style: { opacity: 0.6 } };
@@ -148,8 +160,7 @@ export const ActivityHeatmap = memo(({
     if (volume === 0) return { bgClass: 'bg-slate-800/50', style: {} };
 
     const intensity = Math.min(volume / maxVolume, 1);
-    const lightness = 25 + (intensity * 40);
-    const saturation = 70 + (intensity * 20);
+    const { lightness, saturation } = getHSLForIntensity(intensity);
 
     return { bgClass: '', style: { backgroundColor: `hsl(160, ${saturation}%, ${lightness}%)` } };
   };
@@ -160,9 +171,9 @@ export const ActivityHeatmap = memo(({
     if (volume === 0) return 'text-slate-600';
 
     const intensity = Math.min(volume / maxVolume, 1);
-    const lightness = 25 + (intensity * 40);
+    const { lightness } = getHSLForIntensity(intensity);
     
-    return lightness < 40 ? 'text-white' : 'text-slate-900';
+    return lightness >= 45 ? 'text-slate-900' : 'text-white';
   };
 
 
@@ -214,8 +225,7 @@ export const ActivityHeatmap = memo(({
                   <span>Less</span>
                   <div className="flex gap-0.5">
                     {[0, 0.25, 0.5, 0.75, 1].map((intensity, i) => {
-                      const lightness = 25 + (intensity * 40);
-                      const saturation = 70 + (intensity * 20);
+                      const { lightness, saturation } = getHSLForIntensity(intensity);
                       const bgClass = intensity === 0 ? 'bg-slate-800/50' : '';
                       const style = intensity === 0 ? {} : { backgroundColor: `hsl(160, ${saturation}%, ${lightness}%)` };
                       return <div key={i} className={`w-2.5 h-2.5 rounded-sm ${bgClass}`} style={style} />;
