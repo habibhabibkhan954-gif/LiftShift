@@ -130,7 +130,7 @@ export const PrTrendCard = ({
                 contentStyle={tooltipStyle as any}
                 cursor={view === 'bar' ? ({ fill: 'rgb(var(--overlay-rgb) / 0.12)' } as any) : ({ stroke: 'rgb(var(--border-rgb) / 0.35)' } as any)}
                 labelFormatter={(l, p) => (p as any)?.[0]?.payload?.tooltipLabel || l}
-                formatter={(val: number, name) => {
+                formatter={(val: any, name: any) => {
                   if (name === 'PRs') return [Math.round(val), 'PRs'];
                   return [Math.round(val), name];
                 }}

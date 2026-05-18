@@ -144,7 +144,7 @@ export const MuscleAnalysisDetailPanel: React.FC<MuscleAnalysisDetailPanelProps>
                     <RechartsTooltip
                       contentStyle={CHART_TOOLTIP_STYLE}
                       labelStyle={{ color: 'var(--text-primary)' }}
-                      formatter={(value: number) => {
+                      formatter={(value: any) => {
                         const v = formatNumber(Number(value), { maxDecimals: 1 });
                         return [`${v} sets/wk`];
                       }}

@@ -342,7 +342,7 @@ export const analyzeExerciseTrendCore = (
         isBodyweightLike
           ? `Reps: ${fmtSignedPct(diffPct)}`
           : (isLowerWeightBetter ? `Loading: ${fmtSignedPct(diffPct)}` : `Strength: ${fmtSignedPct(diffPct)}`),
-        recentEvidence,
+        recentEvidence ?? '',
       ])),
     };
   }
@@ -363,7 +363,7 @@ export const analyzeExerciseTrendCore = (
         isBodyweightLike
           ? `Reps: ${fmtSignedPct(diffPct)}`
           : (isLowerWeightBetter ? `Loading: ${fmtSignedPct(diffPct)}` : `Strength: ${fmtSignedPct(diffPct)}`),
-        recentEvidence,
+        recentEvidence ?? '',
       ])),
     };
   }
@@ -379,17 +379,17 @@ export const analyzeExerciseTrendCore = (
     prSpikePct,
     prDropPct,
     calculation,
-    evidence: keepDynamicEvidence(clampEvidence([
-      isBodyweightLike
-        ? `Reps: ${fmtSignedPct(diffPct)}`
-        : (isLowerWeightBetter ? `Loading: ${fmtSignedPct(diffPct)}` : `Strength: ${fmtSignedPct(diffPct)}`),
-      recentEvidence,
-      isStaticPlateau
-        ? (isBodyweightLike
-          ? `Top reps stayed within ~${Math.max(0, maxRepsMetric - minRepsMetric)} rep(s).`
-          : `Top weight stayed within ~${WEIGHT_STATIC_EPSILON_KG}kg and reps within ~${REP_STATIC_EPSILON} rep(s).`)
-        : undefined,
-    ])),
+      evidence: (keepDynamicEvidence(clampEvidence([
+        isBodyweightLike
+          ? `Reps: ${fmtSignedPct(diffPct)}`
+          : (isLowerWeightBetter ? `Loading: ${fmtSignedPct(diffPct)}` : `Strength: ${fmtSignedPct(diffPct)}`),
+        recentEvidence ?? '',
+        isStaticPlateau
+          ? (isBodyweightLike
+            ? `Top reps stayed within ~${Math.max(0, maxRepsMetric - minRepsMetric)} rep(s).`
+            : `Top weight stayed within ~${WEIGHT_STATIC_EPSILON_KG}kg and reps within ~${REP_STATIC_EPSILON} rep(s).`)
+          : '',
+      ])) ?? []).filter(Boolean),
     plateau,
   };
 };

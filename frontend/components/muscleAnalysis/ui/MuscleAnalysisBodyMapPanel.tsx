@@ -93,7 +93,7 @@ export const MuscleAnalysisBodyMapPanel: React.FC<MuscleAnalysisBodyMapPanelProp
             setWeeklySetsWindow(v);
             const svgId = selectedSvgIdForUrlRef.current;
             if (!svgId) return;
-            updateSelectionUrl({ svgId, window: v });
+            updateSelectionUrl({ svgId, mode: 'headless' as const, window: v });
           }}
         />
       </div>
@@ -107,7 +107,8 @@ export const MuscleAnalysisBodyMapPanel: React.FC<MuscleAnalysisBodyMapPanelProp
                   <PolarGrid stroke="#334155" />
                   <PolarAngleAxis
                     dataKey="subject"
-                    tick={({ payload, x, y, index, cx, cy }: { payload?: { subject?: string }; x?: number; y?: number; index?: number; cx?: number; cy?: number }) => {
+                    tick={(props: any) => {
+                      const { payload, x, y, index, cx, cy } = props;
                       const label = radarData[index ?? 0]?.subject ?? payload?.subject ?? '';
                       const px = x ?? 0;
                       const py = y ?? 0;
@@ -135,7 +136,7 @@ export const MuscleAnalysisBodyMapPanel: React.FC<MuscleAnalysisBodyMapPanelProp
                   />
                   <RechartsTooltip
                     contentStyle={CHART_TOOLTIP_STYLE}
-                    formatter={(value: number) => [`${Number(value).toFixed(1)} sets/wk`]}
+                    formatter={(value: any) => [`${Number(value).toFixed(1)} sets/wk`]}
                   />
                 </RadarChart>
               </ResponsiveContainer>

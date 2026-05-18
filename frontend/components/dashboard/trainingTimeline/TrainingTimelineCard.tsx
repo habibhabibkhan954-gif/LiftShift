@@ -384,7 +384,7 @@ export const TrainingTimelineCard: React.FC<TrainingTimelineCardProps> = ({ prog
       body = `${checkpoint.description}\n\n${formatEta(weeks)} to reach`;
     } else if (isReached) {
       // Past: description + when reached
-      const monthsAgo = achievedAt !== null ? Math.round(monthsTraining - achievedAt) : 0;
+      const monthsAgo = achievedAt != null ? Math.round(monthsTraining - (achievedAt ?? 0)) : 0;
       body = `${checkpoint.description}\n\nReached ${formatMonths(monthsAgo)} ago`;
     } else {
       // Future: description only

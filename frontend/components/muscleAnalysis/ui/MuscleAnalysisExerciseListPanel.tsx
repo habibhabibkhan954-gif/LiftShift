@@ -32,7 +32,7 @@ export const MuscleAnalysisExerciseListPanel: React.FC<MuscleAnalysisExerciseLis
   const displayTitle = `Exercises for ${selectedMuscle ? selectedMuscle.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : 'Full Body'}`;
   
   return (
-    <div className="bg-black/70 rounded-xl border border-slate-700/50 overflow-hidden flex flex-col h-[300px] md:h-auto lg:h-full min-h-0">
+    <div className="bg-black/70 rounded-xl border border-slate-700/50 overflow-hidden flex flex-col h-full min-h-0">
       <div className="bg-black/70  p-2 flex-shrink-0">
         <div className="flex items-center gap-2">
           <span className="text-sm font-bold text-white" style={SEMI_FANCY_FONT}>{displayTitle}</span>
@@ -42,7 +42,7 @@ export const MuscleAnalysisExerciseListPanel: React.FC<MuscleAnalysisExerciseLis
         </div>
       </div>
 
-      <div className="min-h-0 overflow-y-auto">
+      <div className="flex-1 min-h-0 overflow-y-auto">
         <MuscleAnalysisExerciseList
           contributingExercises={contributingExercises}
           assetsMap={assetsMap}

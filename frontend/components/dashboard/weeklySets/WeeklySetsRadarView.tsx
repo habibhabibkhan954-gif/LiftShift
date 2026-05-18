@@ -40,7 +40,8 @@ export const WeeklySetsRadarView: React.FC<WeeklySetsRadarViewProps> = ({ radarD
           <PolarGrid stroke="#334155" />
           <PolarAngleAxis
             dataKey="subject"
-            tick={({ payload, x, y, index, cx, cy }: { payload?: { subject?: string }; x?: number; y?: number; index?: number; cx?: number; cy?: number }) => {
+            tick={(props: any) => {
+              const { payload, x, y, index, cx, cy } = props;
               const label = radarData[index ?? 0]?.subject ?? payload?.subject ?? '';
               const px = x ?? 0;
               const py = y ?? 0;
@@ -66,7 +67,7 @@ export const WeeklySetsRadarView: React.FC<WeeklySetsRadarViewProps> = ({ radarD
             fillOpacity={0.35}
             animationDuration={1500}
           />
-          <Tooltip contentStyle={tooltipStyle} formatter={(value: number) => [`${Number(value).toFixed(1)} sets/wk`]} />
+          <Tooltip contentStyle={tooltipStyle} formatter={(value: any) => [`${Number(value).toFixed(1)} sets/wk`]} />
         </RadarChart>
       </ResponsiveContainer>
     </LazyRender>

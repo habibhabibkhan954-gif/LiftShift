@@ -93,9 +93,9 @@ export function createCompressedStorageManager(key: string): StorageManager<stri
         return null;
       }
     },
-    set: (value: string): void => {
+    set: (value: string | null): void => {
       try {
-        const compressed = LZString.compressToUTF16(value);
+        const compressed = LZString.compressToUTF16(value ?? '');
         localStorage.setItem(key, compressed);
       } catch (error) {
         console.error(`Failed to save ${key} to local storage:`, error);

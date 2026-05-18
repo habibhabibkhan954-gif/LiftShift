@@ -84,7 +84,7 @@ const NodeView: React.FC<{ node: HowItWorksNode; linkTarget: '_self' | '_blank' 
   );
 };
 
-const SectionView: React.FC<{ section: HowItWorksSection; level: number; linkTarget: string }> = ({ section, level, linkTarget }) => {
+const SectionView: React.FC<{ section: HowItWorksSection; level: number; linkTarget: '_self' | '_blank' }> = ({ section, level, linkTarget }) => {
   const HeadingTag = level === 2 ? 'h2' : 'h3';
   return (
     <section id={section.id} className="space-y-4 scroll-mt-16">

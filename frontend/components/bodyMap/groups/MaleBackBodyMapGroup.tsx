@@ -7,7 +7,7 @@ import { BodyMapStrokeConfig } from "../../../config/bodyMapWarp";
 const BASE_VIEWBOX_WIDTH = 660.46;
 const BASE_VIEWBOX_HEIGHT = 1206.46;
 
-interface Props extends React.SVGProps<SVGSVGElement> {
+interface Props extends Omit<React.SVGProps<SVGSVGElement>, 'stroke'> {
   warpOverrides?: BodyWarpParams;
   stroke?: Partial<BodyMapStrokeConfig>;
 }

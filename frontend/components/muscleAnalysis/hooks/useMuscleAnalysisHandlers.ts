@@ -14,7 +14,7 @@ interface UseMuscleAnalysisHandlersParams {
   setSelectedMuscle: React.Dispatch<React.SetStateAction<string | null>>;
   selectedSvgIdForUrlRef: React.MutableRefObject<string | null>;
   clearSelectionUrl: () => void;
-  updateSelectionUrl: (payload: { svgId: string; window: WeeklySetsWindow }) => void;
+  updateSelectionUrl: (payload: { svgId: string; mode?: 'headless'; window: WeeklySetsWindow }) => void;
   weeklySetsWindow: WeeklySetsWindow;
   headlessRatesMap: Map<string, number>;
   setHoverTooltip: (value: TooltipData | null) => void;

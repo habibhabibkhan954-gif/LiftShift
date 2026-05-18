@@ -1,12 +1,13 @@
 import React, { Suspense } from 'react';
 import { ChartSkeleton } from '../../ui/ChartSkeleton';
 import { LazyRender } from '../../ui/LazyRender';
+import type { ExerciseAsset } from '../../../utils/data/exerciseAssets';
 
 const TopExercisesCard = React.lazy(() => import('../topExercises/TopExercisesCard').then((m) => ({ default: m.TopExercisesCard })));
 
 interface DashboardSecondaryChartsProps {
-  topExerciseMode: 'volume' | 'pr';
-  setTopExerciseMode: (v: 'volume' | 'pr') => void;
+  topExerciseMode: 'all' | 'weekly' | 'monthly' | 'yearly';
+  setTopExerciseMode: (v: 'all' | 'weekly' | 'monthly' | 'yearly') => void;
   topExercisesView: 'barh' | 'area';
   setTopExercisesView: (v: 'barh' | 'area') => void;
   topExercisesBarData: any[];
@@ -16,8 +17,8 @@ interface DashboardSecondaryChartsProps {
   pieColors: string[];
   tooltipStyle: any;
   onExerciseClick?: (exerciseName: string) => void;
-  assetsMap?: Map<string, any> | null;
-  assetsLowerMap?: Map<string, any> | null;
+  assetsMap?: Map<string, ExerciseAsset> | null;
+  assetsLowerMap?: Map<string, ExerciseAsset> | null;
 }
 
 export const DashboardSecondaryCharts: React.FC<DashboardSecondaryChartsProps> = ({
@@ -51,8 +52,8 @@ export const DashboardSecondaryCharts: React.FC<DashboardSecondaryChartsProps> =
           pieColors={pieColors}
           tooltipStyle={tooltipStyle as any}
           onExerciseClick={onExerciseClick}
-          assetsMap={assetsMap}
-          assetsLowerMap={assetsLowerMap}
+          assetsMap={assetsMap ?? null}
+          assetsLowerMap={assetsLowerMap ?? null}
         />
       </Suspense>
     </LazyRender>

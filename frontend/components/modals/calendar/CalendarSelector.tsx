@@ -67,10 +67,10 @@ export const CalendarSelector: React.FC<CalendarSelectorProps> = ({
       monthHasData={state.monthHasData}
       getMonthStatus={state.getMonthStatus}
       getWeekStatus={state.getWeekStatus}
-      isDisabled={state.isDisabled}
-      isValidGymDay={state.isValidGymDay}
+      isDisabled={(d: Date) => !!state.isDisabled(d)}
+      isValidGymDay={(d: Date) => !!state.isValidGymDay(d)}
       weekHasData={state.weekHasData}
-      isInRange={state.isInRange}
+      isInRange={(d: Date) => !!state.isInRange(d)}
       isRangeEdge={state.isRangeEdge}
       onYearClick={state.handleYearClick}
       onSetYearStart={state.handleSetYearAsStart}

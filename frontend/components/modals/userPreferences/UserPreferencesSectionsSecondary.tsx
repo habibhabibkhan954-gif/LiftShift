@@ -1,7 +1,7 @@
 import React from 'react';
 import { Moon, Palette, SlidersHorizontal, Sparkles, Sun, Type } from 'lucide-react';
 import { ExerciseTrendMode, FontChoice, ThemeMode } from '../../../utils/storage/localStorage';
-import { CompactThemeOption, CompactFontOption } from './UserPreferencesThemeOption';
+import { CompactThemeOption } from './UserPreferencesThemeOption';
 
 const formatSecondaryInput = (value: number): string => {
   const fixed = value.toFixed(2);

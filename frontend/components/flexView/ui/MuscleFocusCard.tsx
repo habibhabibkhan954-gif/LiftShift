@@ -86,26 +86,27 @@ export const MuscleFocusCard: React.FC<{
                   <PolarGrid stroke={isDark ? '#334155' : '#cbd5e1'} />
                   <PolarAngleAxis
                     dataKey="subject"
-                    tick={({ payload, x, y, index, cx, cy }: { payload?: { subject?: string }; x?: number; y?: number; index?: number; cx?: number; cy?: number }) => {
-                      const label = radarData[index ?? 0]?.subject ?? payload?.subject ?? '';
-                      const px = x ?? 0;
-                      const py = y ?? 0;
-                      const outward = 1.18;
-                      const tx = cx != null && cy != null ? cx + (px - cx) * outward : px;
-                      const ty = cx != null && cy != null ? cy + (py - cy) * outward : py;
-                      return (
-                        <g transform={`translate(${tx},${ty})`}>
-                          <text
-                            fill={RADAR_TICK_FILL}
-                            fontSize={10}
-                            textAnchor="middle"
-                            dominantBaseline="middle"
-                          >
-                            {label}
-                          </text>
-                        </g>
-                      );
-                    }}
+            tick={(props: any) => {
+              const { payload, x, y, index, cx, cy } = props;
+              const label = radarData[index ?? 0]?.subject ?? payload?.subject ?? '';
+              const px = x ?? 0;
+              const py = y ?? 0;
+              const outward = 1.18;
+              const tx = cx != null && cy != null ? cx + (px - cx) * outward : px;
+              const ty = cx != null && cy != null ? cy + (py - cy) * outward : py;
+              return (
+                <g transform={`translate(${tx},${ty})`}>
+                  <text
+                    fill={RADAR_TICK_FILL}
+                    fontSize={10}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                  >
+                    {label}
+                  </text>
+                </g>
+              );
+            }}
                   />
                   <PolarRadiusAxis angle={30} domain={[0, 'auto']} tick={false} axisLine={false} />
                   <Radar
@@ -119,7 +120,7 @@ export const MuscleFocusCard: React.FC<{
                   />
                   <Tooltip
                     contentStyle={tooltipStyle}
-                    formatter={(value: number) => [Number(value).toFixed(1), 'Sets/wk']}
+                    formatter={(value: any) => [Number(value).toFixed(1), 'Sets/wk']}
                   />
                 </RadarChart>
               </ResponsiveContainer>

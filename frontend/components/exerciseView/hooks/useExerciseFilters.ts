@@ -167,9 +167,9 @@ export function useExerciseFilters({
         if (exerciseListSortMode === 'trend') {
           const ap = statusMap[a.name]?.diffPct;
           const bp = statusMap[b.name]?.diffPct;
-          const aHas = Number.isFinite(ap);
-          const bHas = Number.isFinite(bp);
-          if (aHas && bHas && bp !== ap) return (bp - ap) * dir;
+          const aHas = ap !== undefined && Number.isFinite(ap);
+          const bHas = bp !== undefined && Number.isFinite(bp);
+          if (aHas && bHas && bp !== ap) return ((bp ?? 0) - (ap ?? 0)) * dir;
           if (aHas !== bHas) return aHas ? -1 : 1;
         }
 

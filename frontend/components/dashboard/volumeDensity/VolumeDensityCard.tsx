@@ -135,7 +135,7 @@ export const VolumeDensityCard = ({
               contentStyle={tooltipStyle as any}
               cursor={view === 'bar' ? ({ fill: 'rgb(var(--overlay-rgb) / 0.12)' } as any) : ({ stroke: 'rgb(var(--border-rgb) / 0.35)' } as any)}
               labelFormatter={(l, p) => (p as any)?.[0]?.payload?.tooltipLabel || l}
-              formatter={(val: number, name) => {
+              formatter={(val: any, name: any) => {
                 const v = formatNumber(Number(val), { maxDecimals: 1 });
                 if (name === `Volume per Set (${weightUnit})`) return [`${v} ${weightUnit}`, name];
                 if (name === 'Set Count') return [`${val} sets`, name];

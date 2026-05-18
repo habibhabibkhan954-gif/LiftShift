@@ -1,19 +1,18 @@
-import type { Dispatch, SetStateAction } from 'react';
 import type { WorkoutSet } from '../../types';
 import type { DataSourceChoice } from '../../utils/storage/dataSourceStorage';
 import type { OnboardingFlow } from '../onboarding/types';
 
 export interface StartupAutoLoadParams {
   parsedData: WorkoutSet[];
-  setOnboarding: Dispatch<SetStateAction<OnboardingFlow | null>>;
-  setDataSource: Dispatch<SetStateAction<DataSourceChoice | null>>;
-  setParsedData: Dispatch<SetStateAction<WorkoutSet[]>>;
-  setHevyLoginError: Dispatch<SetStateAction<string | null>>;
-  setLyfatLoginError: Dispatch<SetStateAction<string | null>>;
-  setCsvImportError: Dispatch<SetStateAction<string | null>>;
-  setIsAnalyzing: Dispatch<SetStateAction<boolean>>;
+  setOnboarding: (flow: OnboardingFlow | null) => void;
+  setDataSource: (source: DataSourceChoice | null) => void;
+  setParsedData: (data: WorkoutSet[]) => void;
+  setHevyLoginError: (error: string | null) => void;
+  setLyfatLoginError: (error: string | null) => void;
+  setCsvImportError: (error: string | null) => void;
+  setIsAnalyzing: (value: boolean) => void;
   isAnalyzing: boolean;
-  setLoadingKind: Dispatch<SetStateAction<'hevy' | 'lyfta' | 'csv' | null>>;
+  setLoadingKind: (kind: 'hevy' | 'lyfta' | 'csv' | null) => void;
   startProgress: () => number;
   finishProgress: (startedAt: number) => void;
 }

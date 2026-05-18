@@ -340,9 +340,9 @@ export const parseWorkoutCSVAsync = async (csvContent: string, options: ParseOpt
         }
       },
       complete: (results?: Papa.ParseResult<Row>) => {
-        const finalResults = results ?? { data: [], errors: [], meta: {} };
+        const finalResults = results ?? { data: [], errors: [], meta: {} as Papa.ParseMeta };
         if (finalResults.meta?.fields && headers.length === 0) {
-          headers = finalResults.meta.fields as string[];
+          headers = finalResults.meta.fields;
           ensureHeaderMap();
         }
         if (finalResults.errors?.length) {
@@ -358,7 +358,7 @@ export const parseWorkoutCSVAsync = async (csvContent: string, options: ParseOpt
 
         if (!processing) processQueue();
       },
-      error: (error) => {
+      error: (error: Error) => {
         rejectOnce(error instanceof Error ? error : new Error(String(error)));
       },
     });

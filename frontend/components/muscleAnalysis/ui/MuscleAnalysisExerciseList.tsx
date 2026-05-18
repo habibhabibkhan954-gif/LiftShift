@@ -90,9 +90,9 @@ export const MuscleAnalysisExerciseList: React.FC<MuscleAnalysisExerciseListProp
                     <div className="my-0.5">
                       <span
                         className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-semibold ${
-                          ex.strengthTrend > 0 
+                          (ex.strengthTrend ?? 0) > 0 
                             ? 'bg-emerald-500/15 text-emerald-400' 
-                            : ex.strengthTrend < 0 
+                            : (ex.strengthTrend ?? 0) < 0 
                               ? 'bg-rose-500/15 text-rose-400'
                               : 'bg-slate-500/15 text-slate-400'
                         }`}

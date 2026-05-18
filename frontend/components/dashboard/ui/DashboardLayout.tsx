@@ -1,7 +1,7 @@
 import React from 'react';
 import type { BodyMapGender } from '../../bodyMap/BodyMap';
 import type { DailySummary, ExerciseStats, WorkoutSet } from '../../../types';
-import type { WeightUnit } from '../../../utils/storage/localStorage';
+import type { WeightUnit, TimeFilterMode, ThemeMode } from '../../../utils/storage/localStorage';
 import type { TimelineProgress } from '../../../utils/training/trainingTimeline';
 import type { DashboardSummaryResult } from '../../../utils/analysis/dashboardSummary/dashboardSummary';
 import { DashboardHeaderBar } from './DashboardHeaderBar';
@@ -29,8 +29,8 @@ interface DashboardLayoutProps {
   effectiveNow: Date;
   trainingLevel: import('../../../utils/muscle/hypertrophy/muscleParams').TrainingLevel;
   timelineProgress: TimelineProgress;
-  chartModes: { volumeVsDuration: 'daily' | 'weekly' | 'monthly' | 'yearly'; intensityEvo: 'daily' | 'weekly' | 'monthly' | 'yearly'; prTrend: 'daily' | 'weekly' | 'monthly' | 'yearly' };
-  toggleChartMode: (key: 'volumeVsDuration' | 'intensityEvo' | 'prTrend', mode: 'daily' | 'weekly' | 'monthly' | 'yearly') => void;
+  chartModes: { volumeVsDuration: TimeFilterMode; intensityEvo: TimeFilterMode; prTrend: TimeFilterMode };
+  toggleChartMode: (key: string, mode: TimeFilterMode) => void;
   prTrendView: 'area' | 'bar';
   setPrTrendView: (v: 'area' | 'bar') => void;
   prsData: any[];
@@ -49,8 +49,8 @@ interface DashboardLayoutProps {
   intensityInsight: any;
   muscleGrouping: 'groups' | 'muscles';
   setMuscleGrouping: (v: 'groups' | 'muscles') => void;
-  musclePeriod: 'daily' | 'weekly' | 'monthly' | 'yearly' | 'all';
-  setMusclePeriod: (v: 'daily' | 'weekly' | 'monthly' | 'yearly' | 'all') => void;
+  musclePeriod: TimeFilterMode | 'daily';
+  setMusclePeriod: (v: any) => void;
   muscleTrendView: 'area' | 'stackedBar';
   setMuscleTrendView: (v: 'area' | 'stackedBar') => void;
   trendData: any[];
@@ -65,8 +65,8 @@ interface DashboardLayoutProps {
   setVolumeView: (v: 'area' | 'bar') => void;
   volumeDurationData: any[];
   volumeDensityTrend: any;
-  topExerciseMode: 'volume' | 'pr';
-  setTopExerciseMode: (v: 'volume' | 'pr') => void;
+  topExerciseMode: 'all' | 'weekly' | 'monthly' | 'yearly';
+  setTopExerciseMode: (v: 'all' | 'weekly' | 'monthly' | 'yearly') => void;
   topExercisesView: 'barh' | 'area';
   setTopExercisesView: (v: 'barh' | 'area') => void;
   topExercisesBarData: any[];
@@ -77,7 +77,7 @@ interface DashboardLayoutProps {
   tooltipStyle: any;
   fullData: WorkoutSet[];
   exerciseStats: ExerciseStats[];
-  themeMode: string;
+  themeMode: ThemeMode;
   animationKeyframes: string;
   hypertrophyData: any[];
   hypertrophyData30d?: any[];
@@ -215,7 +215,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
           muscleGrouping={muscleGrouping}
           setMuscleGrouping={setMuscleGrouping}
           musclePeriod={musclePeriod}
-          setMusclePeriod={setMusclePeriod}
+          setMusclePeriod={(v: any) => setMusclePeriod(v)}
           muscleTrendView={muscleTrendView}
           setMuscleTrendView={setMuscleTrendView}
           trendData={trendData}
@@ -231,7 +231,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
           fullData={fullData}
           dailyData={dailyData}
           exerciseStats={exerciseStats}
-          effectiveNow={effectiveNow}
           themeMode={themeMode}
           hypertrophyData={hypertrophyData}
           hypertrophyData30d={hypertrophyData30d}

@@ -67,7 +67,7 @@ export const YearlyHeatmapCard: React.FC<{
   };
 
   const months = useMemo(() => {
-    const out: { monthIndex: number; cells: (number | null)[]; rowCount: number }[] = [];
+      const out: { monthIndex: number; cells: (number | null)[] }[] = [];
 
     const startMonthIndex = rangeStart.getFullYear() === selectedYear ? rangeStart.getMonth() : 0;
     const endMonthIndex = effectiveNow.getFullYear() === selectedYear ? effectiveNow.getMonth() : 11;
@@ -90,7 +90,7 @@ export const YearlyHeatmapCard: React.FC<{
         cells[dayOfWeekOffset + i] = daySetCount.get(key) || 0;
       }
 
-      out.push({ monthIndex: m, cells, rowCount });
+      out.push({ monthIndex: m, cells });
     }
 
     return out;
@@ -152,7 +152,7 @@ export const YearlyHeatmapCard: React.FC<{
         </div>
 
         <div className={`w-full min-w-0 grid ${monthGridColsClass} ${monthGridGapX} ${monthGridGapY}`}>
-          {months.map(({ monthIndex, cells, rowCount }) => (
+          {months.map(({ monthIndex, cells }) => (
             <div key={monthIndex} className={monthGridMaxWClass}>
               <div className={`text-center ${monthLabelClass} font-semibold ${textMuted}`}>
                 {MONTH_SHORT[monthIndex]}

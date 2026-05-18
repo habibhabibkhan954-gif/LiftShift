@@ -104,7 +104,7 @@ export const useDashboardMuscleTrend = (args: {
     const totals: Record<string, number> = {};
     const keys = muscleGrouping === 'groups' ? muscleSeriesGroups.keys : muscleSeriesMuscles.keys;
     trendData.forEach((row: any) => {
-      keys.forEach((k) => {
+      keys.forEach((k: string) => {
         totals[k] = (totals[k] || 0) + (row[k] || 0);
       });
     });

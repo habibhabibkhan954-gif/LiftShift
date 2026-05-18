@@ -233,7 +233,6 @@ export const useBodyMapWarp = (options?: UseBodyMapWarpOptions): UseBodyMapWarpR
     setReady(true);
   }, [resolvedParams, stroke]);
 
-  return { ref, heightScale: resolvedParams.heightScale, ready };
+  return { ref: ref as React.RefObject<SVGSVGElement>, heightScale: resolvedParams.heightScale, ready };
 };
-
 export type { BodyWarpParams, ResolvedBodyWarpParams, BodyRegionWarp };

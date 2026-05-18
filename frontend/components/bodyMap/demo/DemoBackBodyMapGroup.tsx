@@ -11,7 +11,7 @@ const DEMO_ORIGINAL_HEIGHT = 379;
 const SCALE_X = BASE_VIEWBOX_WIDTH / DEMO_ORIGINAL_WIDTH;
 const SCALE_Y = BASE_VIEWBOX_HEIGHT / DEMO_ORIGINAL_HEIGHT;
 
-interface Props extends React.SVGProps<SVGSVGElement> {
+interface Props extends Omit<React.SVGProps<SVGSVGElement>, 'stroke'> {
   warpOverrides?: BodyWarpParams;
   stroke?: Partial<BodyMapStrokeConfig>;
 }

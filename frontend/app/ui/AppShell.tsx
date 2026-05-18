@@ -33,7 +33,7 @@ interface AppShellProps {
   onSelectYear: (range: { start: Date; end: Date }) => void;
   onClearCalendar: () => void;
   onApplyCalendar: (payload: { range?: { start: Date; end: Date } | null }) => void;
-  mainRef: React.RefObject<HTMLDivElement>;
+  mainRef: React.RefObject<HTMLElement | null>;
   hasActiveFilters: boolean;
   dailySummaries: DailySummary[];
   exerciseStats: ExerciseStats[];
@@ -44,13 +44,13 @@ interface AppShellProps {
   highlightedExercise: string | null;
   onHighlightApplied: () => void;
   onDayClick: (day: Date) => void;
-  onMuscleClick: (muscleId: string, viewMode: 'muscle' | 'group' | 'headless') => void;
+  onMuscleClick?: (muscleId: string, weeklySetsWindow?: 'all' | '7d' | '30d' | '365d') => void;
   onExerciseClick: (exerciseName: string) => void;
   onHistoryDayTitleClick: (date: Date) => void;
   targetHistoryDate: Date | null;
   onTargetHistoryDateConsumed: () => void;
-  initialMuscleForAnalysis: string | null;
-  initialWeeklySetsWindow: 'all' | '7d' | '30d' | '365d';
+  initialMuscleForAnalysis: { muscleId: string } | null;
+  initialWeeklySetsWindow: 'all' | '7d' | '30d' | '365d' | null;
   onInitialMuscleConsumed: () => void;
   bodyMapGender: 'male' | 'female';
   weightUnit: 'kg' | 'lbs';

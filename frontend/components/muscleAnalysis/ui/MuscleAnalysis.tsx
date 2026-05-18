@@ -197,7 +197,7 @@ export const MuscleAnalysis: React.FC<MuscleAnalysisProps> = ({
     setSelectedMuscle,
     selectedSvgIdForUrlRef,
     clearSelectionUrl,
-    updateSelectionUrl,
+    updateSelectionUrl: (payload: { svgId: string; mode?: 'headless'; window: WeeklySetsWindow }) => updateSelectionUrl({ svgId: payload.svgId, mode: 'headless', window: payload.window }),
     weeklySetsWindow,
     headlessRatesMap,
     setHoverTooltip,
@@ -240,7 +240,7 @@ export const MuscleAnalysis: React.FC<MuscleAnalysisProps> = ({
       </div>
 
       {/* Main layout: 3 columns on desktop, stacked on mobile */}
-      <div className="flex flex-col gap-2 lg:grid lg:grid-cols-3 lg:grid-rows-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-2 lg:h-[80vh] lg:min-h-0">
+      <div className="flex flex-col gap-2 lg:grid lg:grid-cols-3 lg:grid-rows-[1fr_1fr] lg:gap-2 lg:h-[80vh] overflow-hidden">
         {/* Column 1: Body Map (1/3 width, full height) */}
         <div className="h-[400px] sm:h-[450px] lg:col-start-1 lg:row-start-1 lg:row-span-2 lg:h-full min-h-0">
           <MuscleAnalysisBodyMapPanel
@@ -265,7 +265,7 @@ export const MuscleAnalysis: React.FC<MuscleAnalysisProps> = ({
         </div>
 
         {/* Column 2: Weekly Sets Graph */}
-        <div className="h-[300px] sm:h-[350px] lg:col-start-2 lg:row-start-1 lg:h-full min-h-0">
+        <div className="h-[300px] sm:h-[350px] lg:col-start-2 lg:row-start-1 lg:h-full min-h-0 overflow-hidden">
           <MuscleAnalysisGraphPanel
             selectedMuscle={selectedMuscle}
             weeklySetsWindow={weeklySetsWindow}
@@ -282,7 +282,7 @@ export const MuscleAnalysis: React.FC<MuscleAnalysisProps> = ({
         </div>
 
         {/* Column 3: Exercise List */}
-        <div className="h-[300px] sm:h-auto lg:h-full lg:max-h-none lg:col-start-3 lg:row-start-1 min-h-0">
+        <div className="h-[300px] sm:h-[350px] lg:h-full lg:col-start-3 lg:row-start-1 min-h-0 overflow-hidden">
           <MuscleAnalysisExerciseListPanel
             contributingExercises={contributingExercises}
             assetsMap={assetsMap}
@@ -298,13 +298,13 @@ export const MuscleAnalysis: React.FC<MuscleAnalysisProps> = ({
 
         {/* Bottom row: Lifetime Growth Unlocked (columns 2-3) */}
         {lifetimeAchievementData && (
-          <div className="h-[300px] lg:h-full lg:col-start-2 lg:col-span-2 lg:row-start-2 min-h-0">
+          <div className="h-[300px] lg:h-full lg:col-start-2 lg:col-span-2 lg:row-start-2 min-h-0 overflow-hidden">
             <LifetimeAchievementCard
               data={lifetimeAchievementData}
               selectedMuscleId={selectedMuscle}
               onMuscleClick={handleMuscleClick}
               workoutData={data}
-              assetsMap={assetsMap}
+              assetsMap={assetsMap ?? undefined}
               effectiveNow={effectiveNow}
               windowStart={windowStart}
               headlessRatesMap={headlessRatesMap}

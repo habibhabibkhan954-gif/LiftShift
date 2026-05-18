@@ -3,7 +3,7 @@ import { ChartSkeleton } from '../../ui/ChartSkeleton';
 import { LazyRender } from '../../ui/LazyRender';
 import type { BodyMapGender } from '../../bodyMap/BodyMap';
 import type { DailySummary, ExerciseStats, WorkoutSet } from '../../../types';
-import type { WeightUnit } from '../../../utils/storage/localStorage';
+import type { WeightUnit, TimeFilterMode, ThemeMode } from '../../../utils/storage/localStorage';
 import { DashboardAIAnalysisCard } from './DashboardAIAnalysisCard';
 
 const WeeklySetsCard = React.lazy(() => import('../weeklySets/WeeklySetsCard').then((m) => ({ default: m.WeeklySetsCard })));
@@ -16,8 +16,8 @@ const VolumeDensityCard = React.lazy(() => import('../volumeDensity/VolumeDensit
 
 interface DashboardPrimaryChartsProps {
   isMounted: boolean;
-  chartModes: { volumeVsDuration: 'daily' | 'weekly' | 'monthly' | 'yearly'; intensityEvo: 'daily' | 'weekly' | 'monthly' | 'yearly'; prTrend: 'daily' | 'weekly' | 'monthly' | 'yearly' };
-  toggleChartMode: (key: 'volumeVsDuration' | 'intensityEvo' | 'prTrend', mode: 'daily' | 'weekly' | 'monthly' | 'yearly') => void;
+  chartModes: { volumeVsDuration: TimeFilterMode; intensityEvo: TimeFilterMode; prTrend: TimeFilterMode };
+  toggleChartMode: (key: 'volumeVsDuration' | 'intensityEvo' | 'prTrend', mode: TimeFilterMode) => void;
   prTrendView: 'area' | 'bar';
   setPrTrendView: (v: 'area' | 'bar') => void;
   prsData: any[];
@@ -31,7 +31,6 @@ interface DashboardPrimaryChartsProps {
   weeklySetsDashboard: any;
   onMuscleClick?: (muscleId: string, weeklySetsWindow: 'all' | '7d' | '30d' | '365d') => void;
   bodyMapGender: BodyMapGender;
-  effectiveNow: Date;
   trainingLevel: import('../../../utils/muscle/hypertrophy/muscleParams').TrainingLevel;
   intensityView: 'area' | 'stackedBar';
   setIntensityView: (v: 'area' | 'stackedBar') => void;
@@ -39,8 +38,8 @@ interface DashboardPrimaryChartsProps {
   intensityInsight: any;
   muscleGrouping: 'groups' | 'muscles';
   setMuscleGrouping: (v: 'groups' | 'muscles') => void;
-  musclePeriod: 'daily' | 'weekly' | 'monthly' | 'yearly' | 'all';
-  setMusclePeriod: (v: 'daily' | 'weekly' | 'monthly' | 'yearly' | 'all') => void;
+  musclePeriod: TimeFilterMode | 'all' | 'daily';
+  setMusclePeriod: (v: TimeFilterMode | 'all' | 'daily') => void;
   muscleTrendView: 'area' | 'stackedBar';
   setMuscleTrendView: (v: 'area' | 'stackedBar') => void;
   trendData: any[];
@@ -57,7 +56,7 @@ interface DashboardPrimaryChartsProps {
   dailyData: DailySummary[];
   exerciseStats: ExerciseStats[];
   effectiveNow: Date;
-  themeMode: string;
+  themeMode: ThemeMode;
   hypertrophyData: any[];
   hypertrophyData30d?: any[];
   hypertrophyPeriod: '7d' | '30d';
@@ -143,7 +142,7 @@ export const DashboardPrimaryCharts: React.FC<DashboardPrimaryChartsProps> = ({
           setMuscleCompQuick={setMuscleCompQuick}
           heatmap={weeklySetsDashboard.heatmap}
           tooltipStyle={tooltipStyle as any}
-          onMuscleClick={(muscleId, viewMode) => onMuscleClick?.(muscleId, viewMode, muscleCompQuick)}
+          onMuscleClick={(muscleId: string, weeklySetsWindow: 'all' | '7d' | '30d' | '365d') => onMuscleClick?.(muscleId, weeklySetsWindow)}
           bodyMapGender={bodyMapGender}
           windowStart={weeklySetsDashboard.windowStart}
           now={effectiveNow}
@@ -225,7 +224,7 @@ export const DashboardPrimaryCharts: React.FC<DashboardPrimaryChartsProps> = ({
           muscleGrouping={muscleGrouping}
           setMuscleGrouping={setMuscleGrouping}
           musclePeriod={musclePeriod}
-          setMusclePeriod={setMusclePeriod}
+          setMusclePeriod={(v: any) => setMusclePeriod(v)}
           muscleTrendView={muscleTrendView}
           setMuscleTrendView={setMuscleTrendView}
           trendData={trendData}

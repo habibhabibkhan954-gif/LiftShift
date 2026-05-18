@@ -60,7 +60,7 @@ export const CSVImportModal: React.FC<CSVImportModalProps> = ({
   onGenderChange,
   onUnitChange,
 }) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null!);
 
   const {
     selectedGender,

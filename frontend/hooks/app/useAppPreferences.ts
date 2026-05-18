@@ -18,10 +18,12 @@ import {
 } from '../../utils/storage/localStorage';
 import { BodyMapGender } from '../../components/bodyMap/BodyMap';
 
+import type { ThemeMode } from '../../utils/storage/localStorage';
+
 export interface UseAppPreferencesReturn {
   // Theme
-  mode: string;
-  setMode: (mode: string) => void;
+  mode: ThemeMode;
+  setMode: (mode: ThemeMode) => void;
 
   // Font
   font: FontChoice;

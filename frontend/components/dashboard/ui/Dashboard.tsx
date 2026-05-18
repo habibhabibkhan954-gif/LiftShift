@@ -96,7 +96,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
   const smartMode = useMemo(() => getSmartFilterMode(spanDays), [spanDays]);
 
-  const allAggregationMode = useMemo<'daily' | 'weekly' | 'monthly'>(() => {
+  const allAggregationMode = useMemo(() => {
     return smartMode === 'all' ? 'daily' : smartMode;
   }, [smartMode]);
 
@@ -214,8 +214,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
   const { prsData, prTrendDelta, prTrendDelta7d } = useDashboardPrTrend({
     fullData: filteredData,
-    rangeMode: chartModes.prTrend,
-    allAggregationMode,
+    rangeMode: chartModes.prTrend as any,
+    allAggregationMode: allAggregationMode as any,
     effectiveNow,
     dashboardInsights,
     filterCacheKey,
@@ -223,16 +223,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
   const { intensityData, intensityInsight } = useDashboardIntensityEvolution({
     fullData: filteredData,
-    rangeMode: chartModes.intensityEvo,
-    allAggregationMode,
+    rangeMode: chartModes.intensityEvo as any,
+    allAggregationMode: allAggregationMode as any,
     effectiveNow,
     filterCacheKey,
   });
 
   const { volumeDurationData, volumeDensityTrend } = useDashboardVolumeDensity({
     dailyData,
-    rangeMode: chartModes.volumeVsDuration,
-    smartMode,
+    rangeMode: chartModes.volumeVsDuration as any,
+    smartMode: smartMode as any,
     weightUnit,
     effectiveNow,
     dashboardInsights,
@@ -244,8 +244,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const { topExercisesBarData, topExercisesOverTimeData, topExerciseNames, topExercisesInsight } = useDashboardTopExercises({
     fullData: filteredData,
     exerciseStats,
-    topExerciseMode,
-    allAggregationMode,
+    topExerciseMode: topExerciseMode as any,
+    allAggregationMode: allAggregationMode as any,
     effectiveNow,
     filterCacheKey,
   });

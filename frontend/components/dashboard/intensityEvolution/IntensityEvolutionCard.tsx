@@ -147,22 +147,14 @@ export const IntensityEvolutionCard = ({
                   <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} domain={yAxisDomain} tickFormatter={(val) => formatAxisNumber(Number(val))} />
                   <Tooltip
                     contentStyle={tooltipStyle as any}
-                    formatter={(val: number, name) => {
+                    formatter={(val: any, name: any) => {
                       if (name === 'Strength (1-5)') return [formatNumber(Number(val), { maxDecimals: 1 }), 'Strength'];
                       if (name === 'Hypertrophy (6-12)') return [formatNumber(Number(val), { maxDecimals: 1 }), 'Hypertrophy'];
                       if (name === 'Endurance (13+)') return [formatNumber(Number(val), { maxDecimals: 1 }), 'Endurance'];
                       return [formatNumber(Number(val), { maxDecimals: 0 }), name];
                     }}
                   />
-                  <Legend 
-                    wrapperStyle={{ 
-                      fontSize: '11px',
-                      left: '52%',
-                      transform: 'translateX(-50%)',
-                      position: 'absolute'
-                    }} 
-                    payload={legendPayload as any}
-                  />
+                  <Legend {...({ wrapperStyle: { fontSize: '11px', left: '52%', transform: 'translateX(-50%)', position: 'absolute' }, payload: legendPayload } as any)} />
 
                   {view === 'area' ? (
                     <>
