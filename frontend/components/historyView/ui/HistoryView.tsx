@@ -165,12 +165,11 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
           rightStats={[{ icon: Dumbbell, value: totalSets, label: 'Sets' }]}
           filtersSlot={filtersSlot}
           sticky={stickyHeader}
-          rightSlot={totalPages > 1 ? paginationControls : null}
         />
       </div>
 
       {totalPages > 1 && (
-        <div className="sm:hidden flex justify-center pt-2 pb-4">
+        <div className="flex justify-center pt-2 pb-4 sm:pt-0">
           {paginationControls}
         </div>
       )}

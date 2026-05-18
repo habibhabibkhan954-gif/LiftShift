@@ -242,7 +242,7 @@ export const MuscleAnalysis: React.FC<MuscleAnalysisProps> = ({
       {/* Main layout: 3 columns on desktop, stacked on mobile */}
       <div className="flex flex-col gap-2 lg:grid lg:grid-cols-3 lg:grid-rows-[1fr_1fr] lg:gap-2 lg:h-[80vh] overflow-hidden">
         {/* Column 1: Body Map (1/3 width, full height) */}
-        <div className="h-[400px] sm:h-[450px] lg:col-start-1 lg:row-start-1 lg:row-span-2 lg:h-full min-h-0">
+        <div className="h-[400px] sm:h-full lg:col-start-1 lg:row-start-1 lg:row-span-2 lg:h-full min-h-0">
           <MuscleAnalysisBodyMapPanel
             bodyMapGender={bodyMapGender}
             weeklySetsChartView={weeklySetsChartView}
@@ -265,7 +265,7 @@ export const MuscleAnalysis: React.FC<MuscleAnalysisProps> = ({
         </div>
 
         {/* Column 2: Weekly Sets Graph */}
-        <div className="h-[300px] sm:h-[350px] lg:col-start-2 lg:row-start-1 lg:h-full min-h-0 overflow-hidden">
+        <div className="h-[300px] sm:h-[300px] lg:col-start-2 lg:row-start-1 lg:h-full min-h-0 overflow-hidden">
           <MuscleAnalysisGraphPanel
             selectedMuscle={selectedMuscle}
             weeklySetsWindow={weeklySetsWindow}
@@ -282,7 +282,7 @@ export const MuscleAnalysis: React.FC<MuscleAnalysisProps> = ({
         </div>
 
         {/* Column 3: Exercise List */}
-        <div className="h-[300px] sm:h-[350px] lg:h-full lg:col-start-3 lg:row-start-1 min-h-0 overflow-hidden">
+        <div className="h-[300px] sm:h-[300px] lg:h-full lg:col-start-3 lg:row-start-1 min-h-0 overflow-hidden">
           <MuscleAnalysisExerciseListPanel
             contributingExercises={contributingExercises}
             assetsMap={assetsMap}
