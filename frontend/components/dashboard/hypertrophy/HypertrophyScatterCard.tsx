@@ -184,7 +184,7 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
     const quadrantAdvice: Record<string, { desc: React.ReactNode; advice: string }> = {
       'Volume Focus': {
         desc: <>High volume (<span style={{color:vc}}>{sets} sets/wk</span>) but lagging strength progress (<span style={{color:pc}}>{trend}</span>)</>,
-        advice: 'Focus on progressive overload — add weight or reps slowly',
+        advice: 'Focus on progressive overload, add weight or reps slowly',
       },
       'Optimal Growth': {
         desc: <>High volume (<span style={{color:vc}}>{sets} sets/wk</span>) + strong progress (<span style={{color:pc}}>{trend}</span>)</>,
@@ -219,7 +219,7 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
   };
 
   return (
-    <div className="bg-black/70 rounded-xl border border-slate-700/50 overflow-hidden h-[400px] sm:h-[450px] lg:h-[600px] flex flex-col">
+    <div className="bg-black/70 rounded-xl border border-slate-700/50 overflow-hidden h-[400px] sm:h-[600px] lg:h-full flex flex-col">
       <div className="p-3 flex-shrink-0">
         <div className="flex items-center justify-between">
           <div>
@@ -250,13 +250,13 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
                   label={{ value: 'Progressive Overload (0–40)', angle: 0, position: 'insideTop', offset: -18, dx: +60, fill: '#94a3b8', fontSize: 10, fontWeight: 600 }} />
 
                 <ReferenceArea x1={0} x2={VOLUME_MID} y1={0} y2={PROGRESS_MID} fill="rgba(239,68,68,0.12)"
-                  label={{ value: 'Neglected', position: 'center', fill: '#ef4444', fontSize: 11, fontWeight: 600, opacity: 0.5 }} />
+                  label={{ value: 'Neglected', position: 'center', fill: '#ef4444', fontSize: 11, fontWeight: 600, opacity: 0.3 }} />
                 <ReferenceArea x1={VOLUME_MID} x2={50} y1={0} y2={PROGRESS_MID} fill="rgba(245,158,11,0.12)"
-                  label={{ value: 'Volume Focus', position: 'center', fill: '#f59e0b', fontSize: 11, fontWeight: 600, opacity: 0.5 }} />
+                  label={{ value: 'Volume Focus', position: 'center', fill: '#f59e0b', fontSize: 11, fontWeight: 600, opacity: 0.3 }} />
                 <ReferenceArea x1={0} x2={VOLUME_MID} y1={PROGRESS_MID} y2={40} fill="rgba(59,130,246,0.12)"
-                  label={{ value: 'Efficiency Zone', position: 'center', fill: '#3b82f6', fontSize: 11, fontWeight: 600, opacity: 0.5 }} />
+                  label={{ value: 'Efficiency Zone', position: 'center', fill: '#3b82f6', fontSize: 11, fontWeight: 600, opacity: 0.3 }} />
                 <ReferenceArea x1={VOLUME_MID} x2={50} y1={PROGRESS_MID} y2={40} fill="rgba(34,197,94,0.12)"
-                  label={{ value: 'Optimal Growth', position: 'center', fill: '#22c55e', fontSize: 11, fontWeight: 600, opacity: 0.5 }} />
+                  label={{ value: 'Optimal Growth', position: 'center', fill: '#22c55e', fontSize: 11, fontWeight: 600, opacity: 0.3 }} />
 
 
                 <RechartsTooltip cursor={false} content={<CustomScatterTooltip />} />
@@ -265,7 +265,7 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
                   shape={({ cx, cy, fill }: any) =>
                     cx != null && cy != null ? <>
                       <circle cx={cx} cy={cy} r={14} fill="transparent" stroke="none" style={{ cursor: 'crosshair' }} />
-                      <circle cx={cx} cy={cy} r={3} fill={fill} fillOpacity={0.15} stroke="none" pointerEvents="none" />
+                      <circle cx={cx} cy={cy} r={3} fill={fill} fillOpacity={0.3} stroke="none" pointerEvents="none" />
                     </> : null
                   }>
                   {chartData.map((entry) => {

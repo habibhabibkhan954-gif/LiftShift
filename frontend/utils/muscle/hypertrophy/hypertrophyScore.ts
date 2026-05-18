@@ -102,6 +102,13 @@ export const FACTOR_LABELS = {
 /** Optimal frequency reference (days per week) */
 const OPTIMAL_FREQUENCY = 2.5;
 
+/**
+ * Baseline score for progressive overload when trend is 0% (no change).
+ * Represents the score for maintaining strength without regression.
+ * Range: 0-40 (40% weight factor). Lower = stricter scoring.
+ */
+const PROGRESS_BASELINE_SCORE = 5;
+
 // ============================================================================
 // Calculation Functions
 // ============================================================================
@@ -142,17 +149,17 @@ export function calculateVolumeScore(weeklySets: number, trainingLevel: Training
 /**
  * Calculate Progressive Overload Score (0-40, 40% weight)
  * - maxTrend (qualified muscles, ≥10% default) → 40 points
- * - 0% trend → 10 points (stable baseline)
+ * - 0% trend → PROGRESS_BASELINE_SCORE points (stable baseline)
  * - minTrend (qualified muscles, ≤-5% default) → 0 points
  * - All values clamped to 0-40, no negative scores possible
  */
 function calculateProgressiveOverloadScore(oneRMTrendPercent: number, maxTrend: number, minTrend: number): number {
   // Handle case with no positive trends (all ≤0)
   if (maxTrend <= 0) {
-    if (oneRMTrendPercent >= 0) return 10;
+    if (oneRMTrendPercent >= 0) return PROGRESS_BASELINE_SCORE;
     const safeMin = Math.min(minTrend, 0); // minTrend can't be positive
     const ratio = (oneRMTrendPercent - safeMin) / (0 - safeMin);
-    return Math.max(0, Math.round(ratio * 10));
+    return Math.max(0, Math.round(ratio * PROGRESS_BASELINE_SCORE));
   }
 
   // Clamp to max (40) if trend meets/exceeds upper bound
@@ -161,15 +168,16 @@ function calculateProgressiveOverloadScore(oneRMTrendPercent: number, maxTrend: 
   // Clamp to min (0) if trend meets/exceeds lower bound
   if (oneRMTrendPercent <= minTrend) return 0;
 
-  // Negative trend: scale 0 (minTrend) → 10 (0% trend)
+  // Negative trend: scale 0 (minTrend) → PROGRESS_BASELINE_SCORE (0% trend)
   if (oneRMTrendPercent <= 0) {
     const ratio = (oneRMTrendPercent - minTrend) / (0 - minTrend);
-    return Math.max(0, Math.round(ratio * 10));
+    return Math.max(0, Math.round(ratio * PROGRESS_BASELINE_SCORE));
   }
 
-  // Positive trend: scale 10 (0% trend) → 40 (maxTrend)
+  // Positive trend: scale PROGRESS_BASELINE_SCORE (0% trend) → 40 (maxTrend)
   const ratio = oneRMTrendPercent / maxTrend;
-  return Math.max(0, Math.round(10 + ratio * 30));
+  const range = 40 - PROGRESS_BASELINE_SCORE;
+  return Math.max(0, Math.round(PROGRESS_BASELINE_SCORE + ratio * range));
 }
 
 /**
