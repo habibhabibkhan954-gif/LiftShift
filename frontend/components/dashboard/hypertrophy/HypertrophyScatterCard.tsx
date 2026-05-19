@@ -55,30 +55,53 @@ function getQuadrant(progress: number, volume: number): string {
   return 'Efficiency Zone';
 }
 
-const LABEL_OFFSET_PX = 12;
-const TEXT_ANCHOR_THRESHOLD = 0.4;
-const AXIS_RATIO = 1.2;
+const LABEL_OFFSET_PX = 14;
+const TEXT_ANCHOR_THRESHOLD = 0.2;
 
-// Physics simulation tunables
-const PHYS_ANCHOR_K = 0.2      // attraction strength to own dot
-const PHYS_MIN_OFFSET = 0.4    // minimum distance from own dot
-const PHYS_REPEL_K = 1.2        // label-label repulsion strength
-const PHYS_REPEL_RADIUS = 10    // repulsion range (data units)
-const PHYS_DOT_K = 0.7         // dot repulsion strength
-const PHYS_EDGE_K = 0.4        // edge push strength
-const PHYS_EDGE_MARGIN = 2     // edge margin (data units)
-const PHYS_QUAD_K = 0.3        // quadrant label push strength
-const PHYS_QUAD_RADIUS = 10    // quadrant repulsion range (data units)
-const PHYS_DAMPING = 0.5       // velocity damping
-const PHYS_ITERS = 5          // simulation iterations
-const PHYS_SCALE = 2.5         // data units per offset unit
-const PHYS_MAX_OFFSET = 3      // max offset multiplier (clamp)
-const PHYS_FORCE_CLAMP = 5     // max force per axis (prevents explosion)
+const TEXT_ASPECT = 3.5;       // text is ~3.5× wider than tall (elliptical hitbox)
+const QUAD_ASPECT = 7.0;       // quadrant labels are even wider
+
+const DEV = false; // toggle to visualize force ranges as semi-transparent ellipses
+
+// ============================================================================
+// Physics tunables — named by force pair for clear tuning hierarchy
+// ============================================================================
+// Force hierarchy (strongest → weakest):
+//   EDGE > DOT_REPEL > LABEL_REPEL > QUAD_REPEL > DOT_ATTRACT
+// Clamp = 3 caps every force. Tune k to control how quickly a force reaches clamp.
+// ============================================================================
+
+// 1. DOT_LABEL_ATTRACTION — gentle tether keeping a label near its own dot (weakest)
+const DOT_LABEL_ATTRACTION_K = 2       // spring stiffness; at d=0, F = k × rest = 4×0.4 = 1.6
+const DOT_LABEL_ATTRACTION_REST = 0.5  // rest distance where spring force = 0
+
+// 2. LABEL_LABEL_REPULSION — prevents direct label-label overlap; effective horizontal = R × TEXT_ASPECT = 3×3.5 = 10.5
+const LABEL_LABEL_REPULSION_K = 5
+const LABEL_LABEL_REPULSION_RADIUS = 1
+
+// 3. DOT_LABEL_REPULSION — pushes labels off foreign muscle dots so the dot is never inside a label's ellipse
+const DOT_LABEL_REPULSION_K = 2.5
+const DOT_LABEL_REPULSION_RADIUS = 0.5
+
+// 4. EDGE_LABEL_REPULSION — hard wall at chart boundaries (strongest)
+const EDGE_LABEL_REPULSION_K = 5
+const EDGE_LABEL_REPULSION_MARGIN = 1
+
+// 5. LABEL_QUADRANT_REPULSION — keeps labels off quadrant label text (wide range, moderate force)
+const LABEL_QUADRANT_REPULSION_K = 1.2
+const LABEL_QUADRANT_REPULSION_RADIUS = 1  // effective horizontal = R × QUAD_ASPECT = 3×5 = 15
+
+// Universal engine parameters
+const DAMPING = 0.3              // velocity damped by (1-DAMPING) each iteration
+const PHYSICS_ITERATIONS = 15
+const OFFSET_TO_DATA_SCALE = 2.5 // 1 offset unit = this many data units
+const MAX_OFFSET_CLAMP = 3       // max offset multiplier
+const FORCE_CLAMP = 3            // all forces clipped to ±this per axis
 
 const CustomScatterTooltip = ({ active, payload }: any) => {
   if (!active || !payload?.length) return null;
   const d: ChartPoint | undefined = payload[0]?.payload;
-  if (!d) return null;
+  if (!d || !d.muscleId || !d.quadrant) return null;
 
   const sets = (d.weeklySets ?? 0).toFixed(1);
   const trend = `${(d.oneRMTrend ?? 0) > 0 ? '+' : ''}${(d.oneRMTrend ?? 0).toFixed(1)}%`;
@@ -154,6 +177,7 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
   const chartData: ChartPoint[] = useMemo(
     () =>
       hypertrophyData.map((m) => {
+        if (!m || !m.score) return null;
         const progress = Number.isFinite(m.score.progressiveOverload) ? Math.round(m.score.progressiveOverload) : 0;
         const volume = Number.isFinite(m.score.volumeScore) ? Math.round(m.score.volumeScore * FACTOR_WEIGHTS.volumeScore) : 0;
         return {
@@ -167,7 +191,7 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
           oneRMTrend: Number.isFinite(m.score.raw?.oneRMTrend) ? m.score.raw.oneRMTrend : 0,
           daysPerWeek: Number.isFinite(m.score.raw?.daysPerWeek) ? m.score.raw.daysPerWeek : 0,
         };
-      }),
+      }).filter(Boolean) as ChartPoint[],
     [hypertrophyData]
   );
 
@@ -190,117 +214,113 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
     const vx = new Map<string, number>();
     const vy = new Map<string, number>();
 
-    // Initialize directions pointing away from data centroid
-    // (prevents labels from crossing over to wrong dots)
-    const cx = pts.reduce((s, p) => s + p.volume, 0) / pts.length;
-    const cy = pts.reduce((s, p) => s + p.progress, 0) / pts.length;
+    // Radial initialization — identical points explode outward instead of overlapping
     pts.forEach((p, i) => {
-      let dx = p.volume - cx;
-      let dy = p.progress - cy;
-      const len = Math.hypot(dx, dy);
-      if (len > 0.01) { dx /= len; dy /= len; }
-      else { const a = (2 * Math.PI * i) / pts.length; dx = Math.cos(a); dy = Math.sin(a); }
-      ox.set(p.muscleId, dx);
-      oy.set(p.muscleId, dy);
+      const angle = (2 * Math.PI * i) / pts.length;
+      ox.set(p.muscleId, Math.cos(angle));
+      oy.set(p.muscleId, Math.sin(angle));
       vx.set(p.muscleId, 0);
       vy.set(p.muscleId, 0);
     });
 
-    for (let iter = 0; iter < PHYS_ITERS; iter++) {
+    for (let iter = 0; iter < PHYSICS_ITERATIONS; iter++) {
+      // Phase 1 — accumulate forces (no position mutation)
+      const forces = new Map<string, { fx: number; fy: number }>();
       for (const p of pts) {
         const id = p.muscleId;
         let fx = 0, fy = 0;
 
-        // 1. Spring toward anchor (inverse outward + linear inward)
+        // 1. Spring strut anchor — rigid spring at DOT_LABEL_ATTRACTION_REST
         const pd = Math.hypot(ox.get(id)!, oy.get(id)!);
         if (pd > 0.001) {
           const pnx = ox.get(id)! / pd;
           const pny = oy.get(id)! / pd;
-          if (pd < PHYS_MIN_OFFSET) {
-            const clamped = Math.max(pd, 0.01);
-            const f = Math.min(PHYS_ANCHOR_K * (PHYS_MIN_OFFSET / clamped - 1), PHYS_FORCE_CLAMP);
-            fx += pnx * f;
-            fy += pny * f;
-          } else {
-            const deviation = pd - PHYS_MIN_OFFSET;
-            fx += -PHYS_ANCHOR_K * deviation * pnx;
-            fy += -PHYS_ANCHOR_K * deviation * pny;
-          }
+          const deviation = pd - DOT_LABEL_ATTRACTION_REST;
+          const rawF = -DOT_LABEL_ATTRACTION_K * deviation;
+          const f = Math.max(-FORCE_CLAMP, Math.min(FORCE_CLAMP, rawF));
+          fx += pnx * f;
+          fy += pny * f;
         }
 
         // Label position in data space
-        const lx = p.volume + ox.get(id)! * PHYS_SCALE;
-        const ly = p.progress + oy.get(id)! * PHYS_SCALE;
+        const lx = p.volume + ox.get(id)! * OFFSET_TO_DATA_SCALE;
+        const ly = p.progress + oy.get(id)! * OFFSET_TO_DATA_SCALE;
 
-        // 2. Label-label repulsion (inverse: →∞ as d→0)
+        // 2. LABEL_LABEL_REPULSION — elliptical range: wider horizontally to match text aspect
         for (const q of pts) {
           if (q.muscleId === id) continue;
-          const qlx = q.volume + ox.get(q.muscleId)! * PHYS_SCALE;
-          const qly = q.progress + oy.get(q.muscleId)! * PHYS_SCALE;
-          const dx = (lx - qlx) * AXIS_RATIO;
+          const qlx = q.volume + ox.get(q.muscleId)! * OFFSET_TO_DATA_SCALE;
+          const qly = q.progress + oy.get(q.muscleId)! * OFFSET_TO_DATA_SCALE;
+          const dx = (lx - qlx) / TEXT_ASPECT;
           const dy = ly - qly;
           const d = Math.hypot(dx, dy);
-          if (d < PHYS_REPEL_RADIUS && d > 0.001) {
+          if (d < 6 * LABEL_LABEL_REPULSION_RADIUS && d > 0.001) {
             const clamped = Math.max(d, 0.05);
-            const f = Math.min(PHYS_REPEL_K * (PHYS_REPEL_RADIUS / clamped - 1), PHYS_FORCE_CLAMP);
+            const f = Math.min(LABEL_LABEL_REPULSION_K * (6 * LABEL_LABEL_REPULSION_RADIUS / clamped - 1), FORCE_CLAMP);
             fx += (dx / d) * f;
             fy += (dy / d) * f;
           }
         }
 
-        // 3. Dot repulsion (inverse: prevents labels sitting on other dots)
+        // 3. DOT_LABEL_REPULSION — label repels from ALL dots (including own, keeps a buffer from the anchor)
         for (const q of pts) {
-          if (q.muscleId === id) continue;
-          const dot_dx = (lx - q.volume) * AXIS_RATIO;
+          const dot_dx = (lx - q.volume) / TEXT_ASPECT;
           const dot_dy = ly - q.progress;
           const dot_d = Math.hypot(dot_dx, dot_dy);
-          if (dot_d < PHYS_REPEL_RADIUS && dot_d > 0.001) {
+          if (dot_d < 6 * DOT_LABEL_REPULSION_RADIUS && dot_d > 0.001) {
             const clamped = Math.max(dot_d, 0.05);
-            const f = Math.min(PHYS_DOT_K * (PHYS_REPEL_RADIUS / clamped - 1), PHYS_FORCE_CLAMP);
+            const f = Math.min(DOT_LABEL_REPULSION_K * (6 * DOT_LABEL_REPULSION_RADIUS / clamped - 1), FORCE_CLAMP);
             fx += (dot_dx / dot_d) * f;
             fy += (dot_dy / dot_d) * f;
           }
         }
 
-        // 4. Edge repulsion (inverse within margin, max force when past edge)
+        // 4. Edge repulsion
         if (lx < 0) {
-          fx += PHYS_FORCE_CLAMP;
-        } else if (lx < PHYS_EDGE_MARGIN) {
-          const clamped = Math.max(PHYS_EDGE_MARGIN - lx, 0.01);
-          fx += Math.min(PHYS_EDGE_K * (PHYS_EDGE_MARGIN / clamped - 1), PHYS_FORCE_CLAMP);
+          fx += FORCE_CLAMP;
+        } else if (lx < EDGE_LABEL_REPULSION_MARGIN) {
+          const clamped = Math.max(EDGE_LABEL_REPULSION_MARGIN - lx, 0.01);
+          fx += Math.min(EDGE_LABEL_REPULSION_K * (EDGE_LABEL_REPULSION_MARGIN / clamped - 1), FORCE_CLAMP);
         } else if (lx > 50) {
-          fx -= PHYS_FORCE_CLAMP;
-        } else if (lx > 50 - PHYS_EDGE_MARGIN) {
-          const clamped = Math.max(lx - (50 - PHYS_EDGE_MARGIN), 0.01);
-          fx -= Math.min(PHYS_EDGE_K * (PHYS_EDGE_MARGIN / clamped - 1), PHYS_FORCE_CLAMP);
+          fx -= FORCE_CLAMP;
+        } else if (lx > 50 - EDGE_LABEL_REPULSION_MARGIN) {
+          const clamped = Math.max(lx - (50 - EDGE_LABEL_REPULSION_MARGIN), 0.01);
+          fx -= Math.min(EDGE_LABEL_REPULSION_K * (EDGE_LABEL_REPULSION_MARGIN / clamped - 1), FORCE_CLAMP);
         }
         if (ly < 0) {
-          fy += PHYS_FORCE_CLAMP;
-        } else if (ly < PHYS_EDGE_MARGIN) {
-          const clamped = Math.max(PHYS_EDGE_MARGIN - ly, 0.01);
-          fy += Math.min(PHYS_EDGE_K * (PHYS_EDGE_MARGIN / clamped - 1), PHYS_FORCE_CLAMP);
+          fy += FORCE_CLAMP;
+        } else if (ly < EDGE_LABEL_REPULSION_MARGIN) {
+          const clamped = Math.max(EDGE_LABEL_REPULSION_MARGIN - ly, 0.01);
+          fy += Math.min(EDGE_LABEL_REPULSION_K * (EDGE_LABEL_REPULSION_MARGIN / clamped - 1), FORCE_CLAMP);
         } else if (ly > 40) {
-          fy -= PHYS_FORCE_CLAMP;
-        } else if (ly > 40 - PHYS_EDGE_MARGIN) {
-          const clamped = Math.max(ly - (40 - PHYS_EDGE_MARGIN), 0.01);
-          fy -= Math.min(PHYS_EDGE_K * (PHYS_EDGE_MARGIN / clamped - 1), PHYS_FORCE_CLAMP);
+          fy -= FORCE_CLAMP;
+        } else if (ly > 40 - EDGE_LABEL_REPULSION_MARGIN) {
+          const clamped = Math.max(ly - (40 - EDGE_LABEL_REPULSION_MARGIN), 0.01);
+          fy -= Math.min(EDGE_LABEL_REPULSION_K * (EDGE_LABEL_REPULSION_MARGIN / clamped - 1), FORCE_CLAMP);
         }
 
-        // 5. Quadrant label repulsion (inverse)
+        // 5. LABEL_QUADRANT_REPULSION — elliptical range with wider horizontal
         for (const qc of quadCenters) {
-          const qdx = (lx - qc.x) * AXIS_RATIO;
+          const qdx = (lx - qc.x) / QUAD_ASPECT;
           const qdy = ly - qc.y;
           const qd = Math.hypot(qdx, qdy);
-          if (qd < PHYS_QUAD_RADIUS && qd > 0.001) {
+          if (qd < 6 * LABEL_QUADRANT_REPULSION_RADIUS && qd > 0.001) {
             const clamped = Math.max(qd, 0.05);
-            const f = Math.min(PHYS_QUAD_K * (PHYS_QUAD_RADIUS / clamped - 1), PHYS_FORCE_CLAMP);
+            const f = Math.min(LABEL_QUADRANT_REPULSION_K * (6 * LABEL_QUADRANT_REPULSION_RADIUS / clamped - 1), FORCE_CLAMP);
             fx += (qdx / qd) * f;
             fy += (qdy / qd) * f;
           }
         }
 
-        vx.set(id, (vx.get(id)! + fx) * PHYS_DAMPING);
-        vy.set(id, (vy.get(id)! + fy) * PHYS_DAMPING);
+        forces.set(id, { fx, fy });
+      }
+
+      // Phase 2 — update positions synchronously (standard physics engine pattern)
+      for (const p of pts) {
+        const id = p.muscleId;
+        const f = forces.get(id)!;
+        vx.set(id, (vx.get(id)! + f.fx) * DAMPING);
+        vy.set(id, (vy.get(id)! + f.fy) * DAMPING);
         ox.set(id, ox.get(id)! + vx.get(id)!);
         oy.set(id, oy.get(id)! + vy.get(id)!);
 
@@ -314,17 +334,17 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
       let oox = ox.get(id)!, ooy = oy.get(id)!;
 
       // Clamp label position to stay within chart data bounds (prevents clipping)
-      const labelX = p.volume + oox * PHYS_SCALE;
-      const labelY = p.progress + ooy * PHYS_SCALE;
+      const labelX = p.volume + oox * OFFSET_TO_DATA_SCALE;
+      const labelY = p.progress + ooy * OFFSET_TO_DATA_SCALE;
       const BOUNDS_PADDING = 1.5;
       const clampedX = Math.max(BOUNDS_PADDING, Math.min(50 - BOUNDS_PADDING, labelX));
       const clampedY = Math.max(BOUNDS_PADDING, Math.min(40 - BOUNDS_PADDING, labelY));
-      oox = (clampedX - p.volume) / PHYS_SCALE;
-      ooy = (clampedY - p.progress) / PHYS_SCALE;
+      oox = (clampedX - p.volume) / OFFSET_TO_DATA_SCALE;
+      ooy = (clampedY - p.progress) / OFFSET_TO_DATA_SCALE;
 
       const dist = Math.hypot(oox, ooy);
       if (dist > 0.01) {
-        dirs.set(id, { dx: oox / dist, dy: ooy / dist, dist: Math.min(dist, PHYS_MAX_OFFSET) });
+        dirs.set(id, { dx: oox / dist, dy: ooy / dist, dist: Math.min(dist, MAX_OFFSET_CLAMP) });
       } else {
         dirs.set(id, { dx: 0, dy: -1, dist: 1 });
       }
@@ -442,6 +462,7 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
                   const anchor = dir.dx > TEXT_ANCHOR_THRESHOLD ? 'start' : dir.dx < -TEXT_ANCHOR_THRESHOLD ? 'end' : 'middle';
                   
                   const dist = Math.hypot(lx - cx, ly - cy);
+                  const pxPerUnit = Math.max((cx - 28) / Math.max(payload.volume, 0.5), 8);
                   return (
                     <>
                       {dist > 12 && (
@@ -470,10 +491,49 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
                       >
                         {payload.name}
                       </text>
+                      {DEV && (
+                        <>
+                          {/* Label-label repulsion range — blue ellipse around the LABEL text center */}
+                          <ellipse
+                            cx={lx + (anchor === 'start' ? payload.name.length * 3 : anchor === 'end' ? -payload.name.length * 3 : 0)}
+                            cy={ly}
+                            rx={LABEL_LABEL_REPULSION_RADIUS * TEXT_ASPECT * pxPerUnit}
+                            ry={LABEL_LABEL_REPULSION_RADIUS * pxPerUnit}
+                            fill="none" stroke="#3b82f6" strokeWidth={0.5} strokeOpacity={0.3}
+                          />
+                          {/* Dot-label repulsion range — red ellipse around the DOT */}
+                          <ellipse
+                            cx={cx} cy={cy}
+                            rx={DOT_LABEL_REPULSION_RADIUS * TEXT_ASPECT * pxPerUnit}
+                            ry={DOT_LABEL_REPULSION_RADIUS * pxPerUnit}
+                            fill="none" stroke="#ef4444" strokeWidth={0.5} strokeOpacity={0.3}
+                          />
+                        </>
+                      )}
                     </>
                   );
                 }}
               />
+              {DEV && (
+                <Scatter
+                  data={[{ volume: 12.5, progress: 10 }, { volume: 37.5, progress: 10 }, { volume: 12.5, progress: 30 }, { volume: 37.5, progress: 30 }]}
+                  isAnimationActive={false}
+                  legendType="none"
+                  shape={({ cx, cy, payload }: any) => {
+                    if (cx == null || cy == null || !payload) return null;
+                    const pxPerUnit = Math.max((cx - 28) / Math.max(payload.volume, 0.5), 8);
+                    const yPxPerUnit = Math.max((cy - 28) / Math.max(40 - payload.progress, 0.5), 6);
+                    return (
+                      <ellipse
+                        cx={cx} cy={cy}
+                        rx={LABEL_QUADRANT_REPULSION_RADIUS * QUAD_ASPECT * pxPerUnit}
+                        ry={LABEL_QUADRANT_REPULSION_RADIUS * yPxPerUnit}
+                        fill="none" stroke="#a855f7" strokeWidth={1} strokeOpacity={0.4}
+                      />
+                    );
+                  }}
+                />
+              )}
             </ReScatterChart>
           </ResponsiveContainer>
         ) : (
