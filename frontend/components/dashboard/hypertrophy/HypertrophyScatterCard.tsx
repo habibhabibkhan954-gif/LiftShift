@@ -68,12 +68,83 @@ const PHYS_DOT_K = 0.7         // dot repulsion strength
 const PHYS_EDGE_K = 0.4        // edge push strength
 const PHYS_EDGE_MARGIN = 2     // edge margin (data units)
 const PHYS_QUAD_K = 0.3        // quadrant label push strength
-const PHYS_QUAD_RADIUS = 15    // quadrant repulsion range (data units)
+const PHYS_QUAD_RADIUS = 10    // quadrant repulsion range (data units)
 const PHYS_DAMPING = 0.5       // velocity damping
-const PHYS_ITERS = 25          // simulation iterations
+const PHYS_ITERS = 5          // simulation iterations
 const PHYS_SCALE = 2.5         // data units per offset unit
 const PHYS_MAX_OFFSET = 3      // max offset multiplier (clamp)
 const PHYS_FORCE_CLAMP = 5     // max force per axis (prevents explosion)
+
+const CustomScatterTooltip = ({ active, payload }: any) => {
+  if (!active || !payload?.length) return null;
+  const d: ChartPoint | undefined = payload[0]?.payload;
+  if (!d) return null;
+
+  const sets = (d.weeklySets ?? 0).toFixed(1);
+  const trend = `${(d.oneRMTrend ?? 0) > 0 ? '+' : ''}${(d.oneRMTrend ?? 0).toFixed(1)}%`;
+  const vc = volColor(d.volume);
+  const pc = progColor(d.progress);
+
+  const quadrantAdvice: Record<string, { desc: React.ReactNode; advice: string }> = {
+    'Volume Focus': {
+      desc: (
+        <>
+          High volume (<span style={{ color: vc }}>{sets} sets/wk</span>) but lagging strength progress (<span style={{ color: pc }}>{trend}</span>)
+        </>
+      ),
+      advice: 'Focus on progressive overload, add weight or reps slowly',
+    },
+    'Optimal Growth': {
+      desc: (
+        <>
+          High volume (<span style={{ color: vc }}>{sets} sets/wk</span>) + strong progress (<span style={{ color: pc }}>{trend}</span>)
+        </>
+      ),
+      advice: 'Keep it up! this balance is ideal for hypertrophy',
+    },
+    'Neglected': {
+      desc: (
+        <>
+          Low volume (<span style={{ color: vc }}>{sets} sets/wk</span>) + low progress (<span style={{ color: pc }}>{trend}</span>)
+        </>
+      ),
+      advice: 'If prioritizing this muscle, add sets and train 2-3x/week',
+    },
+    'Efficiency Zone': {
+      desc: (
+        <>
+          Strong progress (<span style={{ color: pc }}>{trend}</span>) despite low volume (<span style={{ color: vc }}>{sets} sets/wk</span>)
+        </>
+      ),
+      advice: 'Consider increasing volume for more size gains',
+    },
+  };
+
+  const q = quadrantAdvice[d.quadrant];
+  return (
+    <div
+      className="rounded-lg px-3 py-2 shadow-2xl border text-xs"
+      style={{ backgroundColor: 'rgb(var(--panel-rgb) / 0.95)', borderColor: 'rgb(var(--border-rgb) / 0.5)', color: 'var(--text-primary)' }}
+    >
+      <p className="font-semibold mb-1.5" style={SEMI_FANCY_FONT}>
+        {d.name} <span className="opacity-60 font-normal">({d.total}/100)</span>
+      </p>
+      <div className="flex items-center gap-3 mb-1.5">
+        <span>
+          Progress <b style={{ color: progColor(d.progress) }}>{d.progress}/40</b>
+        </span>
+        <span>
+          Volume <b style={{ color: volColor(d.volume) }}>{d.volume}/50</b>
+        </span>
+      </div>
+      <div className="border-t pt-1.5 text-slate-400" style={{ borderColor: 'rgb(var(--border-rgb) / 0.3)' }}>
+        <p className="font-semibold text-[10px]">{d.quadrant}</p>
+        <p className="text-[9px] leading-tight mt-0.5">{q.desc}</p>
+        <p className="text-[8px] mt-1">{q.advice}</p>
+      </div>
+    </div>
+  );
+};
 
 export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
   hypertrophyData,
@@ -83,18 +154,18 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
   const chartData: ChartPoint[] = useMemo(
     () =>
       hypertrophyData.map((m) => {
-        const progress = Math.round(m.score.progressiveOverload);
-        const volume = Math.round(m.score.volumeScore * FACTOR_WEIGHTS.volumeScore);
+        const progress = Number.isFinite(m.score.progressiveOverload) ? Math.round(m.score.progressiveOverload) : 0;
+        const volume = Number.isFinite(m.score.volumeScore) ? Math.round(m.score.volumeScore * FACTOR_WEIGHTS.volumeScore) : 0;
         return {
           name: m.muscleName,
           muscleId: m.muscleId,
           progress,
           volume,
-          total: m.score.totalScore,
+          total: Number.isFinite(m.score.totalScore) ? m.score.totalScore : 0,
           quadrant: getQuadrant(progress, volume),
-          weeklySets: m.score.raw.weeklySets,
-          oneRMTrend: m.score.raw.oneRMTrend,
-          daysPerWeek: m.score.raw.daysPerWeek,
+          weeklySets: Number.isFinite(m.score.raw?.weeklySets) ? m.score.raw.weeklySets : 0,
+          oneRMTrend: Number.isFinite(m.score.raw?.oneRMTrend) ? m.score.raw.oneRMTrend : 0,
+          daysPerWeek: Number.isFinite(m.score.raw?.daysPerWeek) ? m.score.raw.daysPerWeek : 0,
         };
       }),
     [hypertrophyData]
@@ -232,12 +303,25 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
         vy.set(id, (vy.get(id)! + fy) * PHYS_DAMPING);
         ox.set(id, ox.get(id)! + vx.get(id)!);
         oy.set(id, oy.get(id)! + vy.get(id)!);
+
+        if (!Number.isFinite(ox.get(id)!)) ox.set(id, 0);
+        if (!Number.isFinite(oy.get(id)!)) oy.set(id, 0);
       }
     }
 
     for (const p of pts) {
       const id = p.muscleId;
-      const oox = ox.get(id)!, ooy = oy.get(id)!;
+      let oox = ox.get(id)!, ooy = oy.get(id)!;
+
+      // Clamp label position to stay within chart data bounds (prevents clipping)
+      const labelX = p.volume + oox * PHYS_SCALE;
+      const labelY = p.progress + ooy * PHYS_SCALE;
+      const BOUNDS_PADDING = 1.5;
+      const clampedX = Math.max(BOUNDS_PADDING, Math.min(50 - BOUNDS_PADDING, labelX));
+      const clampedY = Math.max(BOUNDS_PADDING, Math.min(40 - BOUNDS_PADDING, labelY));
+      oox = (clampedX - p.volume) / PHYS_SCALE;
+      ooy = (clampedY - p.progress) / PHYS_SCALE;
+
       const dist = Math.hypot(oox, ooy);
       if (dist > 0.01) {
         dirs.set(id, { dx: oox / dist, dy: ooy / dist, dist: Math.min(dist, PHYS_MAX_OFFSET) });
@@ -249,76 +333,7 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
     return dirs;
   }, [chartData]);
 
-  const CustomScatterTooltip = ({ active, payload }: any) => {
-    if (!active || !payload?.length) return null;
-    const d: ChartPoint | undefined = payload[0]?.payload;
-    if (!d) return null;
 
-    const sets = d.weeklySets.toFixed(1);
-    const trend = `${d.oneRMTrend > 0 ? '+' : ''}${d.oneRMTrend.toFixed(1)}%`;
-    const vc = volColor(d.volume);
-    const pc = progColor(d.progress);
-
-    const quadrantAdvice: Record<string, { desc: React.ReactNode; advice: string }> = {
-      'Volume Focus': {
-        desc: (
-          <>
-            High volume (<span style={{ color: vc }}>{sets} sets/wk</span>) but lagging strength progress (<span style={{ color: pc }}>{trend}</span>)
-          </>
-        ),
-        advice: 'Focus on progressive overload, add weight or reps slowly',
-      },
-      'Optimal Growth': {
-        desc: (
-          <>
-            High volume (<span style={{ color: vc }}>{sets} sets/wk</span>) + strong progress (<span style={{ color: pc }}>{trend}</span>)
-          </>
-        ),
-        advice: 'Keep it up! this balance is ideal for hypertrophy',
-      },
-      'Neglected': {
-        desc: (
-          <>
-            Low volume (<span style={{ color: vc }}>{sets} sets/wk</span>) + low progress (<span style={{ color: pc }}>{trend}</span>)
-          </>
-        ),
-        advice: 'If prioritizing this muscle, add sets and train 2-3x/week',
-      },
-      'Efficiency Zone': {
-        desc: (
-          <>
-            Strong progress (<span style={{ color: pc }}>{trend}</span>) despite low volume (<span style={{ color: vc }}>{sets} sets/wk</span>)
-          </>
-        ),
-        advice: 'Consider increasing volume for more size gains',
-      },
-    };
-
-    const q = quadrantAdvice[d.quadrant];
-    return (
-      <div
-        className="rounded-lg px-3 py-2 shadow-2xl border text-xs"
-        style={{ backgroundColor: 'rgb(var(--panel-rgb) / 0.95)', borderColor: 'rgb(var(--border-rgb) / 0.5)', color: 'var(--text-primary)' }}
-      >
-        <p className="font-semibold mb-1.5" style={SEMI_FANCY_FONT}>
-          {d.name} <span className="opacity-60 font-normal">({d.total}/100)</span>
-        </p>
-        <div className="flex items-center gap-3 mb-1.5">
-          <span>
-            Progress <b style={{ color: progColor(d.progress) }}>{d.progress}/40</b>
-          </span>
-          <span>
-            Volume <b style={{ color: volColor(d.volume) }}>{d.volume}/50</b>
-          </span>
-        </div>
-        <div className="border-t pt-1.5 text-slate-400" style={{ borderColor: 'rgb(var(--border-rgb) / 0.3)' }}>
-          <p className="font-semibold text-[10px]">{d.quadrant}</p>
-          <p className="text-[9px] leading-tight mt-0.5">{q.desc}</p>
-          <p className="text-[8px] mt-1">{q.advice}</p>
-        </div>
-      </div>
-    );
-  };
 
   return (
     <div className="bg-black/70 rounded-xl border border-slate-700/50 overflow-hidden h-[400px] sm:h-[600px] lg:h-full flex flex-col">
@@ -342,7 +357,7 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
       <div className="flex-1 w-full relative" style={{ minHeight: 300 }}>
         {hypertrophyData.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
-            <ReScatterChart margin={{ top: 28, right: 8, bottom: 28, left: 0 }}>
+              <ReScatterChart margin={{ top: 28, right: 8, bottom: 28, left: 0 }}>
               <XAxis
                 type="number"
                 dataKey="volume"
