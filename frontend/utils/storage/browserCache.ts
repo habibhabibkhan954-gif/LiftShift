@@ -5,7 +5,8 @@ type CacheEntry<T> = {
   timestamp: number;
 };
 
-const getCacheKey = (prefix: string, id: string): string => `liftshift:cache:${prefix}:${id}`;
+const getCacheKey = (prefix: string, id: string, suffix?: string): string =>
+  suffix ? `liftshift:cache:${prefix}:${id}:${suffix}` : `liftshift:cache:${prefix}:${id}`;
 
 const getCached = <T>(key: string): T | null => {
   try {
@@ -38,8 +39,8 @@ const setCache = <T>(key: string, data: T): void => {
   }
 };
 
-const clearCache = (prefix: string, id: string): void => {
-  const key = getCacheKey(prefix, id);
+const clearCache = (prefix: string, id: string, suffix?: string): void => {
+  const key = getCacheKey(prefix, id, suffix);
   localStorage.removeItem(key);
 };
 

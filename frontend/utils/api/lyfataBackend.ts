@@ -1,6 +1,7 @@
 import { mergeAnalyticsHeaders } from '../integrations/analyticsClientId';
 import { buildBackendUrl, parseError, type BackendSetsResponse } from './common';
 import { browserCache } from '../storage/browserCache';
+import { getWeightUnit } from '../storage/localStorage';
 
 export interface BackendLyfatLoginResponse {
   api_key: string;
@@ -24,7 +25,8 @@ export const lyfatBackendValidateApiKey = async (apiKey: string): Promise<boolea
 };
 
 export const lyfatBackendGetSets = async <TSet>(apiKey: string): Promise<BackendSetsResponse<TSet>> => {
-  const cacheKey = browserCache.getCacheKey('lyfta', apiKey);
+  const weightUnit = getWeightUnit();
+  const cacheKey = browserCache.getCacheKey('lyfta', apiKey, weightUnit);
   const cached = browserCache.getCached<BackendSetsResponse<TSet>>(cacheKey);
   if (cached) {
     return cached;
@@ -33,7 +35,7 @@ export const lyfatBackendGetSets = async <TSet>(apiKey: string): Promise<Backend
   const res = await fetch(buildBackendUrl('/api/lyfta/sets'), {
     method: 'POST',
     headers: mergeAnalyticsHeaders({ 'content-type': 'application/json' }),
-    body: JSON.stringify({ apiKey }),
+    body: JSON.stringify({ apiKey, weightUnit }),
   });
 
   if (!res.ok) throw new Error(await parseError(res));

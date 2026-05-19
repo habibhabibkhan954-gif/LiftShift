@@ -1,6 +1,8 @@
 import type { WorkoutSet } from '../../types';
 import { parseHevyDateString } from '../../utils/date/parseHevyDateString';
 
+const LBS_TO_KG = 0.45359237;
+
 export const hydrateBackendWorkoutSets = (sets: WorkoutSet[]): WorkoutSet[] => {
   const inputLength = sets?.length ?? 0;
   const hydrated = (sets ?? []).map((s) => ({
@@ -21,5 +23,11 @@ export const hydrateBackendWorkoutSetsWithSource = (
   source: 'hevy' | 'lyfta' | 'strong' | 'other'
 ): WorkoutSet[] => {
   const hydrated = hydrateBackendWorkoutSets(sets);
-  return hydrated.map((s) => ({ ...s, source }));
+  return hydrated.map((s) => {
+    let set = { ...s, source } as WorkoutSet;
+    if (source === 'lyfta' && set.weight_unit === 'lbs') {
+      set = { ...set, weight_kg: set.weight_kg * LBS_TO_KG, weight_unit: 'kg' };
+    }
+    return set;
+  });
 };

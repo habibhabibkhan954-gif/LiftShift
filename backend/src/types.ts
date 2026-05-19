@@ -91,6 +91,7 @@ export interface WorkoutSetDTO {
   set_index: number;
   set_type: string;
   weight_kg: number;
+  weight_unit?: string;
   reps: number;
   distance_km: number;
   duration_seconds: number;

@@ -1,5 +1,5 @@
 import express from 'express';
-import { lyfatGetAllWorkouts, lyfatGetAllWorkoutSummaries, lyfatValidateApiKey, lyfatGetExerciseWeightUnits } from '../lyfta';
+import { lyfatGetAllWorkouts, lyfatGetAllWorkoutSummaries, lyfatValidateApiKey } from '../lyfta';
 import { mapLyfataWorkoutsToWorkoutSets } from '../mapLyfataWorkoutsToWorkoutSets';
 import { getClientIP, getCountryFromIP } from '../geoLocation';
 
@@ -32,6 +32,7 @@ export const createLyftaRouter = (opts: {
 
   router.post('/sets', async (req, res) => {
     const apiKey = String(req.body?.apiKey ?? '').trim();
+    const weightUnit: 'kg' | 'lbs' = req.body?.weightUnit === 'lbs' ? 'lbs' : 'kg';
 
     if (!apiKey) return res.status(400).json({ error: 'Missing apiKey' });
 
@@ -45,15 +46,7 @@ export const createLyftaRouter = (opts: {
           lyfatGetAllWorkoutSummaries(apiKey),
         ]);
 
-        const exerciseIds = new Set<string>();
-        for (const w of workouts) {
-          for (const ex of (w.exercises ?? [])) {
-            exerciseIds.add(String(ex.exercise_id));
-          }
-        }
-
-        const weightUnitMap = await lyfatGetExerciseWeightUnits(apiKey, [...exerciseIds]);
-        const sets = mapLyfataWorkoutsToWorkoutSets(workouts, summaries, weightUnitMap);
+        const sets = mapLyfataWorkoutsToWorkoutSets(workouts, summaries, weightUnit);
         return { workouts, sets };
       });
 

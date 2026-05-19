@@ -1,23 +1,42 @@
 import { WeightUnit } from '../storage/localStorage';
 
 const KG_TO_LBS = 2.20462;
+const LBS_TO_KG = 0.45359237;
 
 /**
- * Convert weight from kg to the specified unit
+ * Convert weight between units.
+ * @param weight - The weight value
+ * @param targetUnit - The unit to display in
+ * @param sourceUnit - The unit the weight is stored in (default 'kg' for backward compat)
  */
-export const convertWeight = (weightKg: number, unit: WeightUnit | string): number => {
-  if (unit === 'lbs') {
-    return Number((weightKg * KG_TO_LBS).toFixed(1));
+export const convertWeight = (
+  weight: number,
+  targetUnit: WeightUnit | string,
+  sourceUnit?: WeightUnit | string
+): number => {
+  const src = sourceUnit || 'kg';
+
+  if (src === targetUnit) {
+    if (targetUnit === 'lbs') return Number(weight.toFixed(1));
+    return Number(weight.toFixed(2));
   }
-  return Number(weightKg.toFixed(2));
+
+  if (targetUnit === 'lbs') {
+    return Number((weight * KG_TO_LBS).toFixed(1));
+  }
+  return Number((weight * LBS_TO_KG).toFixed(2));
 };
 
 /**
  * Format weight with unit label
  */
-export const formatWeight = (weightKg: number, unit: WeightUnit | string): string => {
-  const converted = convertWeight(weightKg, unit);
-  return `${converted} ${unit}`;
+export const formatWeight = (
+  weight: number,
+  targetUnit: WeightUnit | string,
+  sourceUnit?: WeightUnit | string
+): string => {
+  const converted = convertWeight(weight, targetUnit, sourceUnit);
+  return `${converted} ${targetUnit}`;
 };
 
 /**
@@ -40,11 +59,25 @@ export const getStandardWeightIncrementKg = (unit: WeightUnit | string): number 
 };
 
 /**
- * Convert volume (weight * reps) from kg to the specified unit
+ * Convert volume between units.
+ * @param volume - The volume value
+ * @param targetUnit - The unit to display in
+ * @param sourceUnit - The unit the volume is stored in (default 'kg' for backward compat)
  */
-export const convertVolume = (volumeKg: number, unit: WeightUnit | string): number => {
-  if (unit === 'lbs') {
-    return Number((volumeKg * KG_TO_LBS).toFixed(0));
+export const convertVolume = (
+  volume: number,
+  targetUnit: WeightUnit | string,
+  sourceUnit?: WeightUnit | string
+): number => {
+  const src = sourceUnit || 'kg';
+
+  if (src === targetUnit) {
+    if (targetUnit === 'lbs') return Number(volume.toFixed(0));
+    return Number(volume.toFixed(2));
   }
-  return Number(volumeKg.toFixed(2));
+
+  if (targetUnit === 'lbs') {
+    return Number((volume * KG_TO_LBS).toFixed(0));
+  }
+  return Number((volume * LBS_TO_KG).toFixed(2));
 };
