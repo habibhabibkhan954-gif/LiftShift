@@ -118,8 +118,8 @@ export const KPICard: React.FC<KPICardProps> = ({
   }, []);
 
   const effectiveSparklineColor = useMemo(
-    () => sparklineColor ?? trendColor(delta, sparkline),
-    [delta, sparkline, sparklineColor],
+    () => trendColor(delta, sparkline),
+    [delta, sparkline],
   );
 
   const valueClass = 'text-2xl font-bold text-white tracking-tight leading-none';
@@ -182,11 +182,11 @@ export const KPICard: React.FC<KPICardProps> = ({
       </div>
 
       {sparkline && sparkline.length > 1 && (
-        <div ref={sparklineRef} className="mt-2 px-2 md:px-20 lg:px-24">
+        <div ref={sparklineRef} className="mt-2 px-2 md:px-20 lg:px-24 mb-[-16px]">
           <Sparkline
             data={sparkline}
             color={effectiveSparklineColor}
-            height={44}
+            height={60}
             width={sparklineWidth}
             title={sparklineTitle}
           />

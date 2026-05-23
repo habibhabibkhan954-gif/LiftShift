@@ -119,6 +119,16 @@ export const ActivityHeatmap = memo(({
     return blocks;
   }, [heatmapData, today]);
 
+  const consistencyTrendColor = useMemo(() => {
+    if (consistencySparkline.length < 2) return '#3b82f6';
+    const first = consistencySparkline[0].value;
+    const last = consistencySparkline[consistencySparkline.length - 1].value;
+    const threshold = Math.max(Math.abs(first), Math.abs(last), 1) * 0.05;
+    if (last > first + threshold) return '#22c55e';
+    if (last < first - threshold) return '#ef4444';
+    return '#3b82f6';
+  }, [consistencySparkline]);
+
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
 
@@ -213,8 +223,8 @@ export const ActivityHeatmap = memo(({
               </div>
             </div>
 
-            <div className="row-span-2 flex items-center justify-end">
-              <Sparkline data={consistencySparkline} color="#10b981" height={24} title="Workout consistency over last 8 weeks" />
+            <div className="row-span-2 flex items-center mr-3 mb-3 justify-left scale-150 origin-centre">
+              <Sparkline data={consistencySparkline} color={consistencyTrendColor} height={44} title="Workout consistency over last 8 weeks" />
             </div>
 
             <div className="flex items-center justify-start">
