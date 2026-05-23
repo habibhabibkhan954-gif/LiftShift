@@ -148,11 +148,10 @@ export const VolumeDensityCard = ({
                 dataKey="volumePerSet"
                 name={`Volume per Set (${weightUnit})`}
                 stroke="#8b5cf6"
-                strokeWidth={3}
+                strokeWidth={1.5}
                 fill="url(#gDensityArea)"
-                dot={<IndexFilteredDot r={3} fill="#8b5cf6" stroke="#8b5cf6" strokeWidth={0} showAtIndexMap={tickIndexMap} />}
                 activeDot={{ r: 5, strokeWidth: 0 }}
-                animationDuration={1500}
+                animationDuration={500}
               />
             ) : (
               <Bar
@@ -160,7 +159,7 @@ export const VolumeDensityCard = ({
                 name={`Volume per Set (${weightUnit})`}
                 fill="#8b5cf6"
                 radius={[8, 8, 0, 0]}
-                animationDuration={1500}
+                animationDuration={500}
               />
             )}
           </ComposedChart>
