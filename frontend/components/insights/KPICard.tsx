@@ -1,10 +1,32 @@
-import React from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 
 import { TrendingUp, TrendingDown, Activity } from 'lucide-react';
 
 import CountUp from '../ui/CountUp';
 import type { DeltaResult, SparklinePoint } from '../../utils/analysis/insights';
 import { Sparkline } from './Sparkline';
+
+function trendColor(
+  delta: DeltaResult | undefined,
+  sparkline: SparklinePoint[] | undefined,
+): string {
+  let direction: 'up' | 'down' | 'same' = 'same';
+
+  if (delta) {
+    const d = delta.direction;
+    direction = (d === 'up' || d === 'down' || d === 'same') ? d : 'same';
+  } else if (sparkline && sparkline.length >= 2) {
+    const first = sparkline[0].value;
+    const last = sparkline[sparkline.length - 1].value;
+    const threshold = Math.max(Math.abs(first), Math.abs(last), 1) * 0.05;
+    if (last > first + threshold) direction = 'up';
+    else if (last < first - threshold) direction = 'down';
+  }
+
+  if (direction === 'up') return '#22c55e';
+  if (direction === 'down') return '#ef4444';
+  return '#3b82f6';
+}
 
 // Delta Badge Component with context
 const DeltaBadge: React.FC<{ delta: DeltaResult; suffix?: string; showPercent?: boolean; context?: string }> = ({
@@ -77,11 +99,29 @@ export const KPICard: React.FC<KPICardProps> = ({
   delta,
   deltaContext,
   sparkline,
-  sparklineColor = '#3b82f6',
+  sparklineColor,
   sparklineTitle,
   badge,
   compact = false,
 }) => {
+  const sparklineRef = useRef<HTMLDivElement>(null);
+  const [sparklineWidth, setSparklineWidth] = useState(60);
+
+  useEffect(() => {
+    const el = sparklineRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(([entry]) => {
+      setSparklineWidth(entry.contentRect.width);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const effectiveSparklineColor = useMemo(
+    () => sparklineColor ?? trendColor(delta, sparkline),
+    [delta, sparkline, sparklineColor],
+  );
+
   const valueClass = 'text-2xl font-bold text-white tracking-tight leading-none';
 
   const renderValue = () => {
@@ -128,9 +168,10 @@ export const KPICard: React.FC<KPICardProps> = ({
           </div>
           <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 truncate">{title}</span>
         </div>
-        {sparkline && sparkline.length > 1 && (
-          <div className="flex-shrink-0">
-            <Sparkline data={sparkline} color={sparklineColor} height={24} title={sparklineTitle} />
+        {(delta || badge) && (
+          <div className="flex flex-wrap items-center gap-1.5 flex-shrink-0">
+            {delta && <DeltaBadge delta={delta} context={deltaContext} />}
+            {badge}
           </div>
         )}
       </div>
@@ -140,10 +181,15 @@ export const KPICard: React.FC<KPICardProps> = ({
         {subtitle && <span className="text-[11px] text-slate-500">{subtitle}</span>}
       </div>
 
-      {(delta || badge) && (
-        <div className="mt-2 flex flex-wrap items-center gap-2">
-          {delta && <DeltaBadge delta={delta} context={deltaContext} />}
-          {badge}
+      {sparkline && sparkline.length > 1 && (
+        <div ref={sparklineRef} className="mt-2 px-2 md:px-20 lg:px-24">
+          <Sparkline
+            data={sparkline}
+            color={effectiveSparklineColor}
+            height={44}
+            width={sparklineWidth}
+            title={sparklineTitle}
+          />
         </div>
       )}
     </div>
