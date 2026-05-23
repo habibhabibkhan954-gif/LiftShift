@@ -116,7 +116,7 @@ export const MuscleFocusCard: React.FC<{
                     strokeWidth={2}
                     fill={isDark ? '#06b6d4' : '#0891b2'}
                     fillOpacity={0.35}
-                    animationDuration={1500}
+                    animationDuration={500}
                   />
                   <Tooltip
                     contentStyle={tooltipStyle}
