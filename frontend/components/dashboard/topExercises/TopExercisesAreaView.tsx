@@ -65,7 +65,7 @@ export const TopExercisesAreaView: React.FC<TopExercisesAreaViewProps> = ({
               stroke={pieColors[idx % pieColors.length]}
               fill={pieColors[idx % pieColors.length]}
               fillOpacity={0.25}
-              animationDuration={1200}
+              animationDuration={500}
             />
           ))}
         </AreaChart>
