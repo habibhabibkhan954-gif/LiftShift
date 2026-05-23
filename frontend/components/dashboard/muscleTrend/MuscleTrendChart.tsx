@@ -15,7 +15,8 @@ import { normalizeMuscleGroup } from '../../../utils/muscle/analytics';
 import { MUSCLE_COLORS, INDIVIDUAL_MUSCLE_COLORS } from '../../../utils/domain/categories';
 import { LazyRender } from '../../ui/LazyRender';
 import { ChartSkeleton } from '../../ui/ChartSkeleton';
-import { getRechartsCategoricalTicks, RECHARTS_XAXIS_PADDING, RECHARTS_YAXIS_MARGIN, calculateYAxisDomain, formatAxisNumber } from '../../../utils/chart/chartEnhancements';
+import { getRechartsXAxisInterval, RECHARTS_XAXIS_PADDING, RECHARTS_YAXIS_MARGIN, calculateYAxisDomain, formatAxisNumber } from '../../../utils/chart/chartEnhancements';
+import { formatNumber } from '../../../utils/format/formatters';
 
 type MuscleGrouping = 'groups' | 'muscles';
 type MusclePeriod = 'daily' | 'weekly' | 'monthly' | 'yearly' | 'all';
@@ -46,13 +47,15 @@ export const MuscleTrendChart: React.FC<MuscleTrendChartProps> = ({
   muscleTrendView,
   tooltipStyle,
 }) => {
-  const xTicks = useMemo(() => {
-    return getRechartsCategoricalTicks(trendData, (row: any) => row?.dateFormatted);
-  }, [trendData]);
-
   const yAxisDomain = useMemo(() => {
     return calculateYAxisDomain(trendData, trendKeys);
   }, [trendData, trendKeys]);
+
+  const xAxisInterval = useMemo(() => {
+    return getRechartsXAxisInterval(trendData.length);
+  }, [trendData.length]);
+
+  const tooltipFormatter = (val: any, name: any) => [formatNumber(Number(val), { maxDecimals: 1 }), name];
 
   if (trendData.length === 0 || trendKeys.length === 0) {
     return (
@@ -75,11 +78,10 @@ export const MuscleTrendChart: React.FC<MuscleTrendChartProps> = ({
               tickLine={false}
               axisLine={false}
               padding={RECHARTS_XAXIS_PADDING as any}
-              interval={0}
-              ticks={xTicks as any}
+              interval={xAxisInterval}
             />
             <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} domain={yAxisDomain} tickFormatter={(val) => formatAxisNumber(Number(val))} />
-            <Tooltip contentStyle={tooltipStyle as any} />
+            <Tooltip contentStyle={tooltipStyle as any} formatter={tooltipFormatter as any} />
             <Legend wrapperStyle={{ fontSize: '11px', left: '52%', transform: 'translateX(-50%)', position: 'absolute' }} />
             {trendKeys.map((k) => {
               const color = getTrendColor(k, muscleGrouping);
@@ -108,11 +110,10 @@ export const MuscleTrendChart: React.FC<MuscleTrendChartProps> = ({
               tickLine={false}
               axisLine={false}
               padding={RECHARTS_XAXIS_PADDING as any}
-              interval={0}
-              ticks={xTicks as any}
+              interval={xAxisInterval}
             />
             <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} domain={yAxisDomain} tickFormatter={(val) => formatAxisNumber(Number(val))} />
-            <Tooltip contentStyle={tooltipStyle as any} cursor={{ fill: 'rgb(var(--overlay-rgb) / 0.12)' }} />
+            <Tooltip contentStyle={tooltipStyle as any} cursor={{ fill: 'rgb(var(--overlay-rgb) / 0.12)' }} formatter={tooltipFormatter as any} />
             <Legend wrapperStyle={{ fontSize: '11px', left: '52%', transform: 'translateX(-50%)', position: 'absolute' }} />
             {trendKeys.map((k, idx) => {
               const color = getTrendColor(k, muscleGrouping);

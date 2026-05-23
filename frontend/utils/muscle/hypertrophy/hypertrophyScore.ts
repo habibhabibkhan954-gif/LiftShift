@@ -199,13 +199,22 @@ function calculateProgressiveOverloadScore(
  * 3 days/week = 100 (optimal), above 3 penalizes (recovery concern).
  * Day counts if muscle got ≥1 working set that day.
  */
-export function calculateFrequencyScore(daysPerWeek: number): number {
+export function calculateFrequencyScore(
+  daysPerWeek: number,
+  weeklySets: number,
+  trainingLevel: TrainingLevel = 'intermediate'
+): number {
   if (daysPerWeek <= 0) return 0;
   const OPTIMAL = 3;
   if (daysPerWeek <= OPTIMAL) {
     return Math.round((daysPerWeek / OPTIMAL) * 100);
   }
-  // Above optimal: penalize ~5 points per extra day, floor at 60
+  // Only penalize high frequency when volume exceeds recovery capacity (MRV)
+  const thresholds = getVolumeThresholds(trainingLevel);
+  if (weeklySets <= thresholds.mrv) {
+    return 100;
+  }
+  // Above optimal + over MRV: penalize ~5 points per extra day, floor at 60
   return Math.max(60, Math.round(100 - (daysPerWeek - OPTIMAL) * 10));
 }
 
@@ -334,7 +343,7 @@ export function calculateMuscleHypertrophyScore(
   const progressiveOverload = calculateProgressiveOverloadScore(oneRMTrend, maxTrend ?? 0, 0, trainingLevel);
 
   // --- Frequency ---
-  const frequency = calculateFrequencyScore(daysPerWeek);
+  const frequency = calculateFrequencyScore(daysPerWeek, weeklySets, trainingLevel);
 
   // --- Total Score ---
   // Weights: Volume 50%, Progress 40%, Frequency 10%
@@ -667,7 +676,7 @@ export function calculateHypertrophyScoresWithExerciseTrends(
 
     const daysInWindow = muscleDays.get(muscleId) ?? 0;
     const daysPerWeek = daysInWindow / weeks;
-    const frequency = calculateFrequencyScore(daysPerWeek);
+    const frequency = calculateFrequencyScore(daysPerWeek, rate, trainingLevel);
 
     if (volumeScore <= 0 && frequency <= 0) continue;
 

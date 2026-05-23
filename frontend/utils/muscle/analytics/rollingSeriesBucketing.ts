@@ -1,5 +1,6 @@
 import { format, startOfMonth, startOfWeek } from 'date-fns';
 import { formatMonthYearContraction, formatWeekContraction } from '../../date/dateUtils';
+import { DEFAULT_CHART_MAX_POINTS, pickChartAggregation } from '../../date/dateUtils';
 
 type RollingWeeklySeriesEntry = {
   timestamp: number;
@@ -74,4 +75,43 @@ export const bucketRollingWeeklySeriesToMonths = (
 
   const out = Array.from(byMonth.values()).sort((a, b) => a.timestamp - b.timestamp);
   return { data: out, keys };
+};
+
+/**
+ * Downsample a rolling-weekly time series to keep plotted points ≤ maxPoints.
+ *
+ * Cascading strategy:
+ * 1. If already within limit, return as-is.
+ * 2. Group daily entries into calendar weeks.
+ * 3. If weeks-bucketed still exceeds maxPoints, group into calendar months.
+ *
+ * Note: when the time span is many years, even month-level bucketing may
+ * exceed maxPoints (e.g. 5 years → 60 months cannot fit into 8 buckets).
+ * In that case the function returns the best it can — month-level data.
+ */
+export const downsampleRollingWeeklySeries = (
+  series: RollingWeeklySeriesResult,
+  maxPoints: number = DEFAULT_CHART_MAX_POINTS
+): RollingWeeklySeriesResult => {
+  const { data, keys } = series;
+  if (!data || data.length <= maxPoints) return series;
+
+  const timestamps = data
+    .map((row: any) => Number(row?.timestamp))
+    .filter((t: number) => Number.isFinite(t));
+
+  // Skip straight to months when the span forces it.
+  if (timestamps.length >= 2) {
+    const minTs = Math.min(...timestamps);
+    const maxTs = Math.max(...timestamps);
+    const agg = pickChartAggregation({ minTs, maxTs, preferred: 'weekly', maxPoints });
+
+    if (agg === 'monthly') {
+      return bucketRollingWeeklySeriesToMonths(series);
+    }
+  }
+
+  const weekBucketed = bucketRollingWeeklySeriesToWeeks(series);
+  if (weekBucketed.data.length <= maxPoints) return weekBucketed;
+  return bucketRollingWeeklySeriesToMonths(series);
 };

@@ -132,11 +132,7 @@ export const MuscleTrendCard = ({
           <TrendBadge label="Building baseline" tone="neutral" />
         )}
       </InsightLine>
-      <p>
-        <span className="font-semibold text-slate-300">Weighting:</span>{' '}
-        <span className="text-emerald-400 font-semibold">Primary</span>: 1 set,{' '}
-        <span className="text-cyan-400 font-semibold">Secondary</span>: 0.5 set. Cardio is ignored. Full Body adds 1 set to every group.
-      </p>
+
       <InsightText text="Use this to spot volume drift. If one area rises while others fade, you are gradually specializing. This can be intentional, or accidental." />
     </ChartDescription>
   </div>

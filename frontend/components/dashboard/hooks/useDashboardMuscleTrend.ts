@@ -4,10 +4,10 @@ import type { WorkoutSet } from '../../../types';
 import type { ExerciseAsset } from '../../../utils/data/exerciseAssets';
 import { isWarmupSet } from '../../../utils/analysis/classification';
 import { calculateDelta } from '../../../utils/analysis/insights';
-import { DEFAULT_CHART_MAX_POINTS, getRollingWindowStartForMode, getSessionKey, formatLastRollingWindow } from '../../../utils/date/dateUtils';
+import { getRollingWindowStartForMode, getSessionKey, formatLastRollingWindow } from '../../../utils/date/dateUtils';
 import { getMuscleVolumeTimeSeries, getMuscleVolumeTimeSeriesDetailed } from '../../../utils/muscle/analytics';
 import { getMuscleContributionsFromAsset } from '../../../utils/muscle/analytics';
-import { bucketRollingWeeklySeriesToMonths, bucketRollingWeeklySeriesToWeeks } from '../../../utils/muscle/analytics';
+import { downsampleRollingWeeklySeries } from '../../../utils/muscle/analytics';
 import { computationCache } from '../../../utils/storage/computationCache';
 import { dashboardCacheKeys } from '../../../utils/storage/cacheKeys';
 
@@ -48,8 +48,7 @@ export const useDashboardMuscleTrend = (args: {
     );
 
     if (musclePeriod === 'all') {
-      const n = (base.data || []).length;
-      return n > 140 ? bucketRollingWeeklySeriesToMonths(base as any) : bucketRollingWeeklySeriesToWeeks(base as any);
+      return downsampleRollingWeeklySeries(base as any);
     }
 
     const windowStart = getRollingWindowStartForMode(
@@ -62,10 +61,7 @@ export const useDashboardMuscleTrend = (args: {
       keys: base.keys || [],
     };
 
-    // Base series is weekly (rolling). Bucket down only when needed.
-    const maxPoints = DEFAULT_CHART_MAX_POINTS;
-    if (windowed.data.length <= maxPoints) return windowed as any;
-    return windowed.data.length > 140 ? bucketRollingWeeklySeriesToMonths(windowed as any) : bucketRollingWeeklySeriesToWeeks(windowed as any);
+    return downsampleRollingWeeklySeries(windowed as any);
   }, [fullData, assetsMap, musclePeriod, effectiveNow, filterCacheKey, secondarySetMultiplier]);
 
   const muscleSeriesMuscles = useMemo(() => {
@@ -79,8 +75,7 @@ export const useDashboardMuscleTrend = (args: {
     );
 
     if (musclePeriod === 'all') {
-      const n = (base.data || []).length;
-      return n > 140 ? bucketRollingWeeklySeriesToMonths(base as any) : bucketRollingWeeklySeriesToWeeks(base as any);
+      return downsampleRollingWeeklySeries(base as any);
     }
 
     const windowStart = getRollingWindowStartForMode(
@@ -93,9 +88,7 @@ export const useDashboardMuscleTrend = (args: {
       keys: base.keys || [],
     };
 
-    const maxPoints = DEFAULT_CHART_MAX_POINTS;
-    if (windowed.data.length <= maxPoints) return windowed as any;
-    return windowed.data.length > 140 ? bucketRollingWeeklySeriesToMonths(windowed as any) : bucketRollingWeeklySeriesToWeeks(windowed as any);
+    return downsampleRollingWeeklySeries(windowed as any);
   }, [fullData, assetsMap, musclePeriod, effectiveNow, filterCacheKey, secondarySetMultiplier]);
 
   const trendData = muscleGrouping === 'groups' ? muscleSeriesGroups.data : muscleSeriesMuscles.data;

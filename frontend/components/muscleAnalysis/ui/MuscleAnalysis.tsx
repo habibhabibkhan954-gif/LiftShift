@@ -265,7 +265,7 @@ export const MuscleAnalysis: React.FC<MuscleAnalysisProps> = ({
         </div>
 
         {/* Column 2: Weekly Sets Graph */}
-        <div className="h-[300px] sm:h-[300px] lg:col-start-2 lg:row-start-1 lg:h-full min-h-0 overflow-hidden">
+        <div className="h-full sm:h-full lg:col-start-2 lg:row-start-1 lg:h-full min-h-0 overflow-hidden">
           <MuscleAnalysisGraphPanel
             selectedMuscle={selectedMuscle}
             weeklySetsWindow={weeklySetsWindow}
@@ -282,7 +282,7 @@ export const MuscleAnalysis: React.FC<MuscleAnalysisProps> = ({
         </div>
 
         {/* Column 3: Exercise List */}
-        <div className="h-[300px] sm:h-[300px] lg:h-full lg:col-start-3 lg:row-start-1 min-h-0 overflow-hidden">
+        <div className=" sm:h-full h-[300px] lg:h-full lg:col-start-3 lg:row-start-1 min-h-0 overflow-hidden">
           <MuscleAnalysisExerciseListPanel
             contributingExercises={contributingExercises}
             assetsMap={assetsMap}

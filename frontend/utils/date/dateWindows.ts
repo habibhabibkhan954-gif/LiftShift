@@ -30,7 +30,7 @@ export type ChartAggregation = 'daily' | 'weekly' | 'monthly';
 
 // Target max plotted points for time-series charts.
 // Lower values force more aggressive bucketing (fewer points).
-export const DEFAULT_CHART_MAX_POINTS = 30;
+export const DEFAULT_CHART_MAX_POINTS = 8;
 
 export const pickChartAggregation = (args: {
   /** earliest timestamp (ms) */

@@ -46,9 +46,7 @@ export const MuscleAnalysisExerciseList: React.FC<MuscleAnalysisExerciseListProp
 
   return (
     <div className="px-4 mt-2">
-      <div
-        className="space-y-2"
-      >
+      <div>
         {displayedExercises.map((ex) => {
           const baseName = stripExerciseSourceLabel(ex.name);
           const asset = assetsMap?.get(baseName);
