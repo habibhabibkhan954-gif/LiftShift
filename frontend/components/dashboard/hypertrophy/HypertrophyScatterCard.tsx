@@ -336,7 +336,7 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
 
 
   return (
-    <div className="bg-black/70 rounded-xl border border-slate-700/50 overflow-hidden h-[400px] sm:h-[600px] lg:h-full flex flex-col">
+    <div className="bg-black/70 rounded-xl border border-slate-700/50 overflow-hidden h-[450px] sm:h-[650px] lg:h-full flex flex-col">
       <div className="p-3 flex-shrink-0">
         <div className="flex items-center justify-between">
           <div>
@@ -415,7 +415,7 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
 
               <Scatter
                 data={chartData}
-                isAnimationActive={false}
+                animationDuration={1000}
                 shape={({ cx, cy, fill }: any) =>
                   cx != null && cy != null ? (
                     <>
@@ -432,7 +432,7 @@ export const HypertrophyScatterCard: React.FC<HypertrophyScatterCardProps> = ({
 
               <Scatter
                 data={chartData}
-                isAnimationActive={false}
+                animationDuration={1000}
                 legendType="none"
                 shape={({ cx, cy, payload }: any) => {
                   if (cx == null || cy == null || !payload) return null;
