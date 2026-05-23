@@ -141,14 +141,14 @@ export const PrTrendCard = ({
                   dataKey="count"
                   name="PRs"
                   stroke="#eab308"
-                  strokeWidth={3}
+                  strokeWidth={1}
                   fill="url(#gPRs)"
                   dot={<ValueDot valueKey="count" unit="" data={chartData} color="#eab308" showAtIndexMap={tickIndexMap} showDotWhenHidden={false} />}
-                  activeDot={{ r: 5, strokeWidth: 0 }}
-                  animationDuration={1500}
+                  activeDot={{ r: 1, strokeWidth: 0 }}
+                  animationDuration={500}
                 />
               ) : (
-                <Bar dataKey="count" name="PRs" fill="#eab308" radius={[8, 8, 0, 0]} animationDuration={1500} />
+                <Bar dataKey="count" name="PRs" fill="#eab308" radius={[8, 8, 0, 0]} animationDuration={500} />
               )}
             </ComposedChart>
           </ResponsiveContainer>
