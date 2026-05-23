@@ -155,6 +155,7 @@ export const MuscleAnalysisDetailPanel: React.FC<MuscleAnalysisDetailPanelProps>
                       stroke={volumeDelta?.direction === 'down' ? '#f43f5e' : '#10b981'}
                       strokeWidth={2}
                       fill="url(#muscleColorGradient)"
+                      animationDuration={500}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
