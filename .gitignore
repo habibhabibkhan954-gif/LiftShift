@@ -33,6 +33,9 @@ dist-ssr
 # Netlify
 .netlify/
 
+# Skills
+.agents/
+
 # Unused assets for future use
 frontend/components/bodyMap/demomalefront.svg
 frontend/components/bodyMap/demomaleback.svg
