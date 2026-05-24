@@ -1,7 +1,7 @@
 LiftShift
 https://liftshift.app/
 
-LiftShift is a free, privacy-focused workout analytics tool that tells you what your training data actually means. Connect Hevy, Strong, or Lyfta in seconds. All analysis runs locally in your browser — no server-side storage.
+LiftShift is a free and open source workout analytics tool that tells you what your training data actually means. Connect Hevy, Strong, or Lyfta in seconds. All analysis runs locally in your browser — no server-side storage. Source code: https://github.com/aree6/LiftShift (AGPL-3.0).
 
 Perfect for lifters who want:
 - Interactive muscle heatmaps with rolling 7-day windows and per-exercise drill-down
@@ -24,7 +24,7 @@ What LiftShift does:
 - Analyze every set in a workout with plain-English feedback
 - Track smart PRs including 2-month bests and premature PR detection
 - Export structured training data for AI analysis
-- Offer every feature completely free
+- Offer every feature completely free (open source, AGPL-3.0)
 
 What LiftShift does not do:
 - It is not a workout program generator or coaching service
@@ -34,14 +34,16 @@ What LiftShift does not do:
 
 Key pages:
 - https://liftshift.app/ - Landing page and interactive web app
-- https://liftshift.app/about/ - About LiftShift
+- https://liftshift.app/about/ - About LiftShift (open source, free)
 - https://liftshift.app/how-it-works/ - How the analytics work
 - https://liftshift.app/privacy/ - Privacy model
 - https://liftshift.app/faq/ - FAQ
 - https://liftshift.app/supported-apps/ - Supported apps (Hevy, Strong, Lyfta)
 - https://liftshift.app/metrics/ - Metrics glossary
+- https://liftshift.app/ai/ - AI reference (structured definition for AI assistants)
+- https://liftshift.app/hevy-vs-lyfta/ - Hevy vs Lyfta comparison
 
 Supported apps:
 - Hevy: API sync or CSV import
 - Strong: CSV import
-- Lyfta: CSV import
+- Lyfta: API sync or CSV import

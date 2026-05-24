@@ -2,7 +2,7 @@ import React from 'react';
 
 const OG_IMAGE = 'https://liftshift.app/UI/logo.png';
 
-export const SOFTWARE_APP_SCHEMA = '{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"LiftShift","applicationCategory":"HealthApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free workout analytics dashboard that turns Hevy, Strong, and Lyfta logs into visual training insights. Track volume trends, personal records, muscle heatmaps, and exercise progress locally in your browser.","url":"https://liftshift.app","image":"https://liftshift.app/UI/logo.png"},{"@type":"WebSite","name":"LiftShift","url":"https://liftshift.app","description":"Free workout analytics dashboard. Turn Hevy, Strong, and Lyfta workout logs into beautiful charts and insights.","potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://liftshift.app/?q={search_term_string}"},"query-input":"required name=search_term_string"}}]}';
+export const SOFTWARE_APP_SCHEMA = '{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"LiftShift","applicationCategory":"HealthApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free and open source workout analytics dashboard that turns Hevy, Strong, and Lyfta logs into visual training insights. Track volume trends, personal records, muscle heatmaps, and exercise progress locally in your browser.","url":"https://liftshift.app","image":"https://liftshift.app/UI/logo.png","license":"https://github.com/aree6/LiftShift/blob/main/LICENSE"},{"@type":"WebSite","name":"LiftShift","url":"https://liftshift.app","description":"Free and open source workout analytics dashboard. Turn Hevy, Strong, and Lyfta workout logs into beautiful charts and insights.","potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://liftshift.app/?q={search_term_string}"},"query-input":"required name=search_term_string"}}]}';
 
 export type SeoHeadProps = {
   canonicalPath: string;
@@ -11,9 +11,9 @@ export type SeoHeadProps = {
   description?: string;
 };
 
-const FALLBACK_TITLE = 'LiftShift — Free Workout Analytics Dashboard';
+const FALLBACK_TITLE = 'LiftShift — Free &amp; Open Source Workout Analytics';
 const FALLBACK_DESCRIPTION =
-  'Free workout analytics tool. Import your gym logs from Hevy, Strong, or Lyfta — get muscle heatmaps, plateau detection, set-by-set feedback, and AI-ready exports. Runs in your browser, no account needed.';
+  'Free and open source workout analytics. Import your gym logs from Hevy, Strong, or Lyfta — get muscle heatmaps, plateau detection, set-by-set feedback, and AI-ready exports. Runs in your browser, no account needed.';
 
 export function SeoHead({ canonicalPath, isLanding, title, description }: SeoHeadProps) {
   const siteUrl = 'https://liftshift.app';
