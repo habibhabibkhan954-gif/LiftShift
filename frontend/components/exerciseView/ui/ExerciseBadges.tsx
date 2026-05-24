@@ -28,7 +28,7 @@ export const DeltaBadge: React.FC<{ delta: number; suffix?: string; invert?: boo
   );
 };
 
-export const ConfidenceBadge: React.FC<{ confidence?: 'low' | 'medium' | 'high' }> = ({ confidence }) => {
+export const ConfidenceBadge: React.FC<{ confidence?: 'low' | 'medium' | 'high'; reason?: string }> = ({ confidence, reason }) => {
   if (!confidence) return null;
 
   const meta = (() => {
@@ -52,10 +52,12 @@ export const ConfidenceBadge: React.FC<{ confidence?: 'low' | 'medium' | 'high' 
     }
   })();
 
+  const tooltip = reason || 'Confidence reflects how consistent and recent your logged sessions are.';
+
   return (
     <span
       className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md border text-[10px] font-bold whitespace-nowrap ${meta.cls}`}
-      title="Confidence reflects how consistent/recent your logged sessions are for this exercise."
+      title={tooltip}
       aria-label={meta.label}
     >
       <span className="w-1.5 h-1.5 rounded-full bg-current" />

@@ -62,7 +62,13 @@ export const ExerciseStatusCard: React.FC<ExerciseStatusCardProps> = ({
             </h4>
 
             <div className="flex flex-wrap items-center justify-end gap-1.5 shrink-0">
-              <ConfidenceBadge confidence={currentStatus.confidence} />
+              <ConfidenceBadge confidence={currentStatus.confidence} reason={(() => {
+                const calc = currentCore?.calculation;
+                if (!calc) return undefined;
+                if (currentStatus.confidence === 'high') return `Based on ${calc.historyLen} sessions with a wide analysis window of ${calc.windowSize} sessions.`;
+                if (currentStatus.confidence === 'medium') return `Based on ${calc.historyLen} sessions. ${10 - calc.historyLen} more for high confidence.`;
+                return `Only ${calc.historyLen} session${calc.historyLen === 1 ? '' : 's'} logged. Need ${Math.max(0, 6 - calc.historyLen)} more for medium confidence.`;
+              })()} />
               {currentCore?.prematurePr ? (
                 <span
                   className="hidden sm:inline-flex items-center gap-1.5 px-2 py-1 rounded-md border text-[10px] font-bold whitespace-nowrap bg-orange-500/10 text-orange-400 border-orange-500/20"
