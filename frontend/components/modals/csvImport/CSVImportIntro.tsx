@@ -19,19 +19,19 @@ export const CSVImportIntro: React.FC<CSVImportIntroProps> = ({
 }) => {
   const copy = (() => {
     if (variant === 'preferences') {
-      return "Let's get set up. Choose your body type and unit, then continue.";
+      return 'Choose your body type and weight unit.';
     }
 
     if (platform === 'other') {
       if (showBodyTypeAndUnitSelectors) {
-        return "Let's get set up. Choose your body type and unit, then upload your CSV.";
+        return 'Choose your body type and unit, then upload your CSV.';
       }
       return 'Drop your CSV below.';
     }
 
     const platformName = platformLabel(platform);
     if (showBodyTypeAndUnitSelectors) {
-      return `Let's get set up. Choose your body type and unit, then upload your ${platformName} CSV export.`;
+      return `Choose your body type and unit, then upload your ${platformName} CSV export.`;
     }
     return `Drop your ${platformName} CSV export below.`;
   })();
