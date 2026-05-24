@@ -33,14 +33,14 @@ export function SegmentControl<T extends string = string>({
           onClick={() => onChange(option.value)}
           title={option.title}
           aria-label={option.title}
-          className={`h-5 flex items-center justify-center gap-1 rounded cursor-pointer transition-all duration-200 ${
+          className={`h-7 flex items-center justify-center gap-1 rounded cursor-pointer transition-all duration-200 ${
             value === option.value ? ACTIVE_CLASS : INACTIVE_CLASS
           } ${
-            option.icon ? 'px-1.5' : 'px-1 text-[8px] font-bold leading-none whitespace-nowrap'
+            option.icon ? 'px-2' : 'px-1.5 text-[11px] font-bold leading-none whitespace-nowrap'
           }`}
         >
-          {option.icon && <span className="w-3 h-3 flex-shrink-0">{option.icon}</span>}
-          {option.label && <span className="text-[8px] font-bold leading-none whitespace-nowrap">{option.label}</span>}
+          {option.icon && <span className="w-3.5 h-3.5 flex-shrink-0">{option.icon}</span>}
+          {option.label && <span className="text-[11px] font-bold leading-none whitespace-nowrap">{option.label}</span>}
         </button>
       ))}
     </div>
