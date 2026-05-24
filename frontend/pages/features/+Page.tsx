@@ -2,59 +2,75 @@ export { Page };
 
 import React from 'react';
 import { InfoShell } from '../../components/info/InfoShell';
-import { Flame, CalendarDays, Trophy, BarChart3, Dumbbell, ShieldCheck } from 'lucide-react';
+import { Info } from 'lucide-react';
+import { assetPath } from '../../constants';
 
-function FeatureCard({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
-  return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-      <div className="flex items-center gap-3">
-        <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-2 text-emerald-300">{icon}</div>
-        <h2 className="text-lg font-semibold">{title}</h2>
-      </div>
-      <p className="mt-2 text-slate-300">{text}</p>
-    </div>
-  );
-}
+const featureList: Array<{ group: string; items: string[] }> = [
+  {
+    group: 'Training insights',
+    items: [
+      'Interactive muscle heatmaps — click any muscle to see contributing exercises, with rolling 7-day windows and volume zone scoring.',
+      'GitHub-style yearly consistency heatmap with streaks, consistency scores, and workout day highlights.',
+      'Rolling window comparisons: last week vs. previous week, last month vs. previous month, on every metric.',
+      'Training focus breakdown by rep ranges (strength / hypertrophy / endurance).',
+    ],
+  },
+  {
+    group: 'Progress tracking',
+    items: [
+      'Smart PR tracking — all-time bests, 2-month bests, premature PR detection, and PR drought alerts.',
+      'Exercise status labels — Getting stronger, Plateauing, or Taking a dip — with confidence levels.',
+      'Plateau detection with specific, actionable suggestions for what to change next session.',
+    ],
+  },
+  {
+    group: 'Coaching feedback',
+    items: [
+      'Set-by-set analysis — 19 scenarios with badges, tooltips, and improvement suggestions.',
+      'AI-ready export — one-click structured data export with built-in analysis modules (junk volume audit, structural balance, joint health, and more).',
+      'Weight-up / weight-down suggestions based on your actual performance quality.',
+    ],
+  },
+  {
+    group: 'Data tools',
+    items: [
+      'Calendar filtering — pick any date range and all metrics recalculate for just that window.',
+      'Combine data from Hevy, Strong, and Lyfta into one unified dashboard.',
+      'Lifetime Progress — 9-tier per-muscle journey from Seedling to Legend.',
+      'Flex cards — shareable year-in-review summaries of your training.',
+    ],
+  },
+];
 
 function Page() {
   return (
     <InfoShell
       activeNav="features"
       title="Features"
-      subtitle="Everything is designed to answer training questions quickly, with clean visuals and clear definitions."
+      subtitle="Everything LiftShift can do with your workout data. Connect Hevy, Strong, or Lyfta in seconds."
     >
-      <section className="grid gap-4 sm:grid-cols-2">
-        <FeatureCard
-          icon={<Flame className="w-5 h-5" />}
-          title="Muscle heatmaps"
-          text="See which muscles you’re actually training, with group and muscle views and different time windows."
-        />
-        <FeatureCard
-          icon={<CalendarDays className="w-5 h-5" />}
-          title="Calendar filtering"
-          text="Zoom into a day, week, or month to compare blocks of training and isolate what changed."
-        />
-        <FeatureCard
-          icon={<Trophy className="w-5 h-5" />}
-          title="PR detection"
-          text="Automatically detect new personal records and track PR trends over time."
-        />
-        <FeatureCard
-          icon={<BarChart3 className="w-5 h-5" />}
-          title="Volume trends"
-          text="Track training load over time with charts built for quick interpretation."
-        />
-        <FeatureCard
-          icon={<Dumbbell className="w-5 h-5" />}
-          title="Exercise deep dives"
-          text="Pick any exercise to see trends, recent performance, and historical context in one view."
-        />
-        <FeatureCard
-          icon={<ShieldCheck className="w-5 h-5" />}
-          title="Privacy-first"
-          text="Most analytics run locally in your browser. Your workout history stays on your device."
-        />
-      </section>
+      <div className="space-y-10">
+        {featureList.map((g) => (
+          <section key={g.group}>
+            <h2 className="text-lg font-semibold text-white mb-3">{g.group}</h2>
+            <ul className="list-disc list-inside space-y-2 text-slate-300 leading-relaxed">
+              {g.items.map((item, i) => (
+                <li key={i}>{item}</li>
+              ))}
+            </ul>
+          </section>
+        ))}
+
+        <div className="rounded-2xl border border-emerald-500/25 bg-emerald-500/10 p-4 mt-6">
+          <div className="flex items-center gap-2 text-emerald-200 text-sm font-semibold mb-2">
+            <Info className="w-4 h-4" />
+            Full documentation
+          </div>
+          <p className="text-slate-300 text-sm">
+            See <a href={assetPath('how-it-works/')} className="text-emerald-300 underline">How it works</a> for detailed explanations of every feature, metric definition, and design choice.
+          </p>
+        </div>
+      </div>
     </InfoShell>
   );
 }

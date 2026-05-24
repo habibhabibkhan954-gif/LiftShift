@@ -72,7 +72,7 @@ export const InfoShell: React.FC<InfoShellProps> = ({ activeNav = null, title, s
       {/* Navigation */}
       <Navigation variant="info" activeNav={activeNav} className="px-4 sm:px-6 lg:px-8" />
 
-      <main className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 pt-8 pb-44">
+      <main className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pt-8 pb-44">
         <div className="rounded-3xl border border-white/10 bg-black/25 backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.45)] overflow-hidden">
           <div className="p-6 sm:p-8">
             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">{title}</h1>
