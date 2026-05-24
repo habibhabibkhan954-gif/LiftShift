@@ -3,12 +3,9 @@ import vikeReact from 'vike-react/config';
 
 export default {
   extends: [vikeReact],
-  // Pre-render only opted-in pages.
   prerender: { partial: true },
-  // Default head tags (can be overridden per route group or page).
-  title: 'LiftShift - Free Workout Analytics Dashboard',
+  title: 'LiftShift — Free Workout Analytics Dashboard',
   description:
-    'LiftShift transforms workout logs into beautiful analytics dashboards. Privacy-first, runs locally in your browser.',
-  // Set baseAssets for GitHub Pages deployment
+    'Turn Hevy, Strong, and Lyfta workout logs into beautiful analytics dashboards. Track volume trends, PRs, muscle heatmaps, and exercise progress. 100% free, runs in your browser.',
   baseAssets: process.env.BASE_ASSETS || undefined,
 } satisfies Config;

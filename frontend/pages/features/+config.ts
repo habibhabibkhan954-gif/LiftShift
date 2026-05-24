@@ -2,7 +2,7 @@ import type { Config } from 'vike/types';
 
 export default {
   prerender: true,
-  title: 'LiftShift Features',
+  title: 'Features — LiftShift Workout Analytics Dashboard',
   description:
-    'LiftShift features: muscle heatmaps, calendar filtering, PR detection, volume trends, and per-exercise deep dives, computed locally in your browser.',
+    'Muscle heatmaps, calendar filtering, PR detection, volume trends, and exercise deep dives. All analytics computed locally in your browser. Free workout analytics dashboard.',
 } satisfies Config;

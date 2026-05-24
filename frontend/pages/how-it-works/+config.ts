@@ -2,7 +2,7 @@ import type { Config } from 'vike/types';
 
 export default {
   prerender: true,
-  title: 'How LiftShift works',
+  title: 'How LiftShift Works — Import, Analyze, Improve Your Training',
   description:
-    'How LiftShift works: import workout logs (Hevy/Strong/Lyfta/CSV), compute analytics locally in your browser, and explore dashboards for volume, PRs, and muscle emphasis.',
+    'Import workout logs from Hevy, Strong, Lyfta, or CSV. LiftShift computes training volume, PRs, muscle balance, and exercise trends locally in your browser. Free analytics dashboard.',
 } satisfies Config;
