@@ -3,19 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lyfta Import | LiftShift</title>
-    <meta name="description" content="How to use LiftShift with Lyfta: import CSV exports and visualize training volume, PRs, and exercise history." />
+    <title>Lyfta Workout Analytics — CSV Import Guide | LiftShift</title>
+    <meta name="description" content="Import your Lyfta workout CSV into LiftShift and get muscle heatmaps, plateau detection, PR tracking, and set-by-set feedback. Step-by-step import guide with tips." />
     <link rel="canonical" href="https://liftshift.app/supported-apps/lyfta/" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="LiftShift" />
-    <meta property="og:title" content="Lyfta Import" />
+    <meta property="og:title" content="Lyfta Workout Analytics — CSV Import Guide" />
     <meta property="og:description" content="How to use LiftShift with Lyfta: import CSV exports and visualize training volume, PRs, and exercise history." />
     <meta property="og:url" content="https://liftshift.app/supported-apps/lyfta/" />
     <meta property="og:image" content="https://liftshift.app/UI/logo.png" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Lyfta Import" />
+    <meta name="twitter:title" content="Lyfta Workout Analytics — Import Guide" />
     <meta name="twitter:description" content="How to use LiftShift with Lyfta: import CSV exports and visualize training volume, PRs, and exercise history." />
     <meta name="twitter:image" content="https://liftshift.app/UI/logo.png" />
 
@@ -30,24 +30,87 @@
         </a>
         <nav class="nav" aria-label="Primary">
           <a href="../../">Open App</a>
-          <a href="../">Supported apps</a>
+          <a href="../../about/">About</a>
           <a href="../../how-it-works/">How it works</a>
+          <a href="../">Supported apps</a>
           <a href="../../privacy/">Privacy</a>
         </nav>
       </header>
 
       <main class="card">
         <h1>Lyfta</h1>
-        <p class="muted">LiftShift supports Lyfta via CSV import.</p>
+        <p class="muted">
+          Lyfta is a powerful workout tracker, and LiftShift adds the analytics layer on top — muscle heatmaps, plateau detection, PR tracking, and AI-ready exports. Here&rsquo;s how to connect your Lyfta data.
+        </p>
 
         <h2>Import options</h2>
         <ul>
-          <li><strong>CSV import</strong>: export from Lyfta and upload to LiftShift.</li>
+          <li><strong>CSV import</strong> — Export your workout history from Lyfta and upload to LiftShift. Everything runs locally in your browser.</li>
+        </ul>
+
+        <h2>How to export your Lyfta data</h2>
+        <ol>
+          <li>Open the Lyfta app on your phone.</li>
+          <li>Go to <strong>Settings</strong> or the <strong>Profile</strong> section.</li>
+          <li>Look for <strong>Export Data</strong> or <strong>Download History</strong>.</li>
+          <li>Choose <strong>CSV</strong> as the export format.</li>
+          <li>Save or share the file to your computer.</li>
+          <li>Open LiftShift, click the import button, and select the CSV file.</li>
+        </ol>
+        <p>
+          If you can&rsquo;t find the export option, check Lyfta&rsquo;s in-app help or contact Lyfta support. Export options vary by app version.
+        </p>
+
+        <h2>What LiftShift reads from your Lyfta export</h2>
+        <ul>
+          <li><strong>Exercise names</strong> — Normalised so variations are treated as the same movement where possible.</li>
+          <li><strong>Set reps and weight</strong> — Used for training volume, 1RM estimates, and PR detection.</li>
+          <li><strong>Dates and timestamps</strong> — Used for trend charts, consistency heatmaps, and rolling window analysis.</li>
+        </ul>
+
+        <h2>Troubleshooting</h2>
+        <h3>LiftShift can&rsquo;t read my Lyfta export</h3>
+        <p>
+          Make sure you exported as <strong>CSV</strong>. If Lyfta only offers other formats (JSON, etc.),
+          try a different export option or contact Lyfta support to request CSV export.
+        </p>
+
+        <h3>Exercise names are inconsistent</h3>
+        <p>
+          Lyfta may export exercises with different names depending on how you logged them.
+          Try to use consistent names when logging workouts in Lyfta. LiftShift normalises common variations automatically.
+        </p>
+
+        <h3>Some workouts are missing from charts</h3>
+        <p>
+          Check that you selected the full date range when exporting. If your export is split across multiple files,
+          import the most recent or combine them before importing.
+        </p>
+
+        <h3>Using Lyfta alongside other apps?</h3>
+        <p>
+          LiftShift can merge data from Hevy, Strong, and Lyfta into one dashboard.
+          Exercise names are normalised across apps so your training history stays clean.
+          See the <a href="../">Supported apps</a> page for other import guides.
+        </p>
+
+        <h2>What analytics you get with Lyfta data</h2>
+        <ul>
+          <li><a href="../../metrics/muscle-heatmap/">Muscle heatmaps</a> — Rolling 7-day windows with volume zone scoring and per-muscle drill-down.</li>
+          <li><a href="../../metrics/personal-records/">Smart PR tracking</a> — All-time bests, 2-month bests, premature PRs, and PR drought alerts.</li>
+          <li><a href="../../metrics/training-volume/">Training volume trends</a> — Weekly, monthly, and custom date range comparisons.</li>
+          <li>Exercise status labels — Know at a glance which lifts are improving and which are stalling.</li>
+          <li>Set-by-set coaching feedback across 19 scenarios.</li>
+          <li><a href="../../how-it-works/#plateau-detection">Plateau detection</a> with specific, actionable next-session suggestions.</li>
         </ul>
       </main>
 
       <footer class="footer">
-        <div>Next: <a href="../../metrics/">Metrics definitions</a></div>
+        <div>
+          <a href="../">Supported apps</a> &middot;
+          <a href="../../metrics/">Metrics glossary</a> &middot;
+          <a href="../../how-it-works/">How it works</a>
+        </div>
       </footer>
     </div>
   </body>
