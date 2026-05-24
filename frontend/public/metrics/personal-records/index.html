@@ -4,19 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Personal Records (PR) Definition | LiftShift</title>
-    <meta name="description" content="Personal records (PRs) in LiftShift: what counts as a PR and what a PR does not imply." />
+    <meta name="description" content="Personal records (PRs) in LiftShift: what counts as a PR, the three PR tiers (Gold, Silver, Premature), and how to interpret PR droughts and frequency." />
     <link rel="canonical" href="https://liftshift.app/metrics/personal-records/" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="LiftShift" />
     <meta property="og:title" content="Personal Records (PR) Definition | LiftShift" />
-    <meta property="og:description" content="Personal records (PRs) in LiftShift: what counts as a PR and what a PR does not imply." />
+    <meta property="og:description" content="Personal records (PRs) in LiftShift: what counts as a PR and the three PR tiers." />
     <meta property="og:url" content="https://liftshift.app/metrics/personal-records/" />
     <meta property="og:image" content="https://liftshift.app/UI/logo.png" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Personal Records (PR) Definition | LiftShift" />
-    <meta name="twitter:description" content="Personal records (PRs) in LiftShift: what counts as a PR and what a PR does not imply." />
+    <meta name="twitter:description" content="Personal records (PRs) in LiftShift: what counts as a PR and the three PR tiers." />
     <meta name="twitter:image" content="https://liftshift.app/UI/logo.png" />
 
     <link rel="stylesheet" href="../../docs.css" />
@@ -30,8 +30,10 @@
         </a>
         <nav class="nav" aria-label="Primary">
           <a href="../../">Open App</a>
+          <a href="../../about/">About</a>
           <a href="../">Metrics</a>
-          <a href="../../faq/">FAQ</a>
+          <a href="../../how-it-works/">How it works</a>
+          <a href="../../privacy/">Privacy</a>
         </nav>
       </header>
 
@@ -41,20 +43,50 @@
 
         <h2>What counts as a PR</h2>
         <p>
-          In LiftShift, a PR is your best-ever performance for an exercise under the PR definition used by the app.
-          This is computed from your logged sets.
+          In LiftShift, a PR is your best-ever performance for an exercise as computed from your logged sets. LiftShift tracks multiple PR types so you get credit for progress even when you don&rsquo;t hit all-time records.
+        </p>
+
+        <h2>The three PR tiers</h2>
+        <p>LiftShift tracks three distinct kinds of PRs per exercise:</p>
+        <ul>
+          <li><strong>Gold PRs</strong> &mdash; True all-time bests for a given metric (weight, 1RM estimate, or volume). You matched or exceeded every previous session for that exercise.</li>
+          <li><strong>Silver PRs</strong> &mdash; Best performance in the last 2 months. This is critical for experienced lifters who rarely hit true all-time PRs. It shows whether you&rsquo;re in your best recent form, even if you&rsquo;re not at lifetime peak.</li>
+          <li><strong>Premature PRs</strong> &mdash; A big performance spike that wasn&rsquo;t sustained in follow-up sessions. LiftShift flags these so you know it wasn&rsquo;t a real breakthrough yet &mdash; it could be a measuring error, a form breakdown, or a one-off good day that needs confirmation.</li>
+        </ul>
+
+        <h2>PR droughts and frequency</h2>
+        <p>
+          LiftShift also tracks <strong>PR drought</strong> (days since your last all-time PR) and <strong>PR frequency</strong> (new PRs per week). The dashboard summary tells you whether your momentum is heating up or cooling off. A long drought across multiple exercises may indicate a training plateau that needs attention.
+        </p>
+
+        <h2>How PRs are calculated</h2>
+        <p>
+          LiftShift evaluates three metrics per exercise when checking for PRs:
+        </p>
+        <ul>
+          <li><strong>Weight PR</strong> &mdash; Heaviest weight lifted for any number of reps.</li>
+          <li><strong>1RM estimate PR</strong> &mdash; Highest estimated one-rep max based on your logged sets.</li>
+          <li><strong>Volume PR</strong> &mdash; Highest single-set volume (weight &times; reps).</li>
+        </ul>
+        <p>
+          A session can hit multiple PR types at once. For example, a heavy double at a new weight may set a weight PR, while a high-rep back-off set could set a volume PR in the same workout.
         </p>
 
         <h2>What a PR does not mean</h2>
         <ul>
           <li>It does not mean your technique was optimal.</li>
-          <li>It does not mean the set was equally strict across sessions.</li>
+          <li>It does not mean the set was equally strict across sessions (range of motion, tempo, rest periods can all vary).</li>
           <li>It does not replace proper coaching or medical guidance.</li>
+          <li>A weight PR on one rep range doesn&rsquo;t translate directly to a different rep range.</li>
         </ul>
       </main>
 
       <footer class="footer">
-        <div>Next: <a href="../one-rep-max/">1RM definition</a></div>
+        <div>
+          <a href="../">Metrics glossary</a> &middot;
+          <a href="../training-volume/">Training volume</a> &middot;
+          <a href="../one-rep-max/">1RM definition</a>
+        </div>
       </footer>
     </div>
   </body>

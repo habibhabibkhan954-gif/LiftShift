@@ -4,19 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Muscle Heatmap Definition | LiftShift</title>
-    <meta name="description" content="Muscle heatmaps in LiftShift: what 'muscle emphasis' means, what data it is derived from, and how to interpret it." />
+    <meta name="description" content="Muscle heatmaps in LiftShift: what 'muscle emphasis' means, how it is derived from your exercises, volume zone scoring, and how to interpret your heatmap." />
     <link rel="canonical" href="https://liftshift.app/metrics/muscle-heatmap/" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="LiftShift" />
     <meta property="og:title" content="Muscle Heatmap Definition | LiftShift" />
-    <meta property="og:description" content="Muscle heatmaps in LiftShift: what 'muscle emphasis' means, what data it is derived from, and how to interpret it." />
+    <meta property="og:description" content="Muscle heatmaps in LiftShift: what 'muscle emphasis' means, how it is derived, and how to interpret it." />
     <meta property="og:url" content="https://liftshift.app/metrics/muscle-heatmap/" />
     <meta property="og:image" content="https://liftshift.app/UI/logo.png" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Muscle Heatmap Definition | LiftShift" />
-    <meta name="twitter:description" content="Muscle heatmaps in LiftShift: what 'muscle emphasis' means, what data it is derived from, and how to interpret it." />
+    <meta name="twitter:description" content="Muscle heatmaps in LiftShift: what 'muscle emphasis' means, how it is derived, and how to interpret it." />
     <meta name="twitter:image" content="https://liftshift.app/UI/logo.png" />
 
     <link rel="stylesheet" href="../../docs.css" />
@@ -30,31 +30,61 @@
         </a>
         <nav class="nav" aria-label="Primary">
           <a href="../../">Open App</a>
+          <a href="../../about/">About</a>
           <a href="../">Metrics</a>
-          <a href="../../faq/">FAQ</a>
+          <a href="../../how-it-works/">How it works</a>
+          <a href="../../privacy/">Privacy</a>
         </nav>
       </header>
 
       <main class="card">
         <h1>Muscle heatmaps</h1>
-        <p class="muted">A muscle heatmap is a visualization of estimated muscle emphasis based on your exercise selection.</p>
+        <p class="muted">A muscle heatmap is a visual estimate of which muscles your training emphasises, based on your logged exercises.</p>
 
         <h2>What it means</h2>
         <p>
-          LiftShift maps your logged exercises to muscles/muscle groups and visualizes relative emphasis.
-          It is an estimate to help you see patterns, not a direct measurement of hypertrophy.
+          LiftShift maps your logged exercises to the muscles they primarily and secondarily target. It then visualises your relative weekly emphasis as a colour-coded body map. Darker/hotter regions indicate more training volume directed at that muscle group.
         </p>
+        <p>
+          This is an <strong>estimate to help you see patterns</strong>, not a direct measurement of hypertrophy or EMG activation. It tells you where your training effort is going &mdash; and what you might be neglecting.
+        </p>
+
+        <h2>Rolling 7-day windows</h2>
+        <p>
+          Unlike basic app heatmaps that use fixed calendar weeks, LiftShift uses <strong>rolling 7-day windows</strong>. This matches how your body actually recovers &mdash; muscles don&rsquo;t reset on Sunday. If you trained chest on Wednesday and again the following Tuesday, that&rsquo;s two sessions in a 7-day window, even though they fell in different calendar weeks. The heatmap reflects real recovery overlap.
+        </p>
+
+        <h2>Volume zone scoring</h2>
+        <p>Each muscle receives a volume zone based on your weekly set count, personalised to your training history:</p>
+        <ul>
+          <li><strong>Maintenance</strong> &mdash; Enough sets to hold current muscle size and strength. Typically a lower weekly set count.</li>
+          <li><strong>Growth</strong> &mdash; Within the range where progressive overload typically drives muscle and strength adaptation.</li>
+          <li><strong>Overreaching</strong> &mdash; Weekly sets above what you can likely recover from. Sustained overreaching can lead to stagnation or injury.</li>
+        </ul>
+
+        <h2>How to use the heatmap</h2>
+        <ul>
+          <li><strong>Spot imbalances</strong> &mdash; Is one side consistently hotter? Is chest overloaded compared to back? These patterns can guide exercise selection.</li>
+          <li><strong>Click any muscle</strong> to see exactly which exercises contribute, with primary and secondary involvement weighted separately. You might discover that your &ldquo;lat&rdquo; volume is coming mostly from secondary contributions in rows, not from direct lat work.</li>
+          <li><strong>Check the &ldquo;top 3 concentration&rdquo; metric</strong> &mdash; A warning if too much of your total volume goes to just three muscle groups. Green = well-distributed. Red = you might be neglecting something important.</li>
+          <li><strong>Use calendar filtering</strong> with the heatmap to compare how your muscle emphasis shifts between training blocks.</li>
+        </ul>
 
         <h2>Limitations</h2>
         <ul>
-          <li>Exercise naming affects mapping quality.</li>
-          <li>Different exercise variations can target muscles differently.</li>
-          <li>The heatmap is about your logged training, not a guarantee of outcomes.</li>
+          <li><strong>Exercise naming affects mapping</strong> &mdash; &ldquo;Bench Press&rdquo; maps to chest/triceps/front delts as expected, but unusual exercise names may not map correctly.</li>
+          <li><strong>Variation matters</strong> &mdash; A close-grip bench press targets triceps more than a wide-grip bench press, but both may map similarly unless LiftShift recognises the variation.</li>
+          <li><strong>Not a direct measure</strong> &mdash; The heatmap shows training emphasis, not actual muscle growth. Genetics, nutrition, sleep, and intensity all affect outcomes.</li>
+          <li><strong>Bodyweight exercises</strong> &mdash; Pull-ups, dips, and push-ups map to muscles but their training effect depends on bodyweight and rep quality, which the heatmap can&rsquo;t fully account for.</li>
         </ul>
       </main>
 
       <footer class="footer">
-        <div>Back: <a href="../">Metrics glossary</a></div>
+        <div>
+          <a href="../">Metrics glossary</a> &middot;
+          <a href="../one-rep-max/">1RM definition</a> &middot;
+          <a href="../../how-it-works/">How it works</a>
+        </div>
       </footer>
     </div>
   </body>

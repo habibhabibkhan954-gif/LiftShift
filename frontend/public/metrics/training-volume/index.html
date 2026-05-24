@@ -30,8 +30,10 @@
         </a>
         <nav class="nav" aria-label="Primary">
           <a href="../../">Open App</a>
+          <a href="../../about/">About</a>
           <a href="../">Metrics</a>
-          <a href="../../faq/">FAQ</a>
+          <a href="../../how-it-works/">How it works</a>
+          <a href="../../privacy/">Privacy</a>
         </nav>
       </header>
 
@@ -41,27 +43,55 @@
 
         <h2>What training volume means</h2>
         <p>
-          In LiftShift, “volume” refers to the amount of work you performed, derived from your logged sets.
-          A common representation is <strong>weight × reps</strong> summed across sets.
+          In LiftShift, &ldquo;volume&rdquo; refers to the amount of work you performed, derived from your logged sets. The standard representation is <strong>weight &times; reps</strong> summed across all sets within a workout, week, or any selected date range.
+        </p>
+        <p>
+          For example: if you did 3 sets of squats &mdash; 100 kg x 8 reps, 100 kg x 7 reps, and 100 kg x 6 reps &mdash; your squat volume for that workout is (100 &times; 8) + (100 &times; 7) + (100 &times; 6) = <strong>2,100 kg</strong>.
         </p>
 
         <h2>What changes volume</h2>
         <ul>
-          <li>More sets</li>
-          <li>More reps per set</li>
-          <li>More load (weight)</li>
+          <li><strong>More sets</strong> &mdash; Adding extra sets to an exercise increases total volume.</li>
+          <li><strong>More reps per set</strong> &mdash; Going from 8 to 10 reps at the same weight ups your volume.</li>
+          <li><strong>Heavier load</strong> &mdash; Even keeping sets and reps the same, adding 5 kg to the bar raises volume.</li>
+          <li><strong>More exercises</strong> &mdash; Adding accessory lifts increases total session volume.</li>
         </ul>
 
         <h2>How to interpret volume trends</h2>
         <ul>
-          <li>A rising trend usually indicates higher training stress (assuming similar exercise selection).</li>
-          <li>Large spikes can be due to one unusually long session or a change in exercise mix.</li>
-          <li>Compare volume with consistency (how often you trained) to avoid misreading noisy weeks.</li>
+          <li><strong>Rising trend</strong> &mdash; Usually indicates higher training stress, assuming similar exercise selection. If you&rsquo;re recovering well and performance is improving, rising volume is a good sign.</li>
+          <li><strong>Large spikes</strong> &mdash; Can be caused by one unusually long session, a new exercise, or a change in training block. Compare with your consistency chart to check if it was planned or accidental.</li>
+          <li><strong>Volume plateaus</strong> &mdash; If volume stays flat for weeks while weight or reps aren&rsquo;t increasing, you may have stalled. LiftShift&rsquo;s plateau detection flags this separately.</li>
+          <li><strong>Compare with consistency</strong> &mdash; High volume with 1 workout per week means something different than the same volume spread across 4 sessions. Use the calendar heatmap alongside volume charts.</li>
         </ul>
+
+        <h2>Volume vs. muscle growth</h2>
+        <p>
+          Research suggests that weekly sets per muscle group matter more than raw tonnage for hypertrophy. LiftShift&rsquo;s muscle heatmap shows <strong>weekly sets per muscle group</strong> with volume zone scoring (maintenance, growth, or overreaching), so you can cross-reference raw volume with per-muscle weekly set counts for a more complete picture.
+        </p>
+
+        <h2>Volume zone scoring</h2>
+        <p>
+          LiftShift personalises volume zones based on your training history. The heatmap shows whether each muscle is in:
+        </p>
+        <ul>
+          <li><strong>Maintenance</strong> &mdash; Enough to hold current muscle and strength.</li>
+          <li><strong>Growth</strong> &mdash; In the range where progressive overload typically drives adaptation.</li>
+          <li><strong>Overreaching</strong> &mdash; High volume that may exceed recovery capacity over time.</li>
+        </ul>
+
+        <h2>Caveats</h2>
+        <p>
+          Volume is a useful trend metric, not an absolute measure. Bodyweight exercises, partial reps, tempo changes, and technique variations all affect actual training stimulus in ways tonnage can&rsquo;t capture. Use volume as one signal among many &mdash; alongside PR tracking, plateau detection, and set-by-set feedback.
+        </p>
       </main>
 
       <footer class="footer">
-        <div>Next: <a href="../personal-records/">Personal records</a></div>
+        <div>
+          <a href="../">Metrics glossary</a> &middot;
+          <a href="../personal-records/">Personal records</a> &middot;
+          <a href="../../how-it-works/">How it works</a>
+        </div>
       </footer>
     </div>
   </body>
