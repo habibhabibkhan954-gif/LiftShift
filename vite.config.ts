@@ -127,7 +127,7 @@ export default defineConfig(({ mode }) => {
       }
     },
     build: {
-      // Keep Netlify publish directory stable (repo-root dist/)
+      // Build output directory (used by GitHub Pages deployment)
       outDir: path.resolve(__dirname, 'dist'),
       emptyOutDir: true,
       // Production optimizations
