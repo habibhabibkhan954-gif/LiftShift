@@ -4,5 +4,5 @@ export default {
   prerender: true,
   title: 'How LiftShift Works — Import, Analyze, Improve Your Training',
   description:
-    'Import workout logs from Hevy, Strong, Lyfta, or CSV. LiftShift computes training volume, PRs, muscle balance, and exercise trends locally in your browser. Free analytics dashboard.',
+    'See exactly how LiftShift turns your Hevy, Strong, or Lyfta logs into actionable workout insights. Muscle heatmaps, plateau detection, set-by-set coaching feedback, and AI-ready exports — all computed locally, 100% free.',
 } satisfies Config;

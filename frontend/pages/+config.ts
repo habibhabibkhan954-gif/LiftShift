@@ -6,6 +6,6 @@ export default {
   prerender: { partial: true },
   title: 'LiftShift — Free Workout Analytics Dashboard',
   description:
-    'Turn Hevy, Strong, and Lyfta workout logs into beautiful analytics dashboards. Track volume trends, PRs, muscle heatmaps, and exercise progress. 100% free, runs in your browser.',
+    'Free workout analytics tool. Import your gym logs from Hevy, Strong, or Lyfta — get muscle heatmaps, plateau detection, set-by-set feedback, and AI-ready exports. Runs in your browser, no account needed.',
   baseAssets: process.env.BASE_ASSETS || undefined,
 } satisfies Config;

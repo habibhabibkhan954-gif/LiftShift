@@ -13,7 +13,7 @@ export type SeoHeadProps = {
 
 const FALLBACK_TITLE = 'LiftShift — Free Workout Analytics Dashboard';
 const FALLBACK_DESCRIPTION =
-  'Turn Hevy, Strong, and Lyfta workout logs into beautiful analytics dashboards. Track training volume, personal records, muscle heatmaps, and exercise progress — 100% free, runs locally in your browser.';
+  'Free workout analytics tool. Import your gym logs from Hevy, Strong, or Lyfta — get muscle heatmaps, plateau detection, set-by-set feedback, and AI-ready exports. Runs in your browser, no account needed.';
 
 export function SeoHead({ canonicalPath, isLanding, title, description }: SeoHeadProps) {
   const siteUrl = 'https://liftshift.app';
