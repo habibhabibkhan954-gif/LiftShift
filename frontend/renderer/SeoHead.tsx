@@ -7,11 +7,19 @@ export const SOFTWARE_APP_SCHEMA = '{"@context":"https://schema.org","@graph":[{
 export type SeoHeadProps = {
   canonicalPath: string;
   isLanding: boolean;
+  title?: string;
+  description?: string;
 };
 
-export function SeoHead({ canonicalPath, isLanding }: SeoHeadProps) {
+const FALLBACK_TITLE = 'LiftShift — Free Workout Analytics Dashboard';
+const FALLBACK_DESCRIPTION =
+  'Turn Hevy, Strong, and Lyfta workout logs into beautiful analytics dashboards. Track training volume, personal records, muscle heatmaps, and exercise progress — 100% free, runs locally in your browser.';
+
+export function SeoHead({ canonicalPath, isLanding, title, description }: SeoHeadProps) {
   const siteUrl = 'https://liftshift.app';
-  const canonical = canonicalPath === '/' ? siteUrl : `${siteUrl}${canonicalPath.replace(/\/$/, '')}`;
+  const canonical = canonicalPath === '/' ? siteUrl : `${siteUrl}${canonicalPath}`;
+  const resolvedTitle = title || FALLBACK_TITLE;
+  const resolvedDescription = description || FALLBACK_DESCRIPTION;
 
   return (
     <>
@@ -20,10 +28,13 @@ export function SeoHead({ canonicalPath, isLanding }: SeoHeadProps) {
       <meta property="og:type" content="website" />
       <meta property="og:site_name" content="LiftShift" />
       <meta property="og:url" content={canonical} />
+      <meta property="og:title" content={resolvedTitle} />
+      <meta property="og:description" content={resolvedDescription} />
       <meta property="og:image" content={OG_IMAGE} />
 
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:site" content="@LiftShift" />
+      <meta name="twitter:title" content={resolvedTitle} />
+      <meta name="twitter:description" content={resolvedDescription} />
       <meta name="twitter:image" content={OG_IMAGE} />
 
       {isLanding ? (
