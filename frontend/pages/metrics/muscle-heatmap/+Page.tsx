@@ -12,10 +12,6 @@ function Page() {
       subtitle="A muscle heatmap is a visual estimate of which muscles your training emphasises, based on your logged exercises."
     >
       <div className="space-y-7">
-        <div className="rounded-xl border border-white/10 overflow-hidden bg-black/30">
-          <img src={assetPath('/images/misc/weeklyset.avif')} alt="LiftShift interactive muscle heatmap with per-muscle volume zone scoring" loading="lazy" className="w-full" />
-        </div>
-
         <section>
           <h2 className="text-lg font-semibold text-white mb-3">What it means</h2>
           <p className="text-slate-300 leading-relaxed mb-4">
@@ -25,6 +21,10 @@ function Page() {
             The heatmap is built by mapping each exercise you log to the primary and secondary muscles it targets, then distributing the exercise\u2019s volume across those muscles. For example, a bench press primarily maps to the chest and secondarily to the front deltoids and triceps. The volume from that set is allocated proportionally across all three muscle groups.
           </p>
         </section>
+
+        <div className="rounded-xl border border-white/10 overflow-hidden bg-black/30">
+          <img src={assetPath('/images/misc/weeklyset.avif')} alt="LiftShift interactive muscle heatmap with per-muscle volume zone scoring" loading="lazy" className="w-full" />
+        </div>
 
         <section>
           <h2 className="text-lg font-semibold text-white mb-3">Rolling 7-day windows</h2>

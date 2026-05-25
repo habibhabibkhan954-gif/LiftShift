@@ -12,10 +12,6 @@ function Page() {
       subtitle="LiftShift shows 1RM estimates derived from your logged sets so you can track strength trends without testing maxes."
     >
       <div className="space-y-7">
-        <div className="rounded-xl border border-white/10 overflow-hidden bg-black/30">
-          <img src={assetPath('/images/misc/hypertrophy.avif')} alt="LiftShift strength tracking and 1RM estimation dashboard" loading="lazy" className="w-full" />
-        </div>
-
         <section>
           <h2 className="text-lg font-semibold text-white mb-3">What a 1RM estimate means</h2>
           <p className="text-slate-300 leading-relaxed mb-4">
@@ -33,6 +29,10 @@ function Page() {
             LiftShift shows your highest 1RM estimate for each exercise, updated automatically after every workout. You can track how this estimate trends over time without ever testing a true max.
           </p>
         </section>
+
+        <div className="rounded-xl border border-white/10 overflow-hidden bg-black/30">
+          <img src={assetPath('/images/misc/hypertrophy.avif')} alt="LiftShift strength tracking and 1RM estimation dashboard" loading="lazy" className="w-full" />
+        </div>
 
         <section>
           <h2 className="text-lg font-semibold text-white mb-3">How LiftShift calculates 1RM</h2>

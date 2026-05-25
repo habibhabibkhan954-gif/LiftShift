@@ -12,10 +12,6 @@ function Page() {
       subtitle="Definition first, then interpretation."
     >
       <div className="space-y-7">
-        <div className="rounded-xl border border-white/10 overflow-hidden bg-black/30">
-          <img src={assetPath('/images/misc/hypertrophy.avif')} alt="LiftShift training volume analysis with scatter plot" loading="lazy" className="w-full" />
-        </div>
-
         <section>
           <h2 className="text-lg font-semibold text-white mb-3">What training volume means</h2>
           <p className="text-slate-300 leading-relaxed mb-4">
@@ -33,6 +29,10 @@ function Page() {
             Example: if you bench press 100 kg for 3 sets of 8 reps, your bench press volume for that workout is 100 \u00d7 8 \u00d7 3 = <strong className="text-white">2,400 kg</strong>. LiftShift sums this across all exercises to give your total workout volume.
           </p>
         </section>
+
+        <div className="rounded-xl border border-white/10 overflow-hidden bg-black/30">
+          <img src={assetPath('/images/misc/hypertrophy.avif')} alt="LiftShift training volume analysis with scatter plot" loading="lazy" className="w-full" />
+        </div>
 
         <section>
           <h2 className="text-lg font-semibold text-white mb-3">What changes volume</h2>

@@ -12,10 +12,6 @@ function Page() {
       subtitle="Lyfta is a powerful workout tracker, and LiftShift adds the analytics layer on top \u2014 muscle heatmaps, plateau detection, PR tracking, and AI-ready exports. Import your Lyfta data via API or CSV export \u2014 all analytics run locally in your browser."
     >
       <div className="space-y-7">
-        <div className="rounded-xl border border-white/10 overflow-hidden bg-black/30">
-          <img src={assetPath('/images/misc/weeklyset.avif')} alt="LiftShift analytics dashboard with Lyfta data import" loading="lazy" className="w-full" />
-        </div>
-
         <section>
           <h2 className="text-lg font-semibold text-white mb-3">Import options</h2>
           <ul className="list-disc list-inside space-y-1 text-slate-300 leading-relaxed">

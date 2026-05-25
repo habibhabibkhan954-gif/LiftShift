@@ -12,10 +12,6 @@ function Page() {
       activeNav={null}
     >
       <div className="space-y-10">
-        <div className="rounded-xl border border-white/10 overflow-hidden bg-black/30">
-          <img src={assetPath('/images/misc/weeklyset.avif')} alt="LiftShift workout analytics dashboard overview" loading="lazy" className="w-full" />
-        </div>
-
         <section>
           <h2 className="text-lg font-semibold text-white mb-3">Open source</h2>
           <p className="text-slate-300 leading-relaxed mb-4">

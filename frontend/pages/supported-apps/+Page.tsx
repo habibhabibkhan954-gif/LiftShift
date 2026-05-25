@@ -12,10 +12,6 @@ function Page() {
       subtitle="LiftShift supports importing data from the apps below. Each page explains the import method and expectations."
     >
       <div className="space-y-7">
-        <div className="rounded-xl border border-white/10 overflow-hidden bg-black/30">
-          <img src={assetPath('/images/misc/weeklyset.avif')} alt="LiftShift analytics dashboard showing muscle heatmap for Hevy, Strong, and Lyfta data" loading="lazy" className="w-full" />
-        </div>
-
         <section>
           <h2 className="text-lg font-semibold text-white mb-3">Supported apps</h2>
           <ul className="list-disc list-inside space-y-1 text-slate-300 leading-relaxed">

@@ -12,10 +12,6 @@ function Page() {
       subtitle="A PR is a data-derived best, not a promise about your future performance."
     >
       <div className="space-y-7">
-        <div className="rounded-xl border border-white/10 overflow-hidden bg-black/30">
-          <img src={assetPath('/images/misc/plateau.avif')} alt="LiftShift exercise status and PR tracking dashboard" loading="lazy" className="w-full" />
-        </div>
-
         <section>
           <h2 className="text-lg font-semibold text-white mb-3">What counts as a PR</h2>
           <p className="text-slate-300 leading-relaxed mb-4">
@@ -25,6 +21,10 @@ function Page() {
             A PR is set-specific \u2014 benching 100 kg for 5 reps and benching 90 kg for 10 reps are different performances. LiftShift records the best combination of weight and reps you\u2019ve achieved, not just the heaviest single rep.
           </p>
         </section>
+
+        <div className="rounded-xl border border-white/10 overflow-hidden bg-black/30">
+          <img src={assetPath('/images/misc/plateau.avif')} alt="LiftShift exercise status and PR tracking dashboard" loading="lazy" className="w-full" />
+        </div>
 
         <section>
           <h2 className="text-lg font-semibold text-white mb-3">The three PR tiers</h2>
