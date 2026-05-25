@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, Quote } from 'lucide-react';
+import { useTheme } from '../../theme/ThemeProvider';
 import { FANCY_FONT } from '../../../utils/ui/uiConstants';
 import { assetPath } from '../../../constants';
 
@@ -20,6 +21,8 @@ const REVIEW_IMAGES = [
 ];
 
 export const ReviewsCarousel: React.FC<ReviewsCarouselProps> = ({ className = '' }) => {
+  const { mode } = useTheme();
+  const isLight = mode === 'light';
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -67,17 +70,17 @@ export const ReviewsCarousel: React.FC<ReviewsCarouselProps> = ({ className = ''
           <Quote className="w-4 h-4 text-emerald-400" />
           <span className="text-sm font-medium text-emerald-300">Community Feedback</span>
         </div>
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
+        <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4 ${isLight ? 'text-slate-900' : ''}`}>
           Loved by <span className="text-emerald-400" style={FANCY_FONT}>Lifters</span> Worldwide
         </h2>
-        <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+        <p className={`text-lg max-w-2xl mx-auto ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
           See what the fitness community is saying about LiftShift on Reddit
         </p>
       </div>
 
       {/* Carousel Container */}
       <div 
-        className="relative overflow-hidden rounded-2xl bg-slate-900/20 border border-slate-800/50"
+        className={`relative overflow-hidden rounded-2xl border ${isLight ? 'bg-slate-100/50 border-slate-300/50' : 'bg-slate-900/20 border-slate-800/50'}`}
         onMouseEnter={() => setIsAutoPlaying(false)}
         onMouseLeave={() => setIsAutoPlaying(true)}
       >
@@ -107,21 +110,21 @@ export const ReviewsCarousel: React.FC<ReviewsCarouselProps> = ({ className = ''
           ))}
           
           {/* Gradient Overlays */}
-          <div className="absolute inset-y-0 left-0 w-12 sm:w-20 bg-gradient-to-r from-slate-950/70 to-transparent pointer-events-none z-20" />
-          <div className="absolute inset-y-0 right-0 w-12 sm:w-20 bg-gradient-to-l from-slate-950/70 to-transparent pointer-events-none z-20" />
+          <div className={`absolute inset-y-0 left-0 w-12 sm:w-20 bg-gradient-to-r to-transparent pointer-events-none z-20 ${isLight ? 'from-white/70' : 'from-slate-950/70'}`} />
+          <div className={`absolute inset-y-0 right-0 w-12 sm:w-20 bg-gradient-to-l to-transparent pointer-events-none z-20 ${isLight ? 'from-white/70' : 'from-slate-950/70'}`} />
         </div>
 
         {/* Navigation Arrows */}
         <button
           onClick={() => handleManualNav((currentIndex - 1 + REVIEW_IMAGES.length) % REVIEW_IMAGES.length)}
-          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-3 rounded-full bg-slate-950/70 backdrop-blur-md border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-400/50 transition-all"
+          className={`absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-3 rounded-full backdrop-blur-md border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-400/50 transition-all ${isLight ? 'bg-white/70' : 'bg-slate-950/70'}`}
           aria-label="Previous review"
         >
           <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
         <button
           onClick={() => handleManualNav((currentIndex + 1) % REVIEW_IMAGES.length)}
-          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-3 rounded-full bg-slate-950/70 backdrop-blur-md border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-400/50 transition-all"
+          className={`absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-3 rounded-full backdrop-blur-md border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-400/50 transition-all ${isLight ? 'bg-white/70' : 'bg-slate-950/70'}`}
           aria-label="Next review"
         >
           <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -137,7 +140,7 @@ export const ReviewsCarousel: React.FC<ReviewsCarouselProps> = ({ className = ''
             className={`transition-all duration-300 rounded-full ${
               index === currentIndex 
                 ? 'w-8 h-2 bg-emerald-400' 
-                : 'w-2 h-2 bg-slate-600 hover:bg-slate-500'
+                : `w-2 h-2 ${isLight ? 'bg-slate-400 hover:bg-slate-500' : 'bg-slate-600 hover:bg-slate-500'}`
             }`}
             aria-label={`Go to review ${index + 1}`}
             aria-current={index === currentIndex ? 'true' : 'false'}
