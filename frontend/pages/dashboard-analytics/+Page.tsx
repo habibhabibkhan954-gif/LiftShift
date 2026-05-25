@@ -149,7 +149,7 @@ function Page() {
             <div className={`grid grid-cols-1 ${s.image ? 'lg:grid-cols-2' : ''} gap-6 items-start`}>
               <div>{s.content}</div>
               {s.image ? (
-                <div className="rounded-xl border border-white/10 overflow-hidden bg-black/30 max-w-lg mx-auto">
+                <div className="rounded-xl border border-white/10 overflow-hidden max-w-lg mx-auto">
                   <img
                     src={assetPath(s.image)}
                     alt={s.alt || ''}
