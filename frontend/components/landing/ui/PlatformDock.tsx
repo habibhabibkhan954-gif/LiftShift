@@ -6,6 +6,7 @@ import {
   useTransform,
 } from 'motion/react';
 import React, { useRef, useState } from 'react';
+import { useTheme } from '../../theme/ThemeProvider';
 import { FANCY_FONT } from '../../../utils/ui/uiConstants';
 
 export type PlatformDockItem = {
@@ -40,6 +41,8 @@ const DISTANCE = 120;
 function DockItem({ item, mouseX, onHoverStart, onHoverEnd, index = 0, totalItems = 1 }: DockItemProps) {
   const ref = useRef<HTMLButtonElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const { mode } = useTheme();
+  const isLight = mode === 'light';
 
   const mouseDistance = useTransform(mouseX, (val) => {
     const rect = ref.current?.getBoundingClientRect();
@@ -95,7 +98,7 @@ function DockItem({ item, mouseX, onHoverStart, onHoverEnd, index = 0, totalItem
         className={`relative inline-flex items-center justify-center rounded-2xl overflow-hidden transition-all duration-100 ${
           item.disabled 
             ? 'opacity-40 cursor-not-allowed border border-slate-700/30 bg-slate-900/50' 
-            : `cursor-pointer bg-slate-950/75 shadow-lg ${isHovered ? 'border-2 border-emerald-400 shadow-emerald-400/40' : 'border border-emerald-500/40 shadow-emerald-500/20'}`
+            : `cursor-pointer shadow-lg ${isLight ? 'bg-white/75' : 'bg-slate-950/75'} ${isHovered ? 'border-2 border-emerald-400 shadow-emerald-400/40' : 'border border-emerald-500/40 shadow-emerald-500/20'}`
         }`}
       >
         <img
