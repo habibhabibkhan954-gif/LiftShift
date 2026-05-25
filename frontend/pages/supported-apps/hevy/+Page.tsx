@@ -12,6 +12,10 @@ function Page() {
       subtitle="LiftShift gives you analytics Hevy\u2019s built-in charts don\u2019t offer \u2014 muscle heatmaps, plateau detection, set-by-set feedback, and AI-ready exports. Here\u2019s how to connect your Hevy data."
     >
       <div className="space-y-7">
+        <div className="rounded-xl border border-white/10 overflow-hidden bg-black/30">
+          <img src={assetPath('/images/misc/weeklyset.avif')} alt="LiftShift analytics dashboard with Hevy data import" loading="lazy" className="w-full" />
+        </div>
+
         <section>
           <h2 className="text-lg font-semibold text-white mb-3">Import options</h2>
           <p className="text-slate-300 leading-relaxed mb-4">

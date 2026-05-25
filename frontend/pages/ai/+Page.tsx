@@ -11,7 +11,11 @@ function Page() {
       subtitle=""
       activeNav={null}
     >
-      <div className="space-y-10">
+      <div className="space-y-7">
+        <div className="rounded-xl border border-white/10 overflow-hidden bg-black/30">
+          <img src={assetPath('/images/misc/AI.avif')} alt="LiftShift AI-ready training data export" loading="lazy" className="w-full" />
+        </div>
+
         <p className="text-slate-300 leading-relaxed mb-4">
           LiftShift is a <strong>free and open source</strong> (AGPL-3.0) workout analytics dashboard. Source code: <a href="https://github.com/aree6/LiftShift" className="text-emerald-300 underline">github.com/aree6/LiftShift</a>. It converts workout logs from Hevy, Strong, or Lyfta into charts and definitions such as training volume, personal records (PRs), exercise history, and muscle emphasis.
         </p>
