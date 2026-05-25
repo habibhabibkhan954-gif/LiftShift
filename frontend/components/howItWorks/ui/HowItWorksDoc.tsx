@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useTheme } from '../../theme/ThemeProvider';
 import { assetPath } from '../../../constants';
 import type { HowItWorksSection, HowItWorksNode } from '../utils/howItWorksDocContent';
@@ -144,14 +144,14 @@ export const HowItWorksDoc: React.FC<Props> = ({ className = '', showTitle = tru
   const flexRef = useRef<HTMLDivElement | null>(null);
   const [paneHeight, setPaneHeight] = useState(0);
   const [flashingId, setFlashingId] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const flashTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const observerSuppressed = useRef(false);
   const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useLayoutEffect(() => {
-    if (!flexRef.current) return;
-    const rect = flexRef.current.getBoundingClientRect();
-    setPaneHeight(window.innerHeight - rect.top - 16);
+    if (!sidebarRef.current) return;
+    setPaneHeight(sidebarRef.current.getBoundingClientRect().height);
   }, []);
 
   useEffect(() => {
@@ -251,31 +251,72 @@ export const HowItWorksDoc: React.FC<Props> = ({ className = '', showTitle = tru
         </div>
       ) : null}
 
-      <details className={`lg:hidden mx-5 sm:mx-6 rounded-2xl border ${isLight ? 'border-black/10' : 'border-white/10'}`}>
-        <summary className={`cursor-pointer select-none px-4 py-3 flex items-center justify-between text-sm font-semibold ${isLight ? 'text-slate-700' : 'text-slate-200'}`}>
-          Table of contents
-          <ChevronDown className="w-4 h-4" />
-        </summary>
-        <div className="px-3 pb-3">
-          <nav className="space-y-1">
-            {navItems.map((i) => (
-              <a
-                key={i.id}
-                href={`#${i.id}`}
-                onClick={(e) => handleNavClick(e, i.id)}
-                className={`block rounded-lg px-2 py-2 text-sm ${isLight ? 'text-slate-600 hover:bg-black/5 hover:text-slate-900' : 'text-slate-300 hover:bg-white/5 hover:text-white'}`}
+      {/* Mobile burger */}
+      <div className="lg:hidden flex justify-end px-5 sm:px-6">
+        <button
+          onClick={() => setMobileMenuOpen(true)}
+          className={`p-2.5 rounded-xl border transition-colors ${
+            isLight
+              ? 'border-black/10 text-slate-600 hover:bg-black/5'
+              : 'border-white/10 text-slate-300 hover:bg-white/5'
+          }`}
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Mobile slide-out */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setMobileMenuOpen(false)} />
+          <div
+            className={`absolute right-0 top-0 h-full w-80 max-w-[85vw] shadow-2xl overflow-y-auto ${
+              isLight ? 'bg-white' : 'bg-black border-l border-white/10'
+            }`}
+          >
+            <div className={`sticky top-0 z-10 flex items-center justify-between px-5 py-4 border-b ${
+              isLight ? 'border-slate-300/30 bg-white' : 'border-slate-800/30 bg-black'
+            }`}>
+              <span className={`text-[11px] font-bold uppercase tracking-widest ${isLight ? 'text-slate-500' : 'text-slate-500'}`}>Contents</span>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className={`p-1.5 rounded-lg transition-colors ${
+                  isLight ? 'hover:bg-black/5 text-slate-500' : 'hover:bg-white/5 text-slate-400'
+                }`}
               >
-                {i.title}
-              </a>
-            ))}
-          </nav>
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <nav className="py-3">
+              {navItems.map((i) => (
+                <a
+                  key={i.id}
+                  href={`#${i.id}`}
+                  onClick={(e) => {
+                    handleNavClick(e, i.id);
+                    setMobileMenuOpen(false);
+                  }}
+                  className={[
+                    'block transition-colors',
+                    i.depth === 0 ? 'pl-5' : i.depth === 1 ? 'pl-8' : 'pl-12',
+                    'pr-5 py-2.5 text-sm leading-snug',
+                    i.depth === 0
+                      ? 'text-[13px] font-semibold tracking-wide text-emerald-400'
+                      : `text-[13px] ${isLight ? 'text-slate-600' : 'text-slate-400'}`,
+                  ].join(' ')}
+                >
+                  {i.title}
+                </a>
+              ))}
+            </nav>
+          </div>
         </div>
-      </details>
+      )}
 
       {/* Docs layout: sidebar (left) + content (right) */}
       <div ref={flexRef} className="flex items-start">
         {/* Sidebar */}
-        <aside ref={sidebarRef} className={`hidden lg:flex lg:flex-col w-[280px] shrink-0 overflow-y-auto border-r ${isLight ? 'border-slate-300/50' : 'border-slate-800/40'}`} style={{ maxHeight: paneHeight }}>
+        <aside ref={sidebarRef} className={`hidden lg:flex lg:flex-col w-[280px] shrink-0 border-r sticky top-0 self-start ${isLight ? 'border-slate-300/50' : 'border-slate-800/40'}`}>
           <div className={`sticky top-0 z-10 shrink-0 px-5 py-3.5 border-b ${isLight ? 'border-slate-300/30 bg-white/50' : 'border-slate-800/30 bg-black/25'}`}>
             <span className={`text-[11px] font-bold uppercase tracking-widest ${isLight ? 'text-slate-500' : 'text-slate-500'}`}>Contents</span>
           </div>
