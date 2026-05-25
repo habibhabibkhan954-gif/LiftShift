@@ -1,5 +1,6 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { useTheme } from '../../theme/ThemeProvider';
 import { assetPath } from '../../../constants';
 import type { HowItWorksSection, HowItWorksNode } from '../utils/howItWorksDocContent';
 import { HOW_IT_WORKS_SECTIONS } from '../utils/howItWorksDocContent';
@@ -25,31 +26,31 @@ const flattenSections = (sections: HowItWorksSection[], depth: number): FlatNavI
   return out;
 };
 
-const getToneClasses = (tone: 'note' | 'warning') => {
+const getToneClasses = (tone: 'note' | 'warning', isLight: boolean) => {
   if (tone === 'warning') {
     return {
-      border: 'border-amber-500/25',
-      bg: 'bg-amber-500/10',
-      title: 'text-amber-200',
-      text: 'text-slate-200',
+      border: isLight ? 'border-amber-600/25' : 'border-amber-500/25',
+      bg: isLight ? 'bg-amber-100/50' : 'bg-amber-500/10',
+      title: isLight ? 'text-amber-700' : 'text-amber-200',
+      text: isLight ? 'text-slate-700' : 'text-slate-200',
     };
   }
   return {
-    border: 'border-emerald-500/25',
-    bg: 'bg-emerald-500/10',
-    title: 'text-emerald-200',
-    text: 'text-slate-200',
+    border: isLight ? 'border-emerald-600/25' : 'border-emerald-500/25',
+    bg: isLight ? 'bg-emerald-100/50' : 'bg-emerald-500/10',
+    title: isLight ? 'text-emerald-700' : 'text-emerald-200',
+    text: isLight ? 'text-slate-700' : 'text-slate-200',
   };
 };
 
-const NodeView: React.FC<{ node: HowItWorksNode; linkTarget: '_self' | '_blank' }> = ({ node, linkTarget }) => {
+const NodeView: React.FC<{ node: HowItWorksNode; linkTarget: '_self' | '_blank'; isLight: boolean }> = ({ node, linkTarget, isLight }) => {
   if (node.type === 'p') {
-    return <p className="text-slate-300 leading-relaxed">{node.text}</p>;
+    return <p className={`leading-relaxed ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>{node.text}</p>;
   }
 
   if (node.type === 'ul') {
     return (
-      <ul className="list-disc list-inside space-y-1 text-slate-300 leading-relaxed">
+      <ul className={`list-disc list-inside space-y-1 leading-relaxed ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
         {node.items.map((t, idx) => (
           <li key={idx}>{t}</li>
         ))}
@@ -66,7 +67,7 @@ const NodeView: React.FC<{ node: HowItWorksNode; linkTarget: '_self' | '_blank' 
             href={assetPath(l.hrefPath)}
             target={linkTarget}
             rel={linkTarget === '_blank' ? 'noopener noreferrer' : undefined}
-            className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-emerald-200 hover:bg-white/10"
+            className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${isLight ? 'border-black/10 bg-black/5 text-emerald-700 hover:bg-black/10' : 'border-white/10 bg-white/5 text-emerald-200 hover:bg-white/10'}`}
           >
             {l.label}
           </a>
@@ -75,7 +76,7 @@ const NodeView: React.FC<{ node: HowItWorksNode; linkTarget: '_self' | '_blank' 
     );
   }
 
-  const tone = getToneClasses(node.tone);
+  const tone = getToneClasses(node.tone, isLight);
   return (
     <div className={`rounded-2xl border ${tone.border} ${tone.bg} p-4`}>
       <div className={`text-sm font-semibold ${tone.title}`}>{node.title}</div>
@@ -84,7 +85,7 @@ const NodeView: React.FC<{ node: HowItWorksNode; linkTarget: '_self' | '_blank' 
   );
 };
 
-const SectionView: React.FC<{ section: HowItWorksSection; level: number; linkTarget: '_self' | '_blank'; flashingId: string | null }> = ({ section, level, linkTarget, flashingId }) => {
+const SectionView: React.FC<{ section: HowItWorksSection; level: number; linkTarget: '_self' | '_blank'; flashingId: string | null; isLight: boolean }> = ({ section, level, linkTarget, flashingId, isLight }) => {
   const HeadingTag = level === 2 ? 'h2' : 'h3';
   const isFlashing = flashingId === section.id;
   const isDimmed = flashingId !== null && !isFlashing;
@@ -95,14 +96,14 @@ const SectionView: React.FC<{ section: HowItWorksSection; level: number; linkTar
           className={[
             'transition-all duration-700',
             level === 2 ? 'text-xl font-bold' : 'text-lg font-semibold',
-            isFlashing ? 'text-emerald-300 drop-shadow-[0_0_8px_rgba(52,211,153,0.4)]' : 'text-white',
+            isFlashing ? 'text-emerald-300 drop-shadow-[0_0_8px_rgba(52,211,153,0.4)]' : (isLight ? 'text-slate-900' : 'text-white'),
           ].join(' ')}
         >
           {section.title}
         </HeadingTag>
         <div className="mt-3 space-y-3">
           {section.nodes.map((n, idx) => (
-            <NodeView key={idx} node={n} linkTarget={linkTarget} />
+            <NodeView key={idx} node={n} linkTarget={linkTarget} isLight={isLight} />
           ))}
         </div>
       </div>
@@ -110,7 +111,7 @@ const SectionView: React.FC<{ section: HowItWorksSection; level: number; linkTar
       {section.children && section.children.length > 0 ? (
         <div className="mt-6 space-y-6">
           {section.children.map((c) => (
-            <SectionView key={c.id} section={c} level={3} linkTarget={linkTarget} flashingId={flashingId} />
+            <SectionView key={c.id} section={c} level={3} linkTarget={linkTarget} flashingId={flashingId} isLight={isLight} />
           ))}
         </div>
       ) : null}
@@ -119,49 +120,67 @@ const SectionView: React.FC<{ section: HowItWorksSection; level: number; linkTar
 };
 
 export const HowItWorksDoc: React.FC<Props> = ({ className = '', showTitle = true, linkTarget = '_self' }) => {
+  const { mode } = useTheme();
+  const isLight = mode === 'light';
   const navItems = useMemo(() => flattenSections(HOW_IT_WORKS_SECTIONS, 0), []);
+
+  const parentMap = useMemo(() => {
+    const map: Record<string, string | null> = {};
+    const walk = (sections: HowItWorksSection[], parentId: string | null) => {
+      for (const s of sections) {
+        map[s.id] = parentId;
+        if (s.children) walk(s.children, s.id);
+      }
+    };
+    walk(HOW_IT_WORKS_SECTIONS, null);
+    return map;
+  }, []);
+
+  const resolveParentId = useCallback((id: string): string => parentMap[id] ?? id, [parentMap]);
+
   const [activeId, setActiveId] = useState<string>(HOW_IT_WORKS_SECTIONS[0]?.id ?? '');
   const contentRef = useRef<HTMLDivElement | null>(null);
   const sidebarRef = useRef<HTMLElement | null>(null);
-  const [sidebarHeight, setSidebarHeight] = useState<number>(0);
+  const flexRef = useRef<HTMLDivElement | null>(null);
+  const [paneHeight, setPaneHeight] = useState(0);
   const [flashingId, setFlashingId] = useState<string | null>(null);
   const flashTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const observerSuppressed = useRef(false);
+  const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useLayoutEffect(() => {
-    if (!sidebarRef.current) return;
-    setSidebarHeight(sidebarRef.current.offsetHeight);
+    if (!flexRef.current) return;
+    const rect = flexRef.current.getBoundingClientRect();
+    setPaneHeight(window.innerHeight - rect.top - 16);
   }, []);
 
   useEffect(() => {
     return () => {
       if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
+      if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current);
     };
   }, []);
 
-  const scrollToIdInPane = (id: string, relativePos: number = 0) => {
+  const scrollToIdInPane = (id: string) => {
     const el = document.getElementById(id);
-    const container = contentRef.current;
-    if (!el || !container) return;
+    if (!el) return;
 
-    const containerRect = container.getBoundingClientRect();
-    const elRect = el.getBoundingClientRect();
-    const targetScroll = container.scrollTop + (elRect.top - containerRect.top) - containerRect.height * relativePos;
-    container.scrollTo({ top: targetScroll, behavior: 'smooth' });
+    const heading = el.querySelector('h2, h3') ?? el;
+    heading.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    const navLink = sidebarRef.current?.querySelector(`a[href="#${id}"]`);
+    if (navLink) navLink.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
-    setActiveId(id);
 
-    const navRect = e.currentTarget.getBoundingClientRect();
-    const sidebar = sidebarRef.current;
-    if (sidebar) {
-      const sidebarRect = sidebar.getBoundingClientRect();
-      const relativePos = (navRect.top + navRect.height / 2 - sidebarRect.top) / sidebarRect.height;
-      scrollToIdInPane(id, Math.max(0, Math.min(1, relativePos)));
-    } else {
-      scrollToIdInPane(id);
-    }
+    observerSuppressed.current = true;
+    clearTimeout(scrollTimerRef.current ?? undefined);
+    scrollTimerRef.current = setTimeout(() => { observerSuppressed.current = false; }, 800);
+
+    setActiveId(resolveParentId(id));
+    scrollToIdInPane(id);
 
     setFlashingId(id);
     if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
@@ -175,28 +194,48 @@ export const HowItWorksDoc: React.FC<Props> = ({ className = '', showTitle = tru
     if (!id) return;
 
     scrollToIdInPane(id);
-    setActiveId(id);
+    setActiveId(resolveParentId(id));
   }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const nodes = navItems
-      .map((i) => document.getElementById(i.id))
-      .filter(Boolean) as HTMLElement[];
+    const parentIds = navItems.filter(i => i.depth === 0).map(i => i.id);
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => (a.boundingClientRect.top ?? 0) - (b.boundingClientRect.top ?? 0));
-        const first = visible[0]?.target as HTMLElement | undefined;
-        if (first?.id) setActiveId(first.id);
-      },
-      { root: contentRef.current, rootMargin: '-20% 0px -70% 0px', threshold: [0, 1] }
-    );
+    const handleIntersect = () => {
+      if (observerSuppressed.current) return;
 
-    for (const el of nodes) observer.observe(el);
+      const cr = contentRef.current!.getBoundingClientRect();
+      const centerY = cr.top + cr.height / 2;
+
+      let closestDist = Infinity;
+      let closestId: string | null = null;
+
+      for (const id of parentIds) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const rect = el.getBoundingClientRect();
+        if (rect.bottom < cr.top || rect.top > cr.bottom) continue;
+        const dist = Math.abs(rect.top - centerY);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closestId = id;
+        }
+      }
+
+      if (closestId) setActiveId(resolveParentId(closestId));
+    };
+
+    const observer = new IntersectionObserver(handleIntersect, {
+      root: contentRef.current,
+      rootMargin: '-10% 0px -30% 0px',
+      threshold: [0],
+    });
+
+    for (const id of parentIds) {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    }
 
     return () => observer.disconnect();
   }, [navItems]);
@@ -205,15 +244,15 @@ export const HowItWorksDoc: React.FC<Props> = ({ className = '', showTitle = tru
     <div className={`space-y-8 ${className}`}>
       {showTitle ? (
         <div className="px-5 sm:px-6">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">How LiftShift works</h1>
-          <p className="mt-2 text-slate-300">
+          <h1 className={`text-2xl sm:text-3xl font-bold tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>How LiftShift works</h1>
+          <p className={`mt-2 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
             A user-friendly overview of the features, assumptions, and definitions behind the workout analytics dashboard.
           </p>
         </div>
       ) : null}
 
-      <details className="lg:hidden mx-5 sm:mx-6 rounded-2xl border border-white/10 bg-black/20">
-        <summary className="cursor-pointer select-none px-4 py-3 flex items-center justify-between text-sm font-semibold text-slate-200">
+      <details className={`lg:hidden mx-5 sm:mx-6 rounded-2xl border ${isLight ? 'border-black/10' : 'border-white/10'}`}>
+        <summary className={`cursor-pointer select-none px-4 py-3 flex items-center justify-between text-sm font-semibold ${isLight ? 'text-slate-700' : 'text-slate-200'}`}>
           Table of contents
           <ChevronDown className="w-4 h-4" />
         </summary>
@@ -224,7 +263,7 @@ export const HowItWorksDoc: React.FC<Props> = ({ className = '', showTitle = tru
                 key={i.id}
                 href={`#${i.id}`}
                 onClick={(e) => handleNavClick(e, i.id)}
-                className="block rounded-lg px-2 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white"
+                className={`block rounded-lg px-2 py-2 text-sm ${isLight ? 'text-slate-600 hover:bg-black/5 hover:text-slate-900' : 'text-slate-300 hover:bg-white/5 hover:text-white'}`}
               >
                 {i.title}
               </a>
@@ -234,11 +273,11 @@ export const HowItWorksDoc: React.FC<Props> = ({ className = '', showTitle = tru
       </details>
 
       {/* Docs layout: sidebar (left) + content (right) */}
-      <div className="flex items-start rounded-2xl overflow-hidden border border-slate-800/30 bg-black/20">
+      <div ref={flexRef} className="flex items-start">
         {/* Sidebar */}
-        <aside ref={sidebarRef} className="hidden lg:flex lg:flex-col w-[280px] shrink-0 border-r border-slate-800/40 bg-black/25">
-          <div className="shrink-0 px-5 py-3.5 border-b border-slate-800/30">
-            <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Contents</span>
+        <aside ref={sidebarRef} className={`hidden lg:flex lg:flex-col w-[280px] shrink-0 overflow-y-auto border-r ${isLight ? 'border-slate-300/50' : 'border-slate-800/40'}`} style={{ maxHeight: paneHeight }}>
+          <div className={`sticky top-0 z-10 shrink-0 px-5 py-3.5 border-b ${isLight ? 'border-slate-300/30 bg-white/50' : 'border-slate-800/30 bg-black/25'}`}>
+            <span className={`text-[11px] font-bold uppercase tracking-widest ${isLight ? 'text-slate-500' : 'text-slate-500'}`}>Contents</span>
           </div>
           <nav className="py-3 space-y-0">
             {navItems.map((i) => {
@@ -254,10 +293,10 @@ export const HowItWorksDoc: React.FC<Props> = ({ className = '', showTitle = tru
                     isParent ? 'mt-2 first:mt-0' : '',
                     i.depth === 0 ? 'pl-5' : i.depth === 1 ? 'pl-8' : 'pl-12',
                     'pr-4 py-1.5 text-sm leading-snug',
-                    isParent ? 'text-[13px] font-semibold tracking-wide text-emerald-400' : 'text-[13px] text-slate-400',
+                    isParent ? 'text-[13px] font-semibold tracking-wide text-emerald-400' : `text-[13px] ${isLight ? 'text-slate-600' : 'text-slate-400'}`,
                     isActive
-                      ? 'text-emerald-200 bg-emerald-500/8'
-                      : 'hover:text-emerald-300 hover:bg-white/[0.03]',
+                      ? `text-emerald-200 bg-emerald-500/8`
+                      : `${isLight ? 'hover:text-emerald-600 hover:bg-black/[0.03]' : 'hover:text-emerald-300 hover:bg-white/[0.03]'}`,
                   ].join(' ')}
                 >
                   {i.title}
@@ -268,10 +307,10 @@ export const HowItWorksDoc: React.FC<Props> = ({ className = '', showTitle = tru
         </aside>
 
         {/* Content */}
-        <div ref={contentRef} className="flex-1 overflow-y-auto min-w-0 scroll-pt-8" style={{ maxHeight: sidebarHeight }}>
+        <div ref={contentRef} className="flex-1 overflow-y-auto min-w-0 scroll-pt-8 relative" style={{ maxHeight: paneHeight }}>
           <div className="max-w-3xl mx-auto px-8 py-10 space-y-14">
             {HOW_IT_WORKS_SECTIONS.map((s) => (
-              <SectionView key={s.id} section={s} level={2} linkTarget={linkTarget} flashingId={flashingId} />
+              <SectionView key={s.id} section={s} level={2} linkTarget={linkTarget} flashingId={flashingId} isLight={isLight} />
             ))}
             <div className="pb-16" />
           </div>
