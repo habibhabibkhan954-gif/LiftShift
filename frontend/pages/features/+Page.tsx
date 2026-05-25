@@ -87,7 +87,7 @@ function Page() {
             Full documentation
           </div>
           <p className="text-slate-300 text-sm">
-            See <a href={assetPath('how-it-works/')} className="text-emerald-300 underline">How it works</a> for detailed explanations of every feature, metric definition, and design choice.
+            See <a href={assetPath('how-it-works/')} className="text-slate-400 hover:text-emerald-300 transition-colors">How it works</a> for detailed explanations of every feature, metric definition, and design choice.
           </p>
         </div>
       </div>
