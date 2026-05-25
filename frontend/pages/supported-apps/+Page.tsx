@@ -15,9 +15,9 @@ function Page() {
         <section>
           <h2 className="text-lg font-semibold text-white mb-3">Supported apps</h2>
           <ul className="list-disc list-inside space-y-1 text-slate-300 leading-relaxed">
-            <li><a href={assetPath('supported-apps/hevy/')} className="text-gray-400 hover:text-emerald-300 transition-all duration-200">Hevy</a> \u2014 CSV import and API sync</li>
-            <li><a href={assetPath('supported-apps/strong/')} className="text-gray-400 hover:text-emerald-300 transition-all duration-200">Strong</a> \u2014 CSV import</li>
-            <li><a href={assetPath('supported-apps/lyfta/')} className="text-gray-400 hover:text-emerald-300 transition-all duration-200">Lyfta</a> \u2014 CSV import and API sync</li>
+            <li><a href={assetPath('supported-apps/hevy/')} className="text-emerald-300/80 hover:text-emerald-400 transition-colors duration-200">Hevy</a> \u2014 CSV import and API sync</li>
+            <li><a href={assetPath('supported-apps/strong/')} className="text-emerald-300/80 hover:text-emerald-400 transition-colors duration-200">Strong</a> \u2014 CSV import</li>
+            <li><a href={assetPath('supported-apps/lyfta/')} className="text-emerald-300/80 hover:text-emerald-400 transition-colors duration-200">Lyfta</a> \u2014 CSV import and API sync</li>
           </ul>
         </section>
 

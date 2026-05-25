@@ -89,27 +89,27 @@ export const InfoShell: React.FC<InfoShellProps> = ({ activeNav = null, title, s
           <div>
             <h3 className="text-white font-semibold mb-3">Product</h3>
             <ul className="space-y-2">
-              <li><a href={assetPath('about/')} className="text-gray-400 hover:text-emerald-300 transition-all duration-200">About</a></li>
-              <li><a href={assetPath('how-it-works/')} className="text-gray-400 hover:text-emerald-300 transition-all duration-200">How it works</a></li>
-              <li><a href={assetPath('features/')} className="text-gray-400 hover:text-emerald-300 transition-all duration-200">Features</a></li>
-              <li><a href={assetPath('faq/')} className="text-gray-400 hover:text-emerald-300 transition-all duration-200">FAQ</a></li>
+              <li><a href={assetPath('about/')} className="text-emerald-300/80 hover:text-emerald-400 transition-colors duration-200">About</a></li>
+              <li><a href={assetPath('how-it-works/')} className="text-emerald-300/80 hover:text-emerald-400 transition-colors duration-200">How it works</a></li>
+              <li><a href={assetPath('features/')} className="text-emerald-300/80 hover:text-emerald-400 transition-colors duration-200">Features</a></li>
+              <li><a href={assetPath('faq/')} className="text-emerald-300/80 hover:text-emerald-400 transition-colors duration-200">FAQ</a></li>
             </ul>
           </div>
           <div>
             <h3 className="text-white font-semibold mb-3">Resources</h3>
             <ul className="space-y-2">
-              <li><a href={assetPath('supported-apps/')} className="text-gray-400 hover:text-emerald-300 transition-all duration-200">Supported apps</a></li>
-              <li><a href={assetPath('metrics/')} className="text-gray-400 hover:text-emerald-300 transition-all duration-200">Metrics glossary</a></li>
-              <li><a href={assetPath('hevy-vs-lyfta/')} className="text-gray-400 hover:text-emerald-300 transition-all duration-200">Hevy vs Lyfta</a></li>
-              <li><a href={assetPath('ai/')} className="text-gray-400 hover:text-emerald-300 transition-all duration-200">AI reference</a></li>
+              <li><a href={assetPath('supported-apps/')} className="text-emerald-300/80 hover:text-emerald-400 transition-colors duration-200">Supported apps</a></li>
+              <li><a href={assetPath('metrics/')} className="text-emerald-300/80 hover:text-emerald-400 transition-colors duration-200">Metrics glossary</a></li>
+              <li><a href={assetPath('hevy-vs-lyfta/')} className="text-emerald-300/80 hover:text-emerald-400 transition-colors duration-200">Hevy vs Lyfta</a></li>
+              <li><a href={assetPath('ai/')} className="text-emerald-300/80 hover:text-emerald-400 transition-colors duration-200">AI reference</a></li>
             </ul>
           </div>
           <div>
             <h3 className="text-white font-semibold mb-3">Company</h3>
             <ul className="space-y-2">
-              <li><a href={assetPath('privacy/')} className="text-gray-400 hover:text-emerald-300 transition-all duration-200">Privacy</a></li>
-              <li><a href="https://github.com/aree6/LiftShift" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-300 transition-all duration-200">GitHub</a></li>
-              <li><a href="https://github.com/aree6/LiftShift/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-300 transition-all duration-200">License (AGPL-3.0)</a></li>
+              <li><a href={assetPath('privacy/')} className="text-emerald-300/80 hover:text-emerald-400 transition-colors duration-200">Privacy</a></li>
+              <li><a href="https://github.com/aree6/LiftShift" target="_blank" rel="noopener noreferrer" className="text-emerald-300/80 hover:text-emerald-400 transition-colors duration-200">GitHub</a></li>
+              <li><a href="https://github.com/aree6/LiftShift/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" className="text-emerald-300/80 hover:text-emerald-400 transition-colors duration-200">License (AGPL-3.0)</a></li>
             </ul>
           </div>
           <div className="col-span-2 sm:col-span-1">
