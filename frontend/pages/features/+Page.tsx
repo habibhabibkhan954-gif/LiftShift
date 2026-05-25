@@ -2,6 +2,7 @@ export { Page };
 
 import React from 'react';
 import { InfoShell } from '../../components/info/InfoShell';
+import { useTheme } from '../../components/theme/ThemeProvider';
 import { Info } from 'lucide-react';
 import { assetPath } from '../../constants';
 
@@ -51,6 +52,8 @@ const featureGroups = [
 ];
 
 function Page() {
+  const { mode } = useTheme();
+  const isLight = mode === 'light';
   return (
     <InfoShell
       activeNav="features"
@@ -62,14 +65,14 @@ function Page() {
           <section key={g.group}>
             <div className={`grid grid-cols-1 lg:grid-cols-2 gap-6 items-start ${idx % 2 === 1 ? 'lg:[direction:rtl]' : ''}`}>
               <div className={idx % 2 === 1 ? 'lg:[direction:ltr]' : ''}>
-                <h2 className="text-lg font-semibold text-white mb-3">{g.group}</h2>
-                <ul className="list-disc list-inside space-y-2 text-slate-300 leading-relaxed">
+                <h2 className={`text-lg font-semibold mb-3 ${isLight ? 'text-slate-900' : 'text-white'}`}>{g.group}</h2>
+                <ul className={`list-disc list-inside space-y-2 leading-relaxed ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
                   {g.items.map((item, i) => (
                     <li key={i}>{item}</li>
                   ))}
                 </ul>
               </div>
-              <div className="rounded-xl border border-white/10 overflow-hidden bg-black/30 max-w-lg mx-auto">
+              <div className={`rounded-xl border overflow-hidden max-w-lg mx-auto ${isLight ? 'border-black/10' : 'border-white/10'}`}>
                 <img
                   src={assetPath(g.image)}
                   alt={g.alt}
@@ -82,12 +85,12 @@ function Page() {
         ))}
 
         <div className="rounded-2xl border border-emerald-500/25 bg-emerald-500/10 p-4 mt-6">
-          <div className="flex items-center gap-2 text-emerald-200 text-sm font-semibold mb-2">
+          <div className={`flex items-center gap-2 text-sm font-semibold mb-2 ${isLight ? 'text-emerald-700' : 'text-emerald-200'}`}>
             <Info className="w-4 h-4" />
             Full documentation
           </div>
-          <p className="text-slate-300 text-sm">
-            See <a href={assetPath('how-it-works/')} className="text-emerald-300/80 hover:text-emerald-400 transition-colors duration-200">How it works</a> for detailed explanations of every feature, metric definition, and design choice.
+          <p className={`text-sm ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+            See <a href={assetPath('how-it-works/')} className={`${isLight ? 'text-slate-600 hover:text-emerald-600' : 'text-slate-400 hover:text-emerald-400'} transition-colors duration-200`}>How it works</a> for detailed explanations of every feature, metric definition, and design choice.
           </p>
         </div>
       </div>
