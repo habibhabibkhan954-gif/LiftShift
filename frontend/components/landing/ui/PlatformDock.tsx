@@ -118,7 +118,7 @@ export default function PlatformDock({ items, className = '' }: PlatformDockProp
   const [activeName, setActiveName] = useState<string | null>(null);
 
   return (
-    <div className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] ${className}`}>
+    <div className={`fixed bottom-0 sm:bottom-6 left-1/2 -translate-x-1/2 z-[100] ${className}`}>
       <motion.div
         onMouseMove={(e) => mouseX.set(e.pageX)}
         onMouseEnter={() => setIsHovered(true)}

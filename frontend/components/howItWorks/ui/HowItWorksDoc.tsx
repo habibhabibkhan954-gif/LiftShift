@@ -148,10 +148,17 @@ export const HowItWorksDoc: React.FC<Props> = ({ className = '', showTitle = tru
   const flashTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const observerSuppressed = useRef(false);
   const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingScrollRef = useRef<string | null>(null);
 
   useLayoutEffect(() => {
-    if (!sidebarRef.current) return;
-    setPaneHeight(sidebarRef.current.getBoundingClientRect().height);
+    if (!sidebarRef.current || !contentRef.current) return;
+    const h = sidebarRef.current.getBoundingClientRect().height;
+    if (h > 0) {
+      setPaneHeight(h);
+    } else {
+      const top = contentRef.current.getBoundingClientRect().top;
+      setPaneHeight(window.innerHeight - top);
+    }
   }, []);
 
   useEffect(() => {
@@ -160,6 +167,13 @@ export const HowItWorksDoc: React.FC<Props> = ({ className = '', showTitle = tru
       if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    if (!mobileMenuOpen && pendingScrollRef.current) {
+      scrollToIdInPane(pendingScrollRef.current);
+      pendingScrollRef.current = null;
+    }
+  }, [mobileMenuOpen]);
 
   const scrollToIdInPane = (id: string) => {
     const el = document.getElementById(id);
@@ -260,64 +274,16 @@ export const HowItWorksDoc: React.FC<Props> = ({ className = '', showTitle = tru
       {/* Mobile burger */}
       <div className="lg:hidden flex justify-end px-5 sm:px-6">
         <button
-          onClick={() => setMobileMenuOpen(true)}
-          className={`p-2.5 rounded-xl border transition-colors ${
+          onClick={() => setMobileMenuOpen((prev) => !prev)}
+          className={`p-2.5 rounded-xl border-2 transition-colors ${
             isLight
-              ? 'border-black/10 text-slate-600 hover:bg-black/5'
-              : 'border-white/10 text-slate-300 hover:bg-white/5'
+              ? 'border-black/30 text-slate-600 hover:bg-black/5'
+              : 'border-white/30 text-slate-300 hover:bg-white/5'
           }`}
         >
-          <Menu className="w-5 h-5" />
+          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
-
-      {/* Mobile slide-out */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setMobileMenuOpen(false)} />
-          <div
-            className={`absolute right-0 top-0 h-full w-80 max-w-[85vw] shadow-2xl overflow-y-auto ${
-              isLight ? 'bg-white' : 'bg-black border-l border-white/10'
-            }`}
-          >
-            <div className={`sticky top-0 z-10 flex items-center justify-between px-5 py-4 border-b ${
-              isLight ? 'border-slate-300/30 bg-white' : 'border-slate-800/30 bg-black'
-            }`}>
-              <span className={`text-[11px] font-bold uppercase tracking-widest ${isLight ? 'text-slate-500' : 'text-slate-500'}`}>Contents</span>
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                className={`p-1.5 rounded-lg transition-colors ${
-                  isLight ? 'hover:bg-black/5 text-slate-500' : 'hover:bg-white/5 text-slate-400'
-                }`}
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <nav className="py-3">
-              {navItems.map((i) => (
-                <a
-                  key={i.id}
-                  href={`#${i.id}`}
-                  onClick={(e) => {
-                    handleNavClick(e, i.id);
-                    setMobileMenuOpen(false);
-                  }}
-                  className={[
-                    'block transition-colors',
-                    i.depth === 0 ? 'pl-5' : i.depth === 1 ? 'pl-8' : 'pl-12',
-                    'pr-5 py-2.5 text-sm leading-snug',
-                    i.depth === 0
-                      ? 'text-[13px] font-semibold tracking-wide text-emerald-400'
-                      : `text-[13px] ${isLight ? 'text-slate-600' : 'text-slate-400'}`,
-                  ].join(' ')}
-                >
-                  {i.title}
-                </a>
-              ))}
-            </nav>
-          </div>
-        </div>
-      )}
 
       {/* Docs layout: sidebar (left) + content (right) */}
       <div ref={flexRef} className="flex items-start">
@@ -354,13 +320,49 @@ export const HowItWorksDoc: React.FC<Props> = ({ className = '', showTitle = tru
         </aside>
 
         {/* Content */}
-        <div ref={contentRef} className="flex-1 overflow-y-auto min-w-0 scroll-pt-8 relative" style={{ maxHeight: paneHeight }}>
-          <div className="max-w-3xl mx-auto px-8 py-10 space-y-14">
-            {HOW_IT_WORKS_SECTIONS.map((s) => (
-              <SectionView key={s.id} section={s} level={2} linkTarget={linkTarget} flashingId={flashingId} isLight={isLight} />
-            ))}
-            <div className="pb-16" />
-          </div>
+        <div ref={contentRef} className={`flex-1 overflow-y-auto min-w-0 scroll-pt-8 relative rounded-xl border ${isLight ? 'border-slate-300/40' : 'border-white/15'}`} style={paneHeight > 0 ? { maxHeight: paneHeight } : undefined}>
+          {mobileMenuOpen ? (
+            <div className="max-w-3xl mx-auto px-8 py-6">
+              <span className={`text-[11px] font-bold uppercase tracking-widest ${isLight ? 'text-slate-500' : 'text-slate-500'}`}>Contents</span>
+              <nav className="mt-4">
+                {navItems.map((i) => (
+                  <a
+                    key={i.id}
+                    href={`#${i.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      pendingScrollRef.current = i.id;
+                      observerSuppressed.current = true;
+                      clearTimeout(scrollTimerRef.current ?? undefined);
+                      scrollTimerRef.current = setTimeout(() => { observerSuppressed.current = false; }, 800);
+                      setActiveId(resolveParentId(i.id));
+                      setFlashingId(i.id);
+                      if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
+                      flashTimerRef.current = setTimeout(() => setFlashingId(null), 2000);
+                      setMobileMenuOpen(false);
+                    }}
+                    className={[
+                      'block transition-colors py-2.5 leading-snug border-b last:border-0',
+                      i.depth === 0 ? '' : i.depth === 1 ? 'pl-5' : 'pl-10',
+                      i.depth === 0
+                        ? 'text-[13px] font-semibold tracking-wide text-emerald-400'
+                        : `text-[13px] ${isLight ? 'text-slate-600' : 'text-slate-400'}`,
+                      isLight ? 'border-slate-200/60' : 'border-slate-800/40',
+                    ].join(' ')}
+                  >
+                    {i.title}
+                  </a>
+                ))}
+              </nav>
+            </div>
+          ) : (
+            <div className="max-w-3xl mx-auto px-8 py-10 space-y-14">
+              {HOW_IT_WORKS_SECTIONS.map((s) => (
+                <SectionView key={s.id} section={s} level={2} linkTarget={linkTarget} flashingId={flashingId} isLight={isLight} />
+              ))}
+              <div className="pb-16" />
+            </div>
+          )}
         </div>
       </div>
     </div>

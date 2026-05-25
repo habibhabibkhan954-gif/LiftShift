@@ -10,6 +10,10 @@ import LightRays from '../lightRays/LightRays';
 import { Flame, CalendarDays, Trophy, BarChart3, Activity } from 'lucide-react';
 import { FANCY_FONT } from '../../../utils/ui/uiConstants';
 import { assetPath } from '../../../constants';
+import { HowItWorksDoc } from '../../howItWorks/ui/HowItWorksDoc';
+import { FeaturesDoc } from '../../features/ui/FeaturesDoc';
+
+type View = 'dashboard' | 'how-it-works' | 'features';
 
 interface LandingPageProps {
   onSelectPlatform: (source: DataSourceChoice) => void;
@@ -20,7 +24,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectPlatform, onTr
   const { mode } = useTheme();
   const isLight = mode === 'light';
   const [showScrollTop, setShowScrollTop] = React.useState(false);
+  const [view, setView] = React.useState<View>('dashboard');
   const containerRef = React.useRef<HTMLDivElement>(null);
+
+  const handleNavClick = (nav: 'how-it-works' | 'features') => {
+    setView((prev) => (prev === nav ? 'dashboard' : nav));
+  };
+
+  const handleLogoClick = () => {
+    setView('dashboard');
+  };
 
   // Handle scroll to top visibility
   React.useEffect(() => {
@@ -93,196 +106,210 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectPlatform, onTr
           saturation={0.9}
         />
       </div>
-      {/* ========== HERO SECTION ========== */}
-      <section className="relative z-10 min-h-screen flex flex-col pt-2 pb-32">
-        <div className="max-w-6xl mx-auto w-full">
-          {/* Navigation */}
-          <Navigation variant="landing" className="px-4 sm:px-6 lg:px-8" />
-          {/* Hero Content */}
-          <div className="text-center max-w-5xl mx-auto">
+      {/* Navigation */}
+      <div className="relative z-10 max-w-6xl mx-auto w-full pt-2">
+        <Navigation
+          variant="landing"
+          className="px-4 sm:px-6 lg:px-8"
+          activeNav={view === 'dashboard' ? null : view}
+          onNavClick={handleNavClick}
+          onLogoClick={handleLogoClick}
+        />
+      </div>
 
-            {/* Main Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight mb-8 mt-10 mr-1 ml-1 leading-[1.15]">
-              <span className={`block ${isLight ? 'text-slate-600' : 'text-slate-400'} text-2xl sm:text-2xl lg:text-3xl xl:text-4xl mb-4`} style={FANCY_FONT}>
-                Your workout app logs,
-              </span>
-              <span className="block bg-gradient-to-r from-emerald-300 via-emerald-400 to-green-400 bg-clip-text text-transparent pb-2" style={FANCY_FONT}>
-                LiftShift answers.
-              </span>
-              <span className={`block ${isLight ? 'text-slate-600' : 'text-slate-400'} text-2xl sm:text-2xl lg:text-3xl xl:text-4xl mt-2`} style={FANCY_FONT}>
-                Free & open-source.
-              </span>
-            </h1>
-
-            {/* Subheadline */}
-            <p className={`${isLight ? 'text-slate-600' : 'text-slate-400'} text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed`}>
-              Connect Hevy, Strong, or Lyfta in seconds. Track training volume, personal records, and exercise progress with interactive muscle heatmaps. Get plateau detection, set-by-set feedback, and AI-ready analysis. All processed on your device, nothing stored on our servers.
-            </p>
-
-            {/* Feature highlights */}
-            {/* <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-slate-400 mb-8">
-              <FeatureTag icon={<Flame className="w-4 h-4 text-orange-400" />} text="Muscle Heatmaps" />
-              <FeatureTag icon={<CalendarDays className="w-4 h-4 text-blue-400" />} text="Calendar Filtering" />
-              <FeatureTag icon={<Trophy className="w-4 h-4 text-yellow-400" />} text="Plateau Detection" />
-              <FeatureTag icon={<BarChart3 className="w-4 h-4 text-emerald-400" />} text="Set-by-set Feedback" />
-              <FeatureTag icon={<Dumbbell className="w-4 h-4 text-purple-400" />} text="AI-Ready Export" />
-            </div> */}
-
-         
-
-            {/* Demo CTA Button */}
-            {onTryDemo && (
-              <div className="mb-8">
-                <button
-                  onClick={onTryDemo}
-                  className={`group cursor-pointer inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-semibold h-11 px-8 border transition-all duration-200 ${isLight ? 'border-slate-400/40 text-slate-600 hover:border-emerald-600 hover:text-emerald-600' : 'border-slate-600/40 text-slate-400 hover:border-emerald-400 hover:text-emerald-300'}`}
-                >
-                  <span>Try it with sample data</span>
-                </button>
-                
-              </div>
-            )}
+      {view === 'how-it-works' ? (
+        <div className="relative z-10 px-4 sm:px-6 lg:px-8 py-8">
+          <div className="max-w-6xl mx-auto">
+            <HowItWorksDoc linkTarget="_self" />
           </div>
         </div>
-      </section>
-
-      {/* ========== WHY LIFTSHIFT SECTION ========== */}
-      <section id="why-liftshift" className="relative z-10 px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className={`text-3xl sm:text-4xl font-bold tracking-tight mb-4 ${isLight ? 'text-slate-900' : 'text-slate-200'}`} style={FANCY_FONT}>
-              What your workout app doesn&apos;t tell you
-            </h2>
-            <p className={`max-w-2xl mx-auto text-lg ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-              Hevy, Strong, and Lyfta are great at logging. But their built-in charts leave you guessing. LiftShift gives you the answers you actually want.
-            </p>
-          </div>
-
-          {/* Muscle heatmaps, image: 1.avif */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-24">
-            <div className="lg:order-2 rounded-2xl overflow-hidden aspect-[1/1]">
-              <img src={assetPath('/images/misc/weeklyset.avif')} alt="LiftShift interactive muscle heatmap with exercise drill-down" loading="lazy" className="w-full h-full object-contain" />
-            </div>
-            <div className="lg:order-1">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center mb-4">
-                <Flame className="w-5 h-5 text-orange-400" />
-              </div>
-              <h3 className={`text-2xl font-bold ${isLight ? 'text-slate-900' : 'text-slate-200'} mb-3`}>Interactive muscle heatmaps</h3>
-              <p className={`${isLight ? 'text-slate-600' : 'text-slate-400'} leading-relaxed mb-3`}>
-                Click any muscle to see exactly which exercises built it, with primary and secondary sets weighted separately. Rolling 7-day windows match your body&apos;s real recovery patterns.
-              </p>
-              <p className="text-slate-500 text-sm">
-                Hypertrophy score &middot; Volume zones &middot; Radar chart &middot; Per-muscle drill-down
-              </p>
-            </div>
-          </div>
-
-          {/* Plateau detection, image: 2.avif */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-24">
-            <div className="lg:order-1 rounded-2xl overflow-hidden aspect-[4/3]">
-              <img src={assetPath('/images/misc/plateau.avif')} alt="LiftShift exercise status: Getting stronger, Plateauing, Taking a dip" loading="lazy" className="w-full h-full object-contain" />
-            </div>
-            <div className="lg:order-2">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center mb-4">
-                <Trophy className="w-5 h-5 text-yellow-400" />
-              </div>
-              <h3 className={`text-2xl font-bold ${isLight ? 'text-slate-900' : 'text-slate-200'} mb-3`}>Plateau detection that actually helps</h3>
-              <p className={`${isLight ? 'text-slate-600' : 'text-slate-400'} leading-relaxed mb-3`}>
-                Every exercise gets a clear status, Getting stronger, Plateauing, or Taking a dip, with confidence levels. When you&apos;re stuck, LiftShift suggests exactly what to change: add 1 rep, bump 2.5 kg, or deload.
-              </p>
-              <p className="text-slate-500 text-sm">
-                Static vs general plateaus &middot; Per-exercise trend analysis &middot; Evidence badges
-              </p>
-            </div>
-          </div>
-
-          {/* Set-by-set, image: 5.avif */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-24">
-            <div className="lg:order-2 rounded-2xl overflow-hidden aspect-[4/3]">
-              <img src={assetPath('/images/misc/setbyset.avif')} alt="LiftShift set-by-set coaching feedback on each set" loading="lazy" className="w-full h-full object-contain" />
-            </div>
-            <div className="lg:order-1">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center mb-4">
-                <BarChart3 className="w-5 h-5 text-emerald-400" />
-              </div>
-              <h3 className={`text-2xl font-bold ${isLight ? 'text-slate-900' : 'text-slate-200'} mb-3`}>Set-by-set coaching feedback</h3>
-              <p className={`${isLight ? 'text-slate-600' : 'text-slate-400'} leading-relaxed mb-3`}>
-                Open any past workout. LiftShift analyzes every set across 19 scenarios, normal fatigue, premature weight jumps, effective back-off sets, with plain-English badges and improvement suggestions.
-              </p>
-              <p className="text-slate-500 text-sm">
-                19 feedback scenarios &middot; Weight-up/down suggestions &middot; Drop set &amp; AMRAP detection
-              </p>
-            </div>
-          </div>
-
-          {/* AI export, image: AI.avif */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-24">
-            <div className="lg:order-2 rounded-2xl overflow-hidden aspect-[1/1]">
-              <img src={assetPath('/images/misc/AI.avif')} alt="LiftShift AI analysis prompt generator" loading="lazy" className="w-full h-full object-contain" />
-            </div>
-            <div className="lg:order-1">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center mb-4">
-                <svg className="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3V6a4 4 0 0 0-4-4z"/><path d="M12 11v4"/><path d="M8 11v4"/><path d="M16 11v4"/></svg>
-              </div>
-              <h3 className={`text-2xl font-bold ${isLight ? 'text-slate-900' : 'text-slate-200'} mb-3`}>AI-ready analysis export</h3>
-              <p className={`${isLight ? 'text-slate-600' : 'text-slate-400'} leading-relaxed mb-3`}>
-                Export your structured training data in one click. Choose from 8 built-in analysis modules, junk volume audit, structural balance, joint health, or write your own prompt. Paste into any AI.
-              </p>
-              <p className="text-slate-500 text-sm">
-                8 analysis modules &middot; Custom prompts &middot; Timeframe selection &middot; Runs in your browser
-              </p>
-            </div>
-          </div>
-
-          {/* Hypertrophy scatter, image: hypertrophy.avif */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-24">
-            <div className="lg:order-1 rounded-2xl overflow-hidden aspect-[1/1]">
-              <img src={assetPath('/images/misc/hypertrophy.avif')} alt="LiftShift hypertrophy scatter plot showing volume vs progressive overload by muscle" loading="lazy" className="w-full h-full object-contain" />
-            </div>
-            <div className="lg:order-2">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center mb-4">
-                <Activity className="w-5 h-5 text-emerald-400" />
-              </div>
-              <h3 className={`text-2xl font-bold ${isLight ? 'text-slate-900' : 'text-slate-200'} mb-3`}>Volume vs progressive overload</h3>
-              <p className={`${isLight ? 'text-slate-600' : 'text-slate-400'} leading-relaxed mb-3`}>
-                Are you doing enough volume, or just going through the motions? The hypertrophy scatter plot maps every muscle across four quadrants, efficiency zone, optimal growth, neglected, and volume focus, so you see exactly which muscles need more stimulus and which need progressive overload.
-              </p>
-              <p className="text-slate-500 text-sm">
-                Per-muscle scatter plot &middot; 4-zone quadrant analysis &middot; Actionable recommendations
-              </p>
-            </div>
-          </div>
-
-          {/* Calendar filtering, image: calender.avif */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="lg:order-2 rounded-2xl overflow-hidden aspect-[1/1]">
-              <img src={assetPath('/images/misc/calender.avif')} alt="LiftShift calendar filtering with date range selection and filtered dashboard" loading="lazy" className="w-full h-full object-contain" />
-            </div>
-            <div className="lg:order-1">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center mb-4">
-                <CalendarDays className="w-5 h-5 text-blue-400" />
-              </div>
-              <h3 className={`text-2xl font-bold ${isLight ? 'text-slate-900' : 'text-slate-200'} mb-3`}>Calendar filtering that rebuilds everything</h3>
-              <p className={`${isLight ? 'text-slate-600' : 'text-slate-400'} leading-relaxed mb-3`}>
-                Pick any date range, last month, all of 2025, a single week. Every chart, metric, and insight recalculates for just that window. Compare training blocks in seconds.
-              </p>
-              <p className="text-slate-500 text-sm">
-                Day / week / month / year selection &middot; Multi-range picker &middot; Instant recalculation
-              </p>
-            </div>
+      ) : view === 'features' ? (
+        <div className="relative z-10 px-4 sm:px-6 lg:px-8 py-8">
+          <div className="max-w-6xl mx-auto">
+            <FeaturesDoc />
           </div>
         </div>
-      </section>
+      ) : (
+        <>
+          {/* ========== HERO SECTION ========== */}
+          <section className="relative z-10 min-h-screen flex flex-col pt-2 pb-32">
+            <div className="max-w-6xl mx-auto w-full">
+              {/* Hero Content */}
+              <div className="text-center max-w-5xl mx-auto">
 
-      {/* ========== REVIEWS SECTION ========== */}
-      <section id="reviews" className="relative z-10 px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-        <div className="max-w-6xl mx-auto">
-          <ReviewsCarousel />
-        </div>
-      </section>
+                {/* Main Headline */}
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight mb-8 mt-10 mr-1 ml-1 leading-[1.15]">
+                  <span className={`block ${isLight ? 'text-slate-600' : 'text-slate-400'} text-2xl sm:text-2xl lg:text-3xl xl:text-4xl mb-4`} style={FANCY_FONT}>
+                    Your workout app logs,
+                  </span>
+                  <span className="block bg-gradient-to-r from-emerald-300 via-emerald-400 to-green-400 bg-clip-text text-transparent pb-2" style={FANCY_FONT}>
+                    LiftShift answers.
+                  </span>
+                  <span className={`block ${isLight ? 'text-slate-600' : 'text-slate-400'} text-2xl sm:text-2xl lg:text-3xl xl:text-4xl mt-2`} style={FANCY_FONT}>
+                    Free & open-source.
+                  </span>
+                </h1>
 
-      {/* ========== PLATFORM DOCK ========== */}
-      <PlatformDock items={platformDockItems} />
+                {/* Subheadline */}
+                <p className={`${isLight ? 'text-slate-600' : 'text-slate-400'} text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed`}>
+                  Connect Hevy, Strong, or Lyfta in seconds. Track training volume, personal records, and exercise progress with interactive muscle heatmaps. Get plateau detection, set-by-set feedback, and AI-ready analysis. All processed on your device, nothing stored on our servers.
+                </p>
+
+                {/* Demo CTA Button */}
+                {onTryDemo && (
+                  <div className="mb-8">
+                    <button
+                      onClick={onTryDemo}
+                      className={`group cursor-pointer inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-semibold h-11 px-8 border transition-all duration-200 ${isLight ? 'border-slate-400/40 text-slate-600 hover:border-emerald-600 hover:text-emerald-600' : 'border-slate-600/40 text-slate-400 hover:border-emerald-400 hover:text-emerald-300'}`}
+                    >
+                      <span>Try it with sample data</span>
+                    </button>
+                    
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+
+          {/* ========== WHY LIFTSHIFT SECTION ========== */}
+          <section id="why-liftshift" className="relative z-10 px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-16">
+                <h2 className={`text-3xl sm:text-4xl font-bold tracking-tight mb-4 ${isLight ? 'text-slate-900' : 'text-slate-200'}`} style={FANCY_FONT}>
+                  What your workout app doesn&apos;t tell you
+                </h2>
+                <p className={`max-w-2xl mx-auto text-lg ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                  Hevy, Strong, and Lyfta are great at logging. But their built-in charts leave you guessing. LiftShift gives you the answers you actually want.
+                </p>
+              </div>
+
+              {/* Muscle heatmaps, image: 1.avif */}
+              <div className="grid lg:grid-cols-2 gap-12 items-center mb-24">
+                <div className="lg:order-2 rounded-2xl overflow-hidden aspect-[1/1]">
+                  <img src={assetPath('/images/misc/weeklyset.avif')} alt="LiftShift interactive muscle heatmap with exercise drill-down" loading="lazy" className="w-full h-full object-contain" />
+                </div>
+                <div className="lg:order-1">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center mb-4">
+                    <Flame className="w-5 h-5 text-orange-400" />
+                  </div>
+                  <h3 className={`text-2xl font-bold ${isLight ? 'text-slate-900' : 'text-slate-200'} mb-3`}>Interactive muscle heatmaps</h3>
+                  <p className={`${isLight ? 'text-slate-600' : 'text-slate-400'} leading-relaxed mb-3`}>
+                    Click any muscle to see exactly which exercises built it, with primary and secondary sets weighted separately. Rolling 7-day windows match your body&apos;s real recovery patterns.
+                  </p>
+                  <p className="text-slate-500 text-sm">
+                    Hypertrophy score &middot; Volume zones &middot; Radar chart &middot; Per-muscle drill-down
+                  </p>
+                </div>
+              </div>
+
+              {/* Plateau detection, image: 2.avif */}
+              <div className="grid lg:grid-cols-2 gap-12 items-center mb-24">
+                <div className="lg:order-1 rounded-2xl overflow-hidden aspect-[4/3]">
+                  <img src={assetPath('/images/misc/plateau.avif')} alt="LiftShift exercise status: Getting stronger, Plateauing, Taking a dip" loading="lazy" className="w-full h-full object-contain" />
+                </div>
+                <div className="lg:order-2">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center mb-4">
+                    <Trophy className="w-5 h-5 text-yellow-400" />
+                  </div>
+                  <h3 className={`text-2xl font-bold ${isLight ? 'text-slate-900' : 'text-slate-200'} mb-3`}>Plateau detection that actually helps</h3>
+                  <p className={`${isLight ? 'text-slate-600' : 'text-slate-400'} leading-relaxed mb-3`}>
+                    Every exercise gets a clear status, Getting stronger, Plateauing, or Taking a dip, with confidence levels. When you&apos;re stuck, LiftShift suggests exactly what to change: add 1 rep, bump 2.5 kg, or deload.
+                  </p>
+                  <p className="text-slate-500 text-sm">
+                    Static vs general plateaus &middot; Per-exercise trend analysis &middot; Evidence badges
+                  </p>
+                </div>
+              </div>
+
+              {/* Set-by-set, image: 5.avif */}
+              <div className="grid lg:grid-cols-2 gap-12 items-center mb-24">
+                <div className="lg:order-2 rounded-2xl overflow-hidden aspect-[4/3]">
+                  <img src={assetPath('/images/misc/setbyset.avif')} alt="LiftShift set-by-set coaching feedback on each set" loading="lazy" className="w-full h-full object-contain" />
+                </div>
+                <div className="lg:order-1">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center mb-4">
+                    <BarChart3 className="w-5 h-5 text-emerald-400" />
+                  </div>
+                  <h3 className={`text-2xl font-bold ${isLight ? 'text-slate-900' : 'text-slate-200'} mb-3`}>Set-by-set coaching feedback</h3>
+                  <p className={`${isLight ? 'text-slate-600' : 'text-slate-400'} leading-relaxed mb-3`}>
+                    Open any past workout. LiftShift analyzes every set across 19 scenarios, normal fatigue, premature weight jumps, effective back-off sets, with plain-English badges and improvement suggestions.
+                  </p>
+                  <p className="text-slate-500 text-sm">
+                    19 feedback scenarios &middot; Weight-up/down suggestions &middot; Drop set &amp; AMRAP detection
+                  </p>
+                </div>
+              </div>
+
+              {/* AI export, image: AI.avif */}
+              <div className="grid lg:grid-cols-2 gap-12 items-center mb-24">
+                <div className="lg:order-2 rounded-2xl overflow-hidden aspect-[1/1]">
+                  <img src={assetPath('/images/misc/AI.avif')} alt="LiftShift AI analysis prompt generator" loading="lazy" className="w-full h-full object-contain" />
+                </div>
+                <div className="lg:order-1">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center mb-4">
+                    <svg className="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3V6a4 4 0 0 0-4-4z"/><path d="M12 11v4"/><path d="M8 11v4"/><path d="M16 11v4"/></svg>
+                  </div>
+                  <h3 className={`text-2xl font-bold ${isLight ? 'text-slate-900' : 'text-slate-200'} mb-3`}>AI-ready analysis export</h3>
+                  <p className={`${isLight ? 'text-slate-600' : 'text-slate-400'} leading-relaxed mb-3`}>
+                    Export your structured training data in one click. Choose from 8 built-in analysis modules, junk volume audit, structural balance, joint health, or write your own prompt. Paste into any AI.
+                  </p>
+                  <p className="text-slate-500 text-sm">
+                    8 analysis modules &middot; Custom prompts &middot; Timeframe selection &middot; Runs in your browser
+                  </p>
+                </div>
+              </div>
+
+              {/* Hypertrophy scatter, image: hypertrophy.avif */}
+              <div className="grid lg:grid-cols-2 gap-12 items-center mb-24">
+                <div className="lg:order-1 rounded-2xl overflow-hidden aspect-[1/1]">
+                  <img src={assetPath('/images/misc/hypertrophy.avif')} alt="LiftShift hypertrophy scatter plot showing volume vs progressive overload by muscle" loading="lazy" className="w-full h-full object-contain" />
+                </div>
+                <div className="lg:order-2">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center mb-4">
+                    <Activity className="w-5 h-5 text-emerald-400" />
+                  </div>
+                  <h3 className={`text-2xl font-bold ${isLight ? 'text-slate-900' : 'text-slate-200'} mb-3`}>Volume vs progressive overload</h3>
+                  <p className={`${isLight ? 'text-slate-600' : 'text-slate-400'} leading-relaxed mb-3`}>
+                    Are you doing enough volume, or just going through the motions? The hypertrophy scatter plot maps every muscle across four quadrants, efficiency zone, optimal growth, neglected, and volume focus, so you see exactly which muscles need more stimulus and which need progressive overload.
+                  </p>
+                  <p className="text-slate-500 text-sm">
+                    Per-muscle scatter plot &middot; 4-zone quadrant analysis &middot; Actionable recommendations
+                  </p>
+                </div>
+              </div>
+
+              {/* Calendar filtering, image: calender.avif */}
+              <div className="grid lg:grid-cols-2 gap-12 items-center">
+                <div className="lg:order-2 rounded-2xl overflow-hidden aspect-[1/1]">
+                  <img src={assetPath('/images/misc/calender.avif')} alt="LiftShift calendar filtering with date range selection and filtered dashboard" loading="lazy" className="w-full h-full object-contain" />
+                </div>
+                <div className="lg:order-1">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center mb-4">
+                    <CalendarDays className="w-5 h-5 text-blue-400" />
+                  </div>
+                  <h3 className={`text-2xl font-bold ${isLight ? 'text-slate-900' : 'text-slate-200'} mb-3`}>Calendar filtering that rebuilds everything</h3>
+                  <p className={`${isLight ? 'text-slate-600' : 'text-slate-400'} leading-relaxed mb-3`}>
+                    Pick any date range, last month, all of 2025, a single week. Every chart, metric, and insight recalculates for just that window. Compare training blocks in seconds.
+                  </p>
+                  <p className="text-slate-500 text-sm">
+                    Day / week / month / year selection &middot; Multi-range picker &middot; Instant recalculation
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ========== REVIEWS SECTION ========== */}
+          <section id="reviews" className="relative z-10 px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+            <div className="max-w-6xl mx-auto">
+              <ReviewsCarousel />
+            </div>
+          </section>
+
+          {/* ========== PLATFORM DOCK ========== */}
+          <PlatformDock items={platformDockItems} />
+        </>
+      )}
 
       {/* ========== FOOTER ========== */}
       <footer className={`relative z-10 border-t mt-16 px-4 sm:px-6 lg:px-8 py-10 ${isLight ? 'border-black/10' : 'border-white/10'}`}>

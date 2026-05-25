@@ -14,45 +14,85 @@ type NavigationProps = {
   activeNav?: 'how-it-works' | 'features' | null;
   variant?: 'landing' | 'info';
   className?: string;
+  onNavClick?: (nav: 'how-it-works' | 'features') => void;
+  onLogoClick?: () => void;
 };
 
 export const Navigation: React.FC<NavigationProps> = ({
   activeNav = null,
   variant = 'landing',
-  className = ''
+  className = '',
+  onNavClick,
+  onLogoClick,
 }) => {
   const { mode } = useTheme();
   const isLight = mode === 'light';
   return (
     <header className={`h-20 sm:h-24 flex items-center justify-between ${className}`}>
       {/* Logo on the left */}
-      <a href={assetPath('/')} className={`flex items-center gap-2 sm:gap-3 rounded-xl px-1.5 sm:px-2 py-1 transition-colors ${isLight ? 'hover:bg-black/5' : 'hover:bg-white/5'}`}>
-        <img src={assetPath('/UI/logo.png')} alt="LiftShift Logo" className="w-6 h-6 sm:w-8 sm:h-8" />
-        <span className={`font-semibold text-sm sm:text-xl ${isLight ? 'text-slate-900' : 'text-white'}`} style={SEMI_FANCY_FONT}>LiftShift</span>
-      </a>
+      {onLogoClick ? (
+        <button
+          onClick={onLogoClick}
+          className={`flex items-center gap-2 sm:gap-3 rounded-xl px-1.5 sm:px-2 py-1 transition-colors cursor-pointer ${isLight ? 'hover:bg-black/5' : 'hover:bg-white/5'}`}
+        >
+          <img src={assetPath('/UI/logo.png')} alt="LiftShift Logo" className="w-6 h-6 sm:w-8 sm:h-8" />
+          <span className={`font-semibold text-sm sm:text-xl ${isLight ? 'text-slate-900' : 'text-white'}`} style={SEMI_FANCY_FONT}>LiftShift</span>
+        </button>
+      ) : (
+        <a href={assetPath('/')} className={`flex items-center gap-2 sm:gap-3 rounded-xl px-1.5 sm:px-2 py-1 transition-colors ${isLight ? 'hover:bg-black/5' : 'hover:bg-white/5'}`}>
+          <img src={assetPath('/UI/logo.png')} alt="LiftShift Logo" className="w-6 h-6 sm:w-8 sm:h-8" />
+          <span className={`font-semibold text-sm sm:text-xl ${isLight ? 'text-slate-900' : 'text-white'}`} style={SEMI_FANCY_FONT}>LiftShift</span>
+        </a>
+      )}
 
       {/* Navigation links on the right - Desktop */}
       <div className="hidden sm:flex items-center gap-5">
-        <a
-          href={assetPath('how-it-works/')}
-          className={`inline-flex items-center gap-1.5 transition-colors duration-200 text-sm font-medium ${variant === 'info' && activeNav === 'how-it-works'
-              ? 'text-emerald-300'
-              : `${isLight ? 'text-slate-600 hover:text-emerald-600' : 'text-slate-300 hover:text-emerald-300'}`
-            }`}
-        >
-          <Info className="w-3.5 h-3.5" />
-          <span>How it works</span>
-        </a>
-        <a
-          href={assetPath('features/')}
-          className={`inline-flex items-center gap-1.5 transition-colors duration-200 text-sm font-medium ${variant === 'info' && activeNav === 'features'
-              ? 'text-emerald-300'
-              : `${isLight ? 'text-slate-600 hover:text-emerald-600' : 'text-slate-300 hover:text-emerald-300'}`
-            }`}
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Features</span>
-        </a>
+        {onNavClick ? (
+          <button
+            onClick={() => onNavClick('how-it-works')}
+            className={`inline-flex items-center gap-1.5 transition-colors duration-200 text-sm font-medium cursor-pointer ${activeNav === 'how-it-works'
+                ? 'text-emerald-300'
+                : `${isLight ? 'text-slate-600 hover:text-emerald-600' : 'text-slate-300 hover:text-emerald-300'}`
+              }`}
+          >
+            <Info className="w-3.5 h-3.5" />
+            <span>How it works</span>
+          </button>
+        ) : (
+          <a
+            href={assetPath('how-it-works/')}
+            className={`inline-flex items-center gap-1.5 transition-colors duration-200 text-sm font-medium ${variant === 'info' && activeNav === 'how-it-works'
+                ? 'text-emerald-300'
+                : `${isLight ? 'text-slate-600 hover:text-emerald-600' : 'text-slate-300 hover:text-emerald-300'}`
+              }`}
+          >
+            <Info className="w-3.5 h-3.5" />
+            <span>How it works</span>
+          </a>
+        )}
+        {onNavClick ? (
+          <button
+            onClick={() => onNavClick('features')}
+            className={`inline-flex items-center gap-1.5 transition-colors duration-200 text-sm font-medium cursor-pointer ${activeNav === 'features'
+                ? 'text-emerald-300'
+                : `${isLight ? 'text-slate-600 hover:text-emerald-600' : 'text-slate-300 hover:text-emerald-300'}`
+              }`}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Features</span>
+          </button>
+        ) : (
+          <a
+            href={assetPath('features/')}
+            className={`inline-flex items-center gap-1.5 transition-colors duration-200 text-sm font-medium ${variant === 'info' && activeNav === 'features'
+                ? 'text-emerald-300'
+                : `${isLight ? 'text-slate-600 hover:text-emerald-600' : 'text-slate-300 hover:text-emerald-300'}`
+              }`}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Features</span>
+          </a>
+        )}
         <a
           href="https://github.com/aree6/LiftShift"
           target="_blank"
@@ -66,26 +106,52 @@ export const Navigation: React.FC<NavigationProps> = ({
 
       {/* Mobile Navigation - all buttons on the right */}
       <div className="sm:hidden flex items-center gap-2">
-        <a
-          href={assetPath('how-it-works/')}
-          className={`inline-flex items-center gap-1 text-xs px-1.5 py-1 transition-colors ${variant === 'info' && activeNav === 'how-it-works'
-            ? 'text-emerald-200'
-            : `${isLight ? 'text-slate-600 hover:text-emerald-600' : 'text-slate-300 hover:text-emerald-200'}`
-            }`}
-        >
-          <Info className="w-2.5 h-2.5" />
-          <span>How it works</span>
-        </a>
-        <a
-          href={assetPath('features/')}
-          className={`inline-flex items-center gap-1 text-xs px-1.5 py-1 transition-colors ${variant === 'info' && activeNav === 'features'
-            ? 'text-emerald-200'
-            : `${isLight ? 'text-slate-600 hover:text-emerald-600' : 'text-slate-300 hover:text-emerald-200'}`
-            }`}
-        >
-          <Sparkles className="w-2.5 h-2.5" />
-          <span>Features</span>
-        </a>
+        {onNavClick ? (
+          <button
+            onClick={() => onNavClick('how-it-works')}
+            className={`inline-flex items-center gap-1 text-xs px-1.5 py-1 transition-colors cursor-pointer ${activeNav === 'how-it-works'
+              ? 'text-emerald-200'
+              : `${isLight ? 'text-slate-600 hover:text-emerald-600' : 'text-slate-300 hover:text-emerald-200'}`
+              }`}
+          >
+            <Info className="w-2.5 h-2.5" />
+            <span>How it works</span>
+          </button>
+        ) : (
+          <a
+            href={assetPath('how-it-works/')}
+            className={`inline-flex items-center gap-1 text-xs px-1.5 py-1 transition-colors ${variant === 'info' && activeNav === 'how-it-works'
+              ? 'text-emerald-200'
+              : `${isLight ? 'text-slate-600 hover:text-emerald-600' : 'text-slate-300 hover:text-emerald-200'}`
+              }`}
+          >
+            <Info className="w-2.5 h-2.5" />
+            <span>How it works</span>
+          </a>
+        )}
+        {onNavClick ? (
+          <button
+            onClick={() => onNavClick('features')}
+            className={`inline-flex items-center gap-1 text-xs px-1.5 py-1 transition-colors cursor-pointer ${activeNav === 'features'
+              ? 'text-emerald-200'
+              : `${isLight ? 'text-slate-600 hover:text-emerald-600' : 'text-slate-300 hover:text-emerald-200'}`
+              }`}
+          >
+            <Sparkles className="w-2.5 h-2.5" />
+            <span>Features</span>
+          </button>
+        ) : (
+          <a
+            href={assetPath('features/')}
+            className={`inline-flex items-center gap-1 text-xs px-1.5 py-1 transition-colors ${variant === 'info' && activeNav === 'features'
+              ? 'text-emerald-200'
+              : `${isLight ? 'text-slate-600 hover:text-emerald-600' : 'text-slate-300 hover:text-emerald-200'}`
+              }`}
+          >
+            <Sparkles className="w-2.5 h-2.5" />
+            <span>Features</span>
+          </a>
+        )}
         <a href="https://github.com/aree6/LiftShift" target="_blank" rel="noopener noreferrer" className={`inline-flex items-center gap-1 text-xs px-1.5 py-1 transition-colors ${isLight ? 'text-slate-600 hover:text-emerald-600' : 'text-slate-300 hover:text-emerald-200'}`}>
           <GithubIcon className="w-2.5 h-2.5" />
           <span>GitHub</span>
