@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trash2, Upload } from 'lucide-react';
+import { GitMerge, Trash2, Upload } from 'lucide-react';
 
 import { UNIFORM_HEADER_BUTTON_CLASS } from '../../../utils/ui/uiConstants';
 
@@ -54,9 +54,10 @@ export const CSVImportFooter: React.FC<CSVImportFooterProps> = ({
             type="button"
             onClick={onAddDataSource}
             disabled={isLoading}
-            className={`${UNIFORM_HEADER_BUTTON_CLASS} h-10 text-sm font-semibold disabled:opacity-60`}
+            className={`${UNIFORM_HEADER_BUTTON_CLASS} h-10 text-sm font-semibold disabled:opacity-60 gap-2`}
           >
-            <span>Combine sources</span>
+            <GitMerge className="w-4 h-4" />
+            <span>Combine Sources</span>
           </button>
         ) : null}
       </div>
@@ -81,9 +82,10 @@ export const CSVImportFooter: React.FC<CSVImportFooterProps> = ({
           type="button"
           onClick={onAddDataSource}
           disabled={isLoading}
-          className={`${UNIFORM_HEADER_BUTTON_CLASS} h-10 text-sm font-semibold disabled:opacity-60`}
+          className={`${UNIFORM_HEADER_BUTTON_CLASS} h-10 text-sm font-semibold disabled:opacity-60 gap-2`}
         >
-          <span>Combine sources</span>
+          <GitMerge className="w-4 h-4" />
+          <span>Combine Sources</span>
         </button>
       ) : null}
     </div>
