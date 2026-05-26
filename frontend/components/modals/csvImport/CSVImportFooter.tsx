@@ -25,7 +25,7 @@ export const CSVImportFooter: React.FC<CSVImportFooterProps> = ({
   if (variant === 'csv') {
     return (
       <div className="flex flex-wrap items-center justify-center gap-3">
-        {platform !== 'other' ? (
+        {platform !== 'other' && platform !== 'motra' ? (
           <button
             type="button"
             onClick={onToggleExportHelp}

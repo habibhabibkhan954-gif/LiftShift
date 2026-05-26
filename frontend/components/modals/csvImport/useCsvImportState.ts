@@ -4,6 +4,7 @@ import type { BodyMapGender } from '../../bodyMap/BodyMap';
 import type { WeightUnit } from '../../../utils/storage/localStorage';
 
 interface UseCsvImportStateArgs {
+  platform: 'hevy' | 'strong' | 'lyfta' | 'other' | 'motra';
   initialGender?: BodyMapGender;
   initialUnit?: WeightUnit;
   onFileSelect?: (file: File, gender: BodyMapGender, unit: WeightUnit) => void;
@@ -25,6 +26,7 @@ const ensureSelections = (selectedGender: BodyMapGender | null, selectedUnit: We
 };
 
 export const useCsvImportState = ({
+  platform,
   initialGender,
   initialUnit,
   onFileSelect,
@@ -63,13 +65,24 @@ export const useCsvImportState = ({
         'application/vnd.ms-excel.sheet.macroenabled.12',
       ]);
       const normalizedFileName = file?.name.toLowerCase() || '';
-      if (file && (file.type === 'text/csv' || normalizedFileName.endsWith('.csv') || normalizedFileName.endsWith('.xlsx') || xlsxMimeTypes.has(file.type))) {
-        onFileSelect?.(file, selectedGender!, selectedUnit!);
+      const isXlsx = normalizedFileName.endsWith('.xlsx') || xlsxMimeTypes.has(file?.type || '');
+      const isCsv = file?.type === 'text/csv' || normalizedFileName.endsWith('.csv');
+
+      if (platform === 'motra') {
+        if (isXlsx) {
+          onFileSelect?.(file!, selectedGender!, selectedUnit!);
+        } else {
+          alert('Please choose a valid .xlsx file (Motra exports Excel files)');
+        }
       } else {
-        alert('Please choose a valid .csv or .xlsx file');
+        if (file && (isCsv || isXlsx)) {
+          onFileSelect?.(file, selectedGender!, selectedUnit!);
+        } else {
+          alert('Please choose a valid .csv or .xlsx file');
+        }
       }
     },
-    [onFileSelect, selectedGender, selectedUnit]
+    [onFileSelect, selectedGender, selectedUnit, platform]
   );
 
   const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -90,13 +103,24 @@ export const useCsvImportState = ({
         'application/vnd.ms-excel.sheet.macroenabled.12',
       ]);
       const normalizedFileName = file?.name.toLowerCase() || '';
-      if (file && (file.type === 'text/csv' || normalizedFileName.endsWith('.csv') || normalizedFileName.endsWith('.xlsx') || xlsxMimeTypes.has(file.type))) {
-        onFileSelect?.(file, selectedGender!, selectedUnit!);
+      const isXlsx = normalizedFileName.endsWith('.xlsx') || xlsxMimeTypes.has(file?.type || '');
+      const isCsv = file?.type === 'text/csv' || normalizedFileName.endsWith('.csv');
+
+      if (platform === 'motra') {
+        if (isXlsx) {
+          onFileSelect?.(file!, selectedGender!, selectedUnit!);
+        } else {
+          alert('Please drop a valid .xlsx file (Motra exports Excel files)');
+        }
       } else {
-        alert('Drop a valid .csv or .xlsx file');
+        if (file && (isCsv || isXlsx)) {
+          onFileSelect?.(file, selectedGender!, selectedUnit!);
+        } else {
+          alert('Drop a valid .csv or .xlsx file');
+        }
       }
     },
-    [onFileSelect, selectedGender, selectedUnit]
+    [onFileSelect, selectedGender, selectedUnit, platform]
   );
 
   const handleContinue = useCallback(() => {

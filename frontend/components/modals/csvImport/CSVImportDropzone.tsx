@@ -33,7 +33,9 @@ export const CSVImportDropzone: React.FC<CSVImportDropzoneProps> = ({
   const dropLabel = canUploadCsv
     ? platform === 'other'
       ? 'Drop your CSV or Excel file here'
-      : `Drop your ${platformLabel(platform)} CSV or Excel file here`
+      : platform === 'motra'
+        ? 'Drop your Motra Excel file here'
+        : `Drop your ${platformLabel(platform)} CSV or Excel file here`
     : hideBodyTypeAndUnit
       ? 'Go back to choose body type + unit first'
       : 'Choose body type + unit first';
@@ -70,7 +72,7 @@ export const CSVImportDropzone: React.FC<CSVImportDropzoneProps> = ({
       <input
         ref={fileInputRef}
         type="file"
-        accept=".csv,.xlsx"
+        accept={platform === 'motra' ? '.xlsx' : '.csv,.xlsx'}
         onChange={onFileChange}
         className="hidden"
         disabled={isLoading || !canUploadCsv}
