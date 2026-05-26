@@ -78,7 +78,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectPlatform, onTr
       name: 'Motra',
       image: assetPath('/images/brands/motra.webp'),
       onClick: () => onSelectPlatform('motra'),
-      badge: 'CSV'
+      badge: 'CSV',
+      className: 'hidden sm:inline-flex',
     },
     {
       name: 'Other',
