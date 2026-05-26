@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, Eye, EyeOff, HelpCircle, Key, LogIn, MinusCircle, RefreshCw, Upload } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Eye, EyeOff, GitMerge, HelpCircle, Key, LogIn, MinusCircle, RefreshCw, Upload } from 'lucide-react';
 import { UNIFORM_HEADER_BUTTON_CLASS, UNIFORM_HEADER_ICON_BUTTON_CLASS } from '../../../utils/ui/uiConstants';
 import { OnboardingModalShell } from '../ui/OnboardingModalShell';
 import { HevyLoginHelp } from './HevyLoginHelp';
@@ -364,9 +364,10 @@ export const HevyLoginModal: React.FC<HevyLoginModalProps> = ({
                       onClick={onAddDataSource}
                       disabled={isLoading}
                       className={`${UNIFORM_HEADER_BUTTON_CLASS} h-10 px-2.5 w-full text-[12px] font-semibold disabled:opacity-60 gap-2 justify-center`}
-                      title="Combine sources"
+                      title="Combine Sources"
                     >
-                      <span>Combine sources</span>
+                      <GitMerge className="w-4 h-4" />
+                      <span>Combine Sources</span>
                     </button>
                   ) : (
                     <div />

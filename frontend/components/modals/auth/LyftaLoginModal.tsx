@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowLeft, ArrowRight, HelpCircle, Key, MinusCircle, RefreshCw, Upload } from 'lucide-react';
+import { ArrowLeft, ArrowRight, GitMerge, HelpCircle, Key, MinusCircle, RefreshCw, Upload } from 'lucide-react';
 import { UNIFORM_HEADER_BUTTON_CLASS, UNIFORM_HEADER_ICON_BUTTON_CLASS } from '../../../utils/ui/uiConstants';
 import { OnboardingModalShell } from '../ui/OnboardingModalShell';
 import { getLyftaApiKey } from '../../../utils/storage/hevyCredentialsStorage';
@@ -155,9 +155,10 @@ export const LyftaLoginModal: React.FC<LyftaLoginModalProps> = ({
                 onClick={onAddDataSource}
                 disabled={isLoading}
                 className={`${UNIFORM_HEADER_BUTTON_CLASS} h-10 px-2.5 w-full text-[12px] font-semibold disabled:opacity-60 gap-2 justify-center`}
-                title="Combine sources"
+                title="Combine Sources"
               >
-                <span>Combine sources</span>
+                <GitMerge className="w-4 h-4" />
+                <span>Combine Sources</span>
               </button>
             ) : (
               <div />
