@@ -3,7 +3,7 @@ import type { BodyMapGender } from '../bodyMap/BodyMap';
 import type { WeightUnit } from '../../utils/storage/localStorage';
 import type { OnboardingFlow } from '../../app/onboarding/types';
 import { LandingPage } from '../landing/ui/LandingPage';
-import { getPreferencesConfirmed } from '../../utils/storage/localStorage';
+import { getPreferencesConfirmed, clearCSVData } from '../../utils/storage/localStorage';
 import { OnboardingPreferencesStep } from './OnboardingPreferencesStep';
 import { OnboardingDemoStep } from './OnboardingDemoStep';
 import { HevyLoginStep, LyftaLoginStep } from './OnboardingLoginSteps';
@@ -103,7 +103,10 @@ export const AppOnboardingSteps: React.FC<AppOnboardingStepsProps> = ({
   onLyfatLogin,
   onLyfatSyncSaved,
 }) => {
-  const closeForUpdate = onboarding.intent === 'update' ? () => onSetOnboarding(null) : undefined;
+  const closeForUpdate = onboarding.intent === 'update' ? () => {
+    clearCSVData();
+    onSetOnboarding(null);
+  } : undefined;
 
   const handleSelectPlatform = (source: 'strong' | 'hevy' | 'lyfta' | 'other' | 'motra') => {
     onSetCsvImportError(null);
