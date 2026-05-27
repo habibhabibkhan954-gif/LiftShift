@@ -24,7 +24,7 @@ export const WeightUnitSection: React.FC<WeightUnitSectionProps> = ({ weightUnit
             : 'bg-slate-900/20 border-slate-700/50 text-slate-300 hover:border-slate-600 hover:bg-slate-900/40'
         }`}
       >
-        <span className="text-sm font-bold">kg</span>
+        <span className="text-sm font-bold" translate="no">kg</span>
       </button>
       <button
         type="button"
@@ -35,7 +35,7 @@ export const WeightUnitSection: React.FC<WeightUnitSectionProps> = ({ weightUnit
             : 'bg-slate-900/20 border-slate-700/50 text-slate-300 hover:border-slate-600 hover:bg-slate-900/40'
         }`}
       >
-        <span className="text-sm font-bold">lbs</span>
+        <span className="text-sm font-bold" translate="no">lbs</span>
       </button>
     </div>
   </div>

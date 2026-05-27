@@ -44,6 +44,7 @@ export const HistoryExerciseHeader: React.FC<HistoryExerciseHeaderProps> = ({
           className="text-slate-200 text-sm sm:text-lg line-clamp-1 min-w-0 flex-1"
           style={SEMI_FANCY_FONT}
           title={group.exerciseName}
+          translate="no"
         >
           {group.exerciseName}
         </h4>
@@ -57,7 +58,7 @@ export const HistoryExerciseHeader: React.FC<HistoryExerciseHeaderProps> = ({
             </span>
           )}
           <span className="text-slate-300">
-            PR: <span className="font-semibold">{convertWeight(Math.abs(exerciseBest), weightUnit)}{weightUnit}{isLowerWeightBetter ? ' less assist' : ''}</span>
+            PR: <span className="font-semibold" translate="no">{convertWeight(Math.abs(exerciseBest), weightUnit)}{weightUnit}{isLowerWeightBetter ? ' less assist' : ''}</span>
           </span>
         </div>
       </div>

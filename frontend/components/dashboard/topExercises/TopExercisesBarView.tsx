@@ -144,7 +144,7 @@ export const TopExercisesBarView: React.FC<TopExercisesBarViewProps> = ({
                         />
 
                         <div className="relative z-10 h-full flex items-center pl-4" style={{ paddingRight: `${avatar + 14}px` }}>
-                          <div className="text-white font-semibold text-sm sm:text-base truncate" style={SEMI_FANCY_FONT}>
+                          <div className="text-white font-semibold text-sm sm:text-base truncate" style={SEMI_FANCY_FONT} translate="no">
                             {medalEmoji ? `${medalEmoji} ${exercise.name}` : exercise.name}
                           </div>
                         </div>
@@ -193,7 +193,7 @@ export const TopExercisesBarView: React.FC<TopExercisesBarViewProps> = ({
                         />
 
                         <div className="relative z-10 h-full flex items-center pl-4" style={{ paddingRight: `${avatar + 14}px` }}>
-                          <div className="text-white font-semibold text-sm sm:text-base truncate" style={SEMI_FANCY_FONT}>
+                          <div className="text-white font-semibold text-sm sm:text-base truncate" style={SEMI_FANCY_FONT} translate="no">
                             {medalEmoji ? `${medalEmoji} ${exercise.name}` : exercise.name}
                           </div>
                         </div>

@@ -82,7 +82,7 @@ export const MuscleAnalysisExerciseList: React.FC<MuscleAnalysisExerciseListProp
                 </div>
 
                 <div className="min-w-0 flex flex-col justify-center">
-                  <div className="text-sm font-semibold text-white truncate" style={SEMI_FANCY_FONT}>{ex.name}</div>
+                  <div className="text-sm font-semibold text-white truncate" style={SEMI_FANCY_FONT} translate="no">{ex.name}</div>
 
                   {ex.strengthLabel && (
                     <div className="my-0.5">

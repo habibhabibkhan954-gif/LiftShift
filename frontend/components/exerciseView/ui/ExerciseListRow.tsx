@@ -68,7 +68,7 @@ export const ExerciseListRow: React.FC<ExerciseListRowProps> = ({
           />
         </div>
         <div className="flex flex-col min-w-0 h-12 sm:h-16 justify-between py-1">
-          <span className={`truncate text-xs ${isSelected ? 'text-slate-200 font-semibold' : 'text-slate-300 group-hover:text-white'}`} style={SEMI_FANCY_FONT}>
+          <span className={`truncate text-xs ${isSelected ? 'text-slate-200 font-semibold' : 'text-slate-300 group-hover:text-white'}`} style={SEMI_FANCY_FONT} translate="no">
             {exercise.name}
           </span>
           <span className={`truncate text-[10px] ${isSelected ? 'text-slate-400' : 'text-slate-500 group-hover:text-slate-400'}`}>

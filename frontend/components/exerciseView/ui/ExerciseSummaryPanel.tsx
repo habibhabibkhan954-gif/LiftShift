@@ -34,6 +34,7 @@ export const ExerciseSummaryPanel: React.FC<ExerciseSummaryPanelProps> = ({
         <h2
           className="text-xl sm:text-3xl text-white tracking-tight drop-shadow-lg"
           style={SEMI_FANCY_FONT}
+          translate="no"
         >
           {selectedStats.name}
         </h2>
