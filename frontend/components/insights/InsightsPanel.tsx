@@ -1,89 +1,48 @@
 
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 
-import { AlertTriangle, Calendar, Dumbbell, Trophy } from 'lucide-react';
+import { Dumbbell, Trophy } from 'lucide-react';
+import { WeeklySetsBodyIcon } from '../dashboard/weeklySets/WeeklySetsIcons';
 
-import type { DashboardInsights, PRInsights } from '../../utils/analysis/insights';
+import type { DashboardInsights } from '../../utils/analysis/insights';
 import { KPICard } from './KPICard';
-
-// PR Status Badge
-const PRStatusBadge: React.FC<{ prInsights: PRInsights }> = ({ prInsights }) => {
-  const { daysSinceLastPR, prDrought } = prInsights;
-
-  if (daysSinceLastPR < 0) {
-    return (
-      <span className="text-[10px] text-slate-500">Chase your first PR</span>
-    );
-  }
-
-  if (prDrought) {
-    return (
-      <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-500/10">
-        <AlertTriangle className="w-3 h-3 text-amber-400 flex-shrink-0" />
-        <span className="text-[10px] font-bold text-amber-400 whitespace-nowrap">{daysSinceLastPR}d drought</span>
-      </div>
-    );
-  }
-
-  return (
-    <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-500/10">
-      <Trophy className="w-3 h-3 text-emerald-400 flex-shrink-0" />
-      <span className="text-[10px] font-bold text-emerald-400 whitespace-nowrap">
-        {daysSinceLastPR === 0 ? 'PR today!' : `${daysSinceLastPR}d ago`}
-      </span>
-    </div>
-  );
-};
+import { getDisplayVolume } from '../../utils/format/volumeDisplay';
+import type { WeightUnit } from '../../utils/storage/localStorage';
+import type { WeeklySetsDashboardResult } from '../../utils/muscle/analytics/dashboardWeeklySets';
 
 // Main Insights Panel Component
 interface InsightsPanelProps {
   insights: DashboardInsights;
-  totalWorkouts: number;
-  totalSets: number;
   totalPRs: number;
+  weightUnit: WeightUnit;
+  weeklySetsDashboard: WeeklySetsDashboardResult | null;
 }
 
 export const InsightsPanel: React.FC<InsightsPanelProps> = memo(function InsightsPanel(props) {
   const {
     insights,
-    totalWorkouts,
-    totalSets,
     totalPRs,
+    weightUnit,
+    weeklySetsDashboard,
   } = props;
-  const { rolling7d, streakInfo, prInsights, volumeSparkline, workoutSparkline, prSparkline, setsSparkline, consistencySparkline } = insights;
+  const { rolling7d, weeklyVolumeSparkline, prSparkline, muscleAvgSparkline } = insights;
+
+  const displayVolume = getDisplayVolume(rolling7d.current.totalVolume, weightUnit, { round: 'int' });
+  const volumeUnit = weightUnit === 'kg' ? 'kg' : 'lbs';
+
+  const weeklySetsAvg = useMemo(() => {
+    if (!weeklySetsDashboard) return 0;
+    const volumes = weeklySetsDashboard.heatmap.volumes;
+    let sum = 0;
+    let count = 0;
+    for (const v of volumes.values()) {
+      if (v > 0) { sum += v; count++; }
+    }
+    return count > 0 ? Math.round((sum / count) * 10) / 10 : 0;
+  }, [weeklySetsDashboard]);
 
   return (
     <div className="grid gap-2 grid-cols-2 lg:grid-cols-3">
-      {/* Workouts */}
-      <KPICard
-        title="Lst 7d"
-        value={rolling7d.current.totalWorkouts}
-        subtitle="workouts"
-        icon={Calendar}
-        iconColor="text-blue-400"
-        delta={rolling7d.workouts ?? undefined}
-        deltaContext="vs prev 7d"
-        sparkline={workoutSparkline}
-        sparklineColor="#3b82f6"
-        sparklineTitle="Workout frequency over last 8 weeks"
-      />
-
-      {/* Sets This Week - hidden on mobile */}
-      <div className="hidden lg:block">
-        <KPICard
-          title="Sets"
-          value={rolling7d.current.totalSets}
-          subtitle="lst 7d"
-          icon={Dumbbell}
-          iconColor="text-purple-400"
-          delta={rolling7d.sets ?? undefined}
-          deltaContext="vs prev 7d"
-          sparkline={setsSparkline}
-          sparklineColor="#a855f7"
-          sparklineTitle="Training volume over last 8 weeks"
-        />
-      </div>
-
       {/* PRs */}
       <KPICard
         title="PRs"
@@ -91,10 +50,41 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = memo(function Insight
         subtitle="total"
         icon={Trophy}
         iconColor="text-yellow-400"
+        delta={rolling7d.prs ?? undefined}
+        deltaContext="vs prev 7d"
         sparkline={prSparkline}
         sparklineColor="#eab308"
-        sparklineTitle="Personal records over last 8 weeks"
-        badge={<PRStatusBadge prInsights={prInsights} />}
+        sparklineTitle="Personal records over last 4 weeks"
+      />
+
+      {/* Volume - desktop only */}
+      <div className="hidden lg:block">
+        <KPICard
+          title="Volume"
+          value={displayVolume}
+          subtitle={`${volumeUnit} lst 7d`}
+          icon={Dumbbell}
+          iconColor="text-purple-400"
+          delta={rolling7d.volume ?? undefined}
+          deltaContext="vs prev 7d"
+          sparkline={weeklyVolumeSparkline}
+          sparklineColor="#a855f7"
+          sparklineTitle="Weekly volume over last 4 weeks"
+        />
+      </div>
+
+      {/* Weekly Sets */}
+      <KPICard
+        title="Weekly Sets"
+        value={weeklySetsAvg}
+        subtitle="sets / muscle"
+        icon={WeeklySetsBodyIcon}
+        iconColor="text-cyan-400"
+        delta={rolling7d.sets ?? undefined}
+        deltaContext="vs prev 7d"
+        sparkline={muscleAvgSparkline}
+        sparklineColor="#22c55e"
+        sparklineTitle="Average sets per exercise over last 4 weeks"
       />
     </div>
   );
