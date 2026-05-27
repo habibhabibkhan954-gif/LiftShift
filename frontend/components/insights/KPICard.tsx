@@ -12,15 +12,15 @@ function trendColor(
 ): string {
   let direction: 'up' | 'down' | 'same' = 'same';
 
-  if (delta) {
-    const d = delta.direction;
-    direction = (d === 'up' || d === 'down' || d === 'same') ? d : 'same';
-  } else if (sparkline && sparkline.length >= 2) {
+  if (sparkline && sparkline.length >= 2) {
     const first = sparkline[0].value;
     const last = sparkline[sparkline.length - 1].value;
     const threshold = Math.max(Math.abs(first), Math.abs(last), 1) * 0.05;
     if (last > first + threshold) direction = 'up';
     else if (last < first - threshold) direction = 'down';
+  } else if (delta) {
+    const d = delta.direction;
+    direction = (d === 'up' || d === 'down' || d === 'same') ? d : 'same';
   }
 
   if (direction === 'up') return '#22c55e';
@@ -170,7 +170,7 @@ export const KPICard: React.FC<KPICardProps> = ({
         </div>
         {(delta || badge) && (
           <div className="flex flex-wrap items-center gap-1.5 flex-shrink-0">
-            {delta && <DeltaBadge delta={delta} context={deltaContext} />}
+            {delta && <span className="hidden sm:contents"><DeltaBadge delta={delta} context={deltaContext} /></span>}
             {badge}
           </div>
         )}
