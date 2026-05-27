@@ -1,0 +1,53 @@
+[data-ls-translated] {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.recharts-text[data-ls-translated],
+[data-ls-translated].recharts-text {
+  overflow: visible;
+}
+
+.recharts-surface {
+  overflow: visible !important;
+}
+
+.recharts-wrapper .recharts-cartesian-axis-tick-value[data-ls-translated] {
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+[data-ls-translated] .recharts-legend-item-text,
+.recharts-legend-item-text[data-ls-translated] {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+[data-ls-translated].truncate,
+.truncate[data-ls-translated] {
+  text-overflow: ellipsis;
+}
+
+[data-ls-translated] h1,
+[data-ls-translated] h2,
+[data-ls-translated] h3,
+[data-ls-translated] h4,
+h1[data-ls-translated],
+h2[data-ls-translated],
+h3[data-ls-translated],
+h4[data-ls-translated] {
+  min-height: 1.2em;
+}
+
+[data-ls-translated] button,
+button[data-ls-translated] {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[translate="no"] {
+  /* ensure no-translate elements are never affected */
+}
