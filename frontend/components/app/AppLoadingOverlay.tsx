@@ -30,6 +30,7 @@ const LOADING_MESSAGES = [
   'Calculating display data...',
   'Rendering the interface...',
   'Final touches...',
+  'Solving Captcha for you...',
   'Almost ready...',
 ];
 
