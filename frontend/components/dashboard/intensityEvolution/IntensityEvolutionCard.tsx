@@ -1,12 +1,10 @@
 import React, { useMemo } from 'react';
-import { AreaChart as AreaChartIcon, ChartColumnStacked, Infinity, Layers } from 'lucide-react';
+import { Infinity, Layers } from 'lucide-react';
 import {
   Area,
-  Bar,
+  AreaChart,
   CartesianGrid,
-  ComposedChart,
   Legend,
-  Line,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -26,19 +24,15 @@ import {
 import { LazyRender } from '../../ui/LazyRender';
 import { ChartSkeleton } from '../../ui/ChartSkeleton';
 import { SegmentControl } from '../../ui/SegmentControl';
-import { formatNumber, formatSignedNumber } from '../../../utils/format/formatters';
+import { formatNumber } from '../../../utils/format/formatters';
 import { formatDeltaPercentage, getDeltaFormatPreset } from '../../../utils/format/deltaFormat';
-import { getRechartsXAxisInterval, RECHARTS_XAXIS_PADDING, RECHARTS_YAXIS_MARGIN, calculateYAxisDomain, formatAxisNumber } from '../../../utils/chart/chartEnhancements';
+import { getRechartsXAxisInterval, RECHARTS_XAXIS_PADDING, RECHARTS_YAXIS_MARGIN, formatAxisNumber } from '../../../utils/chart/chartEnhancements';
 import { formatVsPrevRollingWindow, getRollingWindowDaysForMode } from '../../../utils/date/dateUtils';
-
-type IntensityView = 'area' | 'stackedBar';
 
 export const IntensityEvolutionCard = ({
   isMounted,
   mode,
   onToggle,
-  view,
-  onViewToggle,
   intensityData,
   intensityInsight,
   tooltipStyle,
@@ -46,13 +40,10 @@ export const IntensityEvolutionCard = ({
   isMounted: boolean;
   mode: TimeFilterMode;
   onToggle: (m: TimeFilterMode) => void;
-  view: IntensityView;
-  onViewToggle: (v: IntensityView) => void;
   intensityData: any[];
   intensityInsight: any | null;
   tooltipStyle: Record<string, unknown>;
 }) => {
-  const formatSigned = (n: number) => formatSignedNumber(n, { maxDecimals: 2 });
 
   const primaryWindowDays = getRollingWindowDaysForMode(mode) ?? 30;
   const primaryMeta = formatVsPrevRollingWindow(primaryWindowDays);
@@ -67,11 +58,20 @@ export const IntensityEvolutionCard = ({
     });
   }, [intensityData]);
 
-  const chartData = baseData;
-
-  const yAxisDomain = useMemo(() => {
-    return calculateYAxisDomain(chartData, ['Strength', 'Hypertrophy', 'Endurance', 'total']);
-  }, [chartData]);
+  const percentData = useMemo(() => {
+    if (!Array.isArray(baseData)) return [];
+    return baseData.map((d: any) => {
+      const t = d.Strength + d.Hypertrophy + d.Endurance;
+      if (t === 0) return { ...d, Strength: 0, Hypertrophy: 0, Endurance: 0, total: 0 };
+      return {
+        ...d,
+        Strength: (d.Strength / t) * 100,
+        Hypertrophy: (d.Hypertrophy / t) * 100,
+        Endurance: (d.Endurance / t) * 100,
+        total: 100,
+      };
+    });
+  }, [baseData]);
 
   const legendPayload = useMemo(() => {
     return [
@@ -92,15 +92,6 @@ export const IntensityEvolutionCard = ({
         <div className="flex items-center justify-end gap-0.5 sm:gap-1 flex-wrap sm:flex-nowrap overflow-x-auto sm:overflow-visible max-w-full">
           <SegmentControl
             options={[
-              { value: 'area', icon: <AreaChartIcon className="w-3 h-3" />, title: 'Area' },
-              { value: 'stackedBar', icon: <ChartColumnStacked className="w-3 h-3" />, title: 'Stacked' },
-            ]}
-            value={view}
-            onChange={onViewToggle}
-          />
-
-          <SegmentControl
-            options={[
               { value: 'all', icon: <Infinity className="w-3 h-3" />, title: 'All' },
               { value: 'weekly', label: 'lst wk', title: 'Last Week' },
               { value: 'monthly', label: 'lst mo', title: 'Last Month' },
@@ -119,7 +110,7 @@ export const IntensityEvolutionCard = ({
         >
           <LazyRender className="w-full" placeholder={<ChartSkeleton style={{ height: 250 }} />}>
             <ResponsiveContainer width="100%" height={250}>
-                  <ComposedChart key={view} data={chartData} margin={{ top: 10, ...RECHARTS_YAXIS_MARGIN, bottom: 0 }}>
+                  <AreaChart key={mode} data={percentData} margin={{ top: 10, ...RECHARTS_YAXIS_MARGIN, bottom: 0 }}>
                   <defs>
                     <linearGradient id="gStrength" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
@@ -142,36 +133,27 @@ export const IntensityEvolutionCard = ({
                     tickLine={false}
                     axisLine={false}
                     padding={RECHARTS_XAXIS_PADDING as any}
-                    interval={getRechartsXAxisInterval(chartData.length)}
+                    interval={getRechartsXAxisInterval(percentData.length)}
                   />
-                  <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} domain={yAxisDomain} tickFormatter={(val) => formatAxisNumber(Number(val))} />
+                  <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} domain={[0, 100]} tickFormatter={(val) => formatAxisNumber(Number(val), '%')} />
                   <Tooltip
                     contentStyle={tooltipStyle as any}
                     formatter={(val: any, name: any) => {
-                      if (name === 'Strength (1-5)') return [formatNumber(Number(val), { maxDecimals: 1 }), 'Strength'];
-                      if (name === 'Hypertrophy (6-12)') return [formatNumber(Number(val), { maxDecimals: 1 }), 'Hypertrophy'];
-                      if (name === 'Endurance (13+)') return [formatNumber(Number(val), { maxDecimals: 1 }), 'Endurance'];
-                      return [formatNumber(Number(val), { maxDecimals: 0 }), name];
+                      const fmt = (n: number) => `${formatNumber(n, { maxDecimals: 1 })}%`;
+                      if (name === 'Strength (1-5)') return [fmt(Number(val)), 'Strength'];
+                      if (name === 'Hypertrophy (6-12)') return [fmt(Number(val)), 'Hypertrophy'];
+                      if (name === 'Endurance (13+)') return [fmt(Number(val)), 'Endurance'];
+                      return [fmt(Number(val)), name];
                     }}
                   />
                   <Legend {...({ wrapperStyle: { fontSize: '11px', left: '52%', transform: 'translateX(-50%)', position: 'absolute' }, payload: legendPayload } as any)} />
 
-                  {view === 'area' ? (
-                    <>
-                      <Area type="monotone" dataKey="Strength" name="Strength (1-5)" stackId="1" stroke="#3b82f6" fill="url(#gStrength)" animationDuration={500} />
-                      <Area type="monotone" dataKey="Hypertrophy" name="Hypertrophy (6-12)" stackId="1" stroke="#10b981" fill="url(#gHyper)" animationDuration={500} />
-                      <Area type="monotone" dataKey="Endurance" name="Endurance (13+)" stackId="1" stroke="#a855f7" fill="url(#gEndure)" animationDuration={500} />
-                    </>
-                  ) : (
-                    <>
-                      <Bar dataKey="Strength" name="Strength (1-5)" stackId="1" fill="#3b82f6" radius={[0, 0, 0, 0]} animationDuration={500} />
-                      <Bar dataKey="Hypertrophy" name="Hypertrophy (6-12)" stackId="1" fill="#10b981" radius={[0, 0, 0, 0]} animationDuration={500} />
-                      <Bar dataKey="Endurance" name="Endurance (13+)" stackId="1" fill="#a855f7" radius={[8, 8, 0, 0]} animationDuration={500} />
-                    </>
-                  )}
+                  <Area type="monotone" dataKey="Strength" name="Strength (1-5)" stackId="1" stroke="#3b82f6" fill="url(#gStrength)" animationDuration={500} />
+                  <Area type="monotone" dataKey="Hypertrophy" name="Hypertrophy (6-12)" stackId="1" stroke="#10b981" fill="url(#gHyper)" animationDuration={500} />
+                  <Area type="monotone" dataKey="Endurance" name="Endurance (13+)" stackId="1" stroke="#a855f7" fill="url(#gEndure)" animationDuration={500} />
 
-                </ComposedChart>
-            </ResponsiveContainer>
+                </AreaChart>
+              </ResponsiveContainer>
           </LazyRender>
         </div>
       ) : (
