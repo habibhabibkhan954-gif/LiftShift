@@ -43,8 +43,6 @@ interface DashboardLayoutProps {
   setMuscleCompQuick: (v: 'all' | '7d' | '30d' | '365d') => void;
   weeklySetsDashboard: any;
   bodyMapGender: BodyMapGender;
-  intensityView: 'area' | 'stackedBar';
-  setIntensityView: (v: 'area' | 'stackedBar') => void;
   intensityData: any[];
   intensityInsight: any;
   muscleGrouping: 'groups' | 'muscles';
@@ -120,8 +118,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
     setMuscleCompQuick,
     weeklySetsDashboard,
     bodyMapGender,
-    intensityView,
-    setIntensityView,
     intensityData,
     intensityInsight,
     muscleGrouping,
@@ -208,8 +204,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
           bodyMapGender={bodyMapGender}
           effectiveNow={effectiveNow}
           trainingLevel={trainingLevel}
-          intensityView={intensityView}
-          setIntensityView={setIntensityView}
           intensityData={intensityData}
           intensityInsight={intensityInsight}
           muscleGrouping={muscleGrouping}

@@ -32,8 +32,6 @@ interface DashboardPrimaryChartsProps {
   onMuscleClick?: (muscleId: string, weeklySetsWindow: 'all' | '7d' | '30d' | '365d') => void;
   bodyMapGender: BodyMapGender;
   trainingLevel: import('../../../utils/muscle/hypertrophy/muscleParams').TrainingLevel;
-  intensityView: 'area' | 'stackedBar';
-  setIntensityView: (v: 'area' | 'stackedBar') => void;
   intensityData: any[];
   intensityInsight: any;
   muscleGrouping: 'groups' | 'muscles';
@@ -82,8 +80,6 @@ export const DashboardPrimaryCharts: React.FC<DashboardPrimaryChartsProps> = ({
   bodyMapGender,
   effectiveNow,
   trainingLevel,
-  intensityView,
-  setIntensityView,
   intensityData,
   intensityInsight,
   muscleGrouping,
@@ -208,8 +204,6 @@ export const DashboardPrimaryCharts: React.FC<DashboardPrimaryChartsProps> = ({
           isMounted={isMounted}
           mode={chartModes.intensityEvo}
           onToggle={(m) => toggleChartMode('intensityEvo', m)}
-          view={intensityView}
-          onViewToggle={setIntensityView}
           intensityData={intensityData}
           intensityInsight={intensityInsight}
           tooltipStyle={tooltipStyle as any}

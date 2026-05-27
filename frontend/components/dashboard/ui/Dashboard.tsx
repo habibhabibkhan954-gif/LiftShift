@@ -139,7 +139,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
   const [prTrendView, setPrTrendView] = useState<'area' | 'bar'>('area');
   const [volumeView, setVolumeView] = useState<'area' | 'bar'>('area');
-  const [intensityView, setIntensityView] = useState<'area' | 'stackedBar'>('area');
   const [weekShapeView, setWeekShapeView] = useState<'radar' | 'bar'>('radar');
 
   const [muscleGrouping, setMuscleGrouping] = useState<'groups' | 'muscles'>('groups');
@@ -403,8 +402,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
       setMuscleCompQuick={setMuscleCompQuick}
       weeklySetsDashboard={weeklySetsDashboard}
       bodyMapGender={bodyMapGender}
-      intensityView={intensityView}
-      setIntensityView={setIntensityView}
       intensityData={intensityData}
       intensityInsight={intensityInsight}
       muscleGrouping={muscleGrouping}
