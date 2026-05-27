@@ -12,7 +12,7 @@
 
 import type { WeeklySetsWindow, WeeklySetsGrouping } from '../muscle/analytics';
 
-const VERSION = 'v2';
+const VERSION = 'v3';
 
 /**
  * Core data aggregations (computed in useAppDerivedData)
