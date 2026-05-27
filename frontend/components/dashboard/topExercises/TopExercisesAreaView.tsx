@@ -11,7 +11,8 @@ import {
 } from 'recharts';
 import { LazyRender } from '../../ui/LazyRender';
 import { ChartSkeleton } from '../../ui/ChartSkeleton';
-import { getRechartsXAxisInterval, RECHARTS_XAXIS_PADDING, RECHARTS_YAXIS_MARGIN, calculateYAxisDomain, formatAxisNumber } from '../../../utils/chart/chartEnhancements';
+import { getRechartsXAxisInterval, RECHARTS_XAXIS_PADDING, RECHARTS_YAXIS_MARGIN, formatAxisNumber } from '../../../utils/chart/chartEnhancements';
+import { formatNumber } from '../../../utils/format/formatters';
 
 interface TopExercisesAreaViewProps {
   topExercisesOverTimeData: any[];
@@ -26,8 +27,19 @@ export const TopExercisesAreaView: React.FC<TopExercisesAreaViewProps> = ({
   pieColors,
   tooltipStyle,
 }) => {
-  const yAxisDomain = useMemo(() => {
-    return calculateYAxisDomain(topExercisesOverTimeData, topExerciseNames);
+  const percentData = useMemo(() => {
+    if (!Array.isArray(topExercisesOverTimeData) || topExerciseNames.length === 0) return [];
+    return topExercisesOverTimeData.map((d: any) => {
+      const t = topExerciseNames.reduce((sum: number, k: string) => sum + Number(d[k] ?? 0), 0);
+      if (t === 0) {
+        const next: any = { ...d, total: 0 };
+        topExerciseNames.forEach((k) => { next[k] = 0; });
+        return next;
+      }
+      const next: any = { ...d, total: 100 };
+      topExerciseNames.forEach((k) => { next[k] = (Number(d[k] ?? 0) / t) * 100; });
+      return next;
+    });
   }, [topExercisesOverTimeData, topExerciseNames]);
 
   if (topExercisesOverTimeData.length === 0 || topExerciseNames.length === 0) {
@@ -41,7 +53,7 @@ export const TopExercisesAreaView: React.FC<TopExercisesAreaViewProps> = ({
   return (
     <LazyRender className="w-full" placeholder={<ChartSkeleton style={{ height: 320 }} />}>
       <ResponsiveContainer width="100%" height={320}>
-        <AreaChart data={topExercisesOverTimeData} margin={{ top: 10, ...RECHARTS_YAXIS_MARGIN, bottom: 0 }}>
+        <AreaChart data={percentData} margin={{ top: 10, ...RECHARTS_YAXIS_MARGIN, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
           <XAxis
             dataKey="date"
@@ -52,8 +64,11 @@ export const TopExercisesAreaView: React.FC<TopExercisesAreaViewProps> = ({
             padding={RECHARTS_XAXIS_PADDING as any}
             interval={getRechartsXAxisInterval(topExercisesOverTimeData.length)}
           />
-          <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} domain={yAxisDomain} tickFormatter={(val) => formatAxisNumber(Number(val))} />
-          <Tooltip contentStyle={tooltipStyle as any} />
+          <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} domain={[0, 100]} tickFormatter={(val) => formatAxisNumber(Number(val), '%')} />
+          <Tooltip
+            contentStyle={tooltipStyle as any}
+            formatter={(val: any, name: any) => [`${formatNumber(Number(val), { maxDecimals: 1 })}%`, name]}
+          />
           <Legend wrapperStyle={{ fontSize: '11px', left: '52%', transform: 'translateX(-50%)', position: 'absolute' }} />
           {topExerciseNames.map((exerciseName, idx) => (
             <Area
