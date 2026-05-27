@@ -51,11 +51,29 @@ export const MuscleTrendChart: React.FC<MuscleTrendChartProps> = ({
     return calculateYAxisDomain(trendData, trendKeys);
   }, [trendData, trendKeys]);
 
+  const percentData = useMemo(() => {
+    if (!Array.isArray(trendData) || trendKeys.length === 0) return [];
+    return trendData.map((d: any) => {
+      const t = trendKeys.reduce((sum: number, k: string) => sum + Number(d[k] ?? 0), 0);
+      if (t === 0) {
+        const next: any = { ...d, total: 0 };
+        trendKeys.forEach((k) => { next[k] = 0; });
+        return next;
+      }
+      const next: any = { ...d, total: 100 };
+      trendKeys.forEach((k) => { next[k] = (Number(d[k] ?? 0) / t) * 100; });
+      return next;
+    });
+  }, [trendData, trendKeys]);
+
   const xAxisInterval = useMemo(() => {
     return getRechartsXAxisInterval(trendData.length);
   }, [trendData.length]);
 
-  const tooltipFormatter = (val: any, name: any) => [formatNumber(Number(val), { maxDecimals: 1 }), name];
+  const tooltipFormatter = (val: any, name: any) =>
+    muscleTrendView === 'area'
+      ? [`${formatNumber(Number(val), { maxDecimals: 1 })}%`, name]
+      : [`${formatNumber(Number(val), { maxDecimals: 1 })} sets`, name];
 
   if (trendData.length === 0 || trendKeys.length === 0) {
     return (
@@ -69,69 +87,69 @@ export const MuscleTrendChart: React.FC<MuscleTrendChartProps> = ({
     <LazyRender className="w-full" placeholder={<ChartSkeleton style={{ height: 280 }} />}>
       <ResponsiveContainer width="100%" height={280}>
         {muscleTrendView === 'area' ? (
-          <AreaChart key={`area-${musclePeriod}-${muscleGrouping}`} data={trendData} margin={{ top: 10, ...RECHARTS_YAXIS_MARGIN, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
-            <XAxis
-              dataKey="dateFormatted"
-              stroke="#94a3b8"
-              fontSize={11}
-              tickLine={false}
-              axisLine={false}
-              padding={RECHARTS_XAXIS_PADDING as any}
-              interval={xAxisInterval}
-            />
-            <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} domain={yAxisDomain} tickFormatter={(val) => formatAxisNumber(Number(val))} />
-            <Tooltip contentStyle={tooltipStyle as any} formatter={tooltipFormatter as any} />
-            <Legend wrapperStyle={{ fontSize: '11px', left: '52%', transform: 'translateX(-50%)', position: 'absolute' }} />
-            {trendKeys.map((k) => {
-              const color = getTrendColor(k, muscleGrouping);
-              return (
-                <Area
-                  key={k}
-                  type="monotone"
-                  dataKey={k}
-                  name={k}
-                  stackId="1"
-                  stroke={color}
-                  fill={color}
-                  fillOpacity={0.25}
-                  animationDuration={500}
-                />
-              );
-            })}
-          </AreaChart>
-        ) : (
-          <BarChart key={`bar-${musclePeriod}-${muscleGrouping}`} data={trendData} margin={{ top: 10, ...RECHARTS_YAXIS_MARGIN, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
-            <XAxis
-              dataKey="dateFormatted"
-              stroke="#94a3b8"
-              fontSize={11}
-              tickLine={false}
-              axisLine={false}
-              padding={RECHARTS_XAXIS_PADDING as any}
-              interval={xAxisInterval}
-            />
-            <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} domain={yAxisDomain} tickFormatter={(val) => formatAxisNumber(Number(val))} />
-            <Tooltip contentStyle={tooltipStyle as any} cursor={{ fill: 'rgb(var(--overlay-rgb) / 0.12)' }} formatter={tooltipFormatter as any} />
-            <Legend wrapperStyle={{ fontSize: '11px', left: '52%', transform: 'translateX(-50%)', position: 'absolute' }} />
-            {trendKeys.map((k, idx) => {
-              const color = getTrendColor(k, muscleGrouping);
-              return (
-                <Bar
-                  key={k}
-                  dataKey={k}
-                  name={k}
-                  stackId="1"
-                  fill={color}
-                  radius={idx === trendKeys.length - 1 ? [6, 6, 0, 0] : [0, 0, 0, 0]}
-                  animationDuration={500}
-                />
-              );
-            })}
-          </BarChart>
-        )}
-      </ResponsiveContainer>
+            <AreaChart key={`area-${musclePeriod}-${muscleGrouping}`} data={percentData} margin={{ top: 10, ...RECHARTS_YAXIS_MARGIN, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+              <XAxis
+                dataKey="dateFormatted"
+                stroke="#94a3b8"
+                fontSize={11}
+                tickLine={false}
+                axisLine={false}
+                padding={RECHARTS_XAXIS_PADDING as any}
+                interval={xAxisInterval}
+              />
+              <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} domain={[0, 100]} tickFormatter={(val) => formatAxisNumber(Number(val), '%')} />
+              <Tooltip contentStyle={tooltipStyle as any} formatter={tooltipFormatter as any} />
+              <Legend wrapperStyle={{ fontSize: '11px', left: '52%', transform: 'translateX(-50%)', position: 'absolute' }} />
+              {trendKeys.map((k) => {
+                const color = getTrendColor(k, muscleGrouping);
+                return (
+                  <Area
+                    key={k}
+                    type="monotone"
+                    dataKey={k}
+                    name={k}
+                    stackId="1"
+                    stroke={color}
+                    fill={color}
+                    fillOpacity={0.25}
+                    animationDuration={500}
+                  />
+                );
+              })}
+            </AreaChart>
+          ) : (
+            <BarChart key={`bar-${musclePeriod}-${muscleGrouping}`} data={trendData} margin={{ top: 10, ...RECHARTS_YAXIS_MARGIN, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+              <XAxis
+                dataKey="dateFormatted"
+                stroke="#94a3b8"
+                fontSize={11}
+                tickLine={false}
+                axisLine={false}
+                padding={RECHARTS_XAXIS_PADDING as any}
+                interval={xAxisInterval}
+              />
+              <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} domain={yAxisDomain} tickFormatter={(val) => formatAxisNumber(Number(val))} />
+              <Tooltip contentStyle={tooltipStyle as any} cursor={{ fill: 'rgb(var(--overlay-rgb) / 0.12)' }} formatter={tooltipFormatter as any} />
+              <Legend wrapperStyle={{ fontSize: '11px', left: '52%', transform: 'translateX(-50%)', position: 'absolute' }} />
+              {trendKeys.map((k, idx) => {
+                const color = getTrendColor(k, muscleGrouping);
+                return (
+                  <Bar
+                    key={k}
+                    dataKey={k}
+                    name={k}
+                    stackId="1"
+                    fill={color}
+                    radius={idx === trendKeys.length - 1 ? [6, 6, 0, 0] : [0, 0, 0, 0]}
+                    animationDuration={500}
+                  />
+                );
+              })}
+            </BarChart>
+          )}
+        </ResponsiveContainer>
     </LazyRender>
   );
 };
