@@ -9,6 +9,7 @@ import {
   TrendModeSection,
   WeightUnitSection,
   SecondarySetMultiplierSection,
+  LanguageSection,
 } from './UserPreferencesSections';
 
 interface UserPreferencesModalProps {
@@ -92,6 +93,7 @@ export const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({
               />
               <FontSection font={font} onFontChange={onFontChange} />
               <ThemeSection themeMode={themeMode} onThemeModeChange={onThemeModeChange} />
+              <LanguageSection />
             </div>
 
             <div className="relative mt-4 pt-3 border-t border-slate-700/50">
