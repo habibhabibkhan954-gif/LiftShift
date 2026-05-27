@@ -121,6 +121,22 @@ export const saveSecondarySetMultiplier = secondarySetMultiplierStorage.set;
 export const getSecondarySetMultiplier = secondarySetMultiplierStorage.get;
 export const clearSecondarySetMultiplier = secondarySetMultiplierStorage.clear;
 
+// Language Preference
+export type LanguageCode = 'en' | 'ru' | 'de' | 'es' | 'pt' | 'fr' | 'it' | 'ja' | 'ko' | 'zh' | 'ar' | 'hi' | 'nl' | 'pl' | 'tr' | 'uk' | 'sv' | 'nb';
+
+const languageStorage = createStorageManager<LanguageCode>({
+  key: 'hevy_analytics_language',
+  defaultValue: 'en',
+  validator: (v) => {
+    const validCodes = new Set(['en', 'ru', 'de', 'es', 'pt', 'fr', 'it', 'ja', 'ko', 'zh', 'ar', 'hi', 'nl', 'pl', 'tr', 'uk', 'sv', 'nb']);
+    return (v && validCodes.has(v)) ? (v as LanguageCode) : null;
+  },
+});
+
+export const getLanguage = languageStorage.get;
+export const saveLanguage = languageStorage.set;
+export const clearLanguage = languageStorage.clear;
+
 // Font Choice
 export type FontChoice = 'original' | 'loraItalic' | 'nunito';
 
