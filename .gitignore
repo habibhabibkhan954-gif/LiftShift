@@ -36,6 +36,9 @@ dist-ssr
 .agents/
 skills-lock.json
 
+# CodeGraph
+.codegraph/
+
 # Unused assets for future use
 frontend/components/bodyMap/demomalefront.svg
 frontend/components/bodyMap/demomaleback.svg
