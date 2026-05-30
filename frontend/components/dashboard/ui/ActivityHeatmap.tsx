@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useMemo, useState } from 'react';
-import { format, startOfMonth, endOfMonth, addMonths, eachDayOfInterval, getDay } from 'date-fns';
-import { Dumbbell, Target } from 'lucide-react';
+import { format, startOfMonth, endOfMonth, addMonths, subMonths, eachDayOfInterval, getDay } from 'date-fns';
+import { ChevronLeft, ChevronRight, Dumbbell, Target } from 'lucide-react';
 import type { DailySummary } from '../../../types';
 import { computationCache } from '../../../utils/storage/computationCache';
 import { useTheme } from '../../theme/ThemeProvider';
@@ -33,6 +33,8 @@ export const ActivityHeatmap = memo(({
   }, []);
 
   const currentMonthEnd = useMemo(() => endOfMonth(today), [today]);
+
+  const [viewOffset, setViewOffset] = useState(0);
 
   const heatmapData = useMemo(() => {
     return computationCache.getOrCompute(
@@ -71,18 +73,38 @@ export const ActivityHeatmap = memo(({
     );
   }, [dailyData, today]);
 
+  const windowedData = useMemo(() => {
+    if (heatmapData.length === 0) return heatmapData;
+    const lastDate = heatmapData[heatmapData.length - 1].date;
+    const windowEnd = lastDate;
+    const windowStart = subMonths(windowEnd, 12 * (viewOffset + 1));
+    const actualEnd = subMonths(windowEnd, 12 * viewOffset);
+    const firstDate = heatmapData[0].date;
+    const clampedStart = windowStart < firstDate ? firstDate : windowStart;
+    return heatmapData.filter(d => d.date >= clampedStart && d.date <= actualEnd);
+  }, [heatmapData, viewOffset]);
+
+  const { hasOlderData } = useMemo(() => {
+    if (heatmapData.length === 0) return { hasOlderData: false };
+    const lastDate = heatmapData[heatmapData.length - 1].date;
+    const firstDate = heatmapData[0].date;
+    const actualEnd = subMonths(lastDate, 12 * viewOffset);
+    const actualStart = subMonths(actualEnd, 12);
+    return { hasOlderData: firstDate < actualStart };
+  }, [heatmapData, viewOffset]);
+
   const monthBlocks = useMemo(() => {
     type MonthBlock = { key: string; label: string; cells: Array<any | null> };
 
-    if (heatmapData.length === 0) return [] as MonthBlock[];
+    if (windowedData.length === 0) return [] as MonthBlock[];
 
     const byKey = new Map<string, any>();
-    for (const d of heatmapData) {
+    for (const d of windowedData) {
       byKey.set(format(d.date, 'yyyy-MM-dd'), d);
     }
 
-    const rangeStart = heatmapData[0].date as Date;
-    const rangeEnd = heatmapData[heatmapData.length - 1].date as Date;
+    const rangeStart = windowedData[0].date as Date;
+    const rangeEnd = windowedData[windowedData.length - 1].date as Date;
 
     const blocks: MonthBlock[] = [];
     let cursor = startOfMonth(rangeStart);
@@ -117,7 +139,7 @@ export const ActivityHeatmap = memo(({
     }
 
     return blocks;
-  }, [heatmapData, today]);
+  }, [windowedData, today]);
 
   const consistencyTrendColor = useMemo(() => {
     if (consistencySparkline.length < 2) return '#3b82f6';
@@ -153,8 +175,8 @@ export const ActivityHeatmap = memo(({
   if (heatmapData.length === 0) return null;
 
   const todayStr = format(today, 'yyyy-MM-dd');
-  const todayInRange = heatmapData.some(d => format(d.date, 'yyyy-MM-dd') === todayStr);
-  const maxVolume = Math.max(...heatmapData.map(d => d.totalVolume), 1);
+  const todayInRange = windowedData.length > 0 && windowedData.some(d => format(d.date, 'yyyy-MM-dd') === todayStr);
+  const maxVolume = Math.max(...windowedData.map(d => d.totalVolume), 1);
 
   const getHSLForIntensity = (intensity: number) => {
     const lightness = isLight
@@ -202,7 +224,7 @@ export const ActivityHeatmap = memo(({
   };
 
   return (
-    <div className="bg-black/30 border border-slate-700/50 p-2 sm:p-3 rounded-xl flex flex-col lg:flex-row gap-4 lg:gap-5 overflow-hidden" style={{ backgroundColor: 'rgb(var(--panel-rgb) / 0.5)' }}>
+    <div className="bg-black/20 border border-slate-700/50 p-2 sm:p-3 rounded-xl flex flex-col lg:flex-row gap-4 lg:gap-5 overflow-hidden" style={{ backgroundColor: 'rgb(var(--panel-rgb) / 0.5)' }}>
       <div className="flex-shrink-0 min-w-[160px] sm:min-w-[200px] lg:min-w-[240px] border-b lg:border-b-0 lg:border-r border-slate-700/50 pb-4 lg:pb-0 lg:pr-6 lg:flex lg:flex-col">
         <div className="flex flex-col gap-3 lg:flex-1">
           <div className="flex items-center justify-between">
@@ -253,24 +275,26 @@ export const ActivityHeatmap = memo(({
 
       <div className="flex-1 w-full overflow-x-auto pb-2 custom-scrollbar" ref={scrollContainerRef}>
         <div className="w-max">
-          <div className="grid grid-flow-col grid-rows-[auto_auto] auto-cols-max items-start gap-x-3 gap-y-1">
+          <div className="flex items-start gap-3">
+            <div className="flex flex-col items-center justify-center min-w-[40px] self-center">
+              {hasOlderData && (
+                <button
+                  onClick={() => setViewOffset(v => v + 1)}
+                  className="flex flex-col items-center gap-0.5 text-slate-400 hover:text-white transition-colors"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span className="text-[10px] font-medium">Older</span>
+                </button>
+              )}
+            </div>
             {monthBlocks.map((month, monthIdx) => {
-              const isLatestMonth = monthIdx === monthBlocks.length - 1 || monthIdx === monthBlocks.length - 2;
-              const isLast = monthIdx === monthBlocks.length - 1;
-              const isSecondToLast = monthIdx === monthBlocks.length - 2;
-              const cellSizeClass = isLatestMonth ? 'w-[18px] h-[18px]' : 'w-2.5 h-2.5';
-              const dayGapClass = isLatestMonth ? 'gap-1' : 'gap-[3px]';
               const dayOfWeekLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
               return (
-              <div
-                key={month.key}
-                className={`flex flex-col items-center ${isSecondToLast ? 'mx-6 ' : ''}${isLast ? 'mr-2 ' : ''}${isLatestMonth ? 'row-span-2 self-center' : ''}`}
-                style={isLatestMonth ? { gridRow: '1 / span 2' } : undefined}
-              >
+              <div key={month.key} className="flex flex-col items-center">
                 <div className="h-4 mb-0.5 flex items-center justify-center text-[10px] text-slate-500 font-medium whitespace-nowrap">
                   {month.label}
                 </div>
-                {isLatestMonth && (
+                {monthIdx === 0 && (
                   <div className="grid grid-cols-7 gap-1 mb-1">
                     {dayOfWeekLabels.map((label, i) => (
                       <div key={i} className="w-[18px] h-3 flex items-center justify-center text-[9px] text-slate-600 font-medium">
@@ -279,25 +303,25 @@ export const ActivityHeatmap = memo(({
                     ))}
                   </div>
                 )}
-                <div className={`relative z-10 grid grid-cols-7 ${dayGapClass} justify-items-center items-center`}>
+                <div className="relative z-10 grid grid-cols-7 gap-1 justify-items-center items-center">
                     {month.cells.map((day, idx) => {
-                      if (!day) return <div key={`${month.key}-empty-${idx}`} className={cellSizeClass} />;
+                      if (!day) return <div key={`${month.key}-empty-${idx}`} className="w-[18px] h-[18px]" />;
                       const dayNum = day.date.getDate();
                       const isFuture = day.isFuture;
                       const isCurrentMonthFuture = day.isCurrentMonthFuture;
                       const isToday = format(day.date, 'yyyy-MM-dd') === todayStr;
                       const { bgClass, style } = getColor(day.totalVolume, isFuture, isCurrentMonthFuture);
-                      const textColor = isLatestMonth ? getDayTextColor(day.totalVolume, isFuture, isCurrentMonthFuture) : '';
+                      const textColor = getDayTextColor(day.totalVolume, isFuture, isCurrentMonthFuture);
                       return (
                         <div
                           key={day.date.toISOString()}
-                          className={`${cellSizeClass} rounded-full flex items-center justify-center text-[8px] font-medium ${bgClass} ${textColor} transition-all duration-300 ${day.totalVolume > 0 && !isFuture ? 'cursor-pointer hover:ring-2 hover:ring-white/30' : 'cursor-default'} ${isPeakDay(day.totalVolume) ? 'ring-2 ring-amber-400' : isToday ? 'ring-2 ring-blue-400/70' : ''}`}
+                          className={`w-[18px] h-[18px] rounded-full flex items-center justify-center text-[8px] font-medium ${bgClass} ${textColor} transition-all duration-300 ${day.totalVolume > 0 && !isFuture ? 'cursor-pointer hover:ring-2 hover:ring-white/30' : 'cursor-default'} ${isPeakDay(day.totalVolume) ? 'ring-2 ring-amber-400' : isToday ? 'ring-2 ring-blue-400/70' : ''}`}
                           style={style}
                           onClick={() => day.count > 0 && !isFuture && onDayClick?.(day.date)}
                           onMouseEnter={(e) => !isFuture && handleMouseEnter(e, day)}
                           onMouseLeave={() => !isFuture && setTooltip(null)}
                         >
-                          {isLatestMonth && dayNum <= 31 && (day.count > 0 && !isFuture ? <Dumbbell className={`w-3 h-3 ${isLight ? '!text-white' : '!text-black'}`} /> : dayNum)}
+                          {dayNum <= 31 && (day.count > 0 && !isFuture ? <Dumbbell className={`w-3 h-3 ${isLight ? '!text-white' : '!text-black'}`} /> : dayNum)}
                         </div>
                       );
                     })}
@@ -305,6 +329,17 @@ export const ActivityHeatmap = memo(({
                 </div>
             );
             })}
+            <div className="flex flex-col items-center justify-center min-w-[40px] self-center">
+              {viewOffset > 0 && (
+                <button
+                  onClick={() => setViewOffset(v => v - 1)}
+                  className="flex flex-col items-center gap-0.5 text-slate-400 hover:text-white transition-colors"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                  <span className="text-[10px] font-medium">Recent</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
