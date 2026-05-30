@@ -5,6 +5,7 @@ import { HashRouter } from 'react-router';
 import { initGA } from './utils/integrations/ga';
 import { ThemeProvider } from './components/theme/ThemeProvider';
 import './tailwind.css';
+import bgImage from './src/assets/images/misc/P15.avif';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -12,6 +13,13 @@ if (!rootElement) {
 }
 
 initGA();
+
+// Preload the background image for instant display
+const preloadLink = document.createElement('link');
+preloadLink.rel = 'preload';
+preloadLink.as = 'image';
+preloadLink.href = bgImage;
+document.head.appendChild(preloadLink);
 
 const getRouterBasename = (): string => {
   const baseUrl = import.meta.env.BASE_URL;

@@ -26,7 +26,7 @@ import { useCalendarSelectionHandlers } from './app/state';
 import { useUpdateFlowHandler } from './app/auth';
 import { calculatePRInsights } from './utils/analysis/insights';
 import { createFingerprintMatcher } from './utils/exercise/exerciseFingerprint';
-import { assetPath } from './constants';
+import bgImage from './src/assets/images/misc/P15.avif';
 
 const CHUNK_RELOAD_KEY = 'liftshift_chunk_reload_once';
 
@@ -143,8 +143,8 @@ const App: React.FC = () => {
     setExerciseTrendMode,
     secondarySetMultiplier,
     setSecondarySetMultiplier,
-    showBackgroundImage,
-    setShowBackgroundImage,
+    showTransparency,
+    setShowTransparency,
   } = useAppPreferences();
 
   const mergeDatasets = useCallback(
@@ -582,9 +582,9 @@ const App: React.FC = () => {
         className="relative flex flex-col min-h-[100svh] h-[100dvh] overscroll-none bg-transparent text-[color:var(--app-fg)] font-sans"
       >
         {/* Full-page Background Image (dark mode only, user preference) */}
-        {mode !== 'light' && showBackgroundImage && (
+        {mode !== 'light' && showTransparency && (
           <img
-            src={assetPath('/images/misc/P15.avif')}
+            src={bgImage}
             alt=""
             aria-hidden="true"
             onLoad={() => setBgImageLoaded(true)}
@@ -660,8 +660,8 @@ const App: React.FC = () => {
         onSecondarySetMultiplierChange={setSecondarySetMultiplier}
         font={font}
         onFontChange={setFont}
-        showBackgroundImage={showBackgroundImage}
-        onShowBackgroundImageChange={setShowBackgroundImage}
+        showTransparency={showTransparency}
+        onShowTransparencyChange={setShowTransparency}
       />
 
       <AppOnboardingLayer

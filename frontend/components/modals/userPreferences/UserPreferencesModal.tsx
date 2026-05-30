@@ -2,7 +2,7 @@ import React from 'react';
 import { Settings, X } from 'lucide-react';
 import { FontChoice, WeightUnit, ThemeMode, ExerciseTrendMode } from '../../../utils/storage/localStorage';
 import { BodyMapGender } from '../../bodyMap/BodyMap';
-import { assetPath } from '../../../constants';
+import bgImage from '../../../src/assets/images/misc/P15.avif';
 import {
   BodyMapGenderSection,
   FontSection,
@@ -10,7 +10,7 @@ import {
   TrendModeSection,
   WeightUnitSection,
   SecondarySetMultiplierSection,
-  BackgroundImageSection,
+  TransparencySection,
 } from './UserPreferencesSections';
 
 interface UserPreferencesModalProps {
@@ -28,8 +28,8 @@ interface UserPreferencesModalProps {
   onSecondarySetMultiplierChange: (value: number) => void;
   font: FontChoice;
   onFontChange: (font: FontChoice) => void;
-  showBackgroundImage: boolean;
-  onShowBackgroundImageChange: (value: boolean) => void;
+  showTransparency: boolean;
+  onShowTransparencyChange: (value: boolean) => void;
 }
 
 export const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({
@@ -47,8 +47,8 @@ export const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({
   onSecondarySetMultiplierChange,
   font,
   onFontChange,
-  showBackgroundImage,
-  onShowBackgroundImageChange,
+  showTransparency,
+  onShowTransparencyChange,
 }) => {
   if (!isOpen) return null;
 
@@ -61,7 +61,7 @@ export const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({
           <div className="relative bg-slate-950 border border-slate-700/50 rounded-xl p-4 sm:p-5 overflow-hidden backdrop-blur-md shadow-lg">
             {!isLightTheme ? (
               <img
-                src={assetPath('/images/misc/P15.avif')}
+                src={bgImage}
                 alt=""
                 aria-hidden="true"
                 className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none"
@@ -103,11 +103,11 @@ export const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({
                 />
               </div>
               <div className="md:hidden">
-                <BackgroundImageSection showBackgroundImage={showBackgroundImage} onShowBackgroundImageChange={onShowBackgroundImageChange} />
+                <TransparencySection showTransparency={showTransparency} onShowTransparencyChange={onShowTransparencyChange} />
               </div>
               <div className="hidden md:grid md:grid-cols-2 md:gap-4">
                 <FontSection font={font} onFontChange={onFontChange} />
-                <BackgroundImageSection showBackgroundImage={showBackgroundImage} onShowBackgroundImageChange={onShowBackgroundImageChange} />
+                <TransparencySection showTransparency={showTransparency} onShowTransparencyChange={onShowTransparencyChange} />
               </div>
               <ThemeSection themeMode={themeMode} onThemeModeChange={onThemeModeChange} />
               <SecondarySetMultiplierSection

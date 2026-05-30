@@ -188,26 +188,26 @@ export const SecondarySetMultiplierSection: React.FC<SecondarySetMultiplierSecti
   );
 };
 
-interface BackgroundImageSectionProps {
-  showBackgroundImage: boolean;
-  onShowBackgroundImageChange: (value: boolean) => void;
+interface TransparencySectionProps {
+  showTransparency: boolean;
+  onShowTransparencyChange: (value: boolean) => void;
 }
 
-const BG_IMAGE_OPTIONS = [
-  { value: 'true' as const, label: 'On', description: 'Show background image (dark mode)' },
+const TRANSPARENCY_OPTIONS = [
+  { value: 'true' as const, label: 'On', description: 'Enable transparency effect in dark mode' },
   { value: 'false' as const, label: 'Off', description: 'Solid background (default style)' },
 ] as const;
 
-export const BackgroundImageSection: React.FC<BackgroundImageSectionProps> = ({
-  showBackgroundImage,
-  onShowBackgroundImageChange,
+export const TransparencySection: React.FC<TransparencySectionProps> = ({
+  showTransparency,
+  onShowTransparencyChange,
 }) => (
   <Select
-    options={BG_IMAGE_OPTIONS}
-    value={showBackgroundImage ? 'true' : 'false'}
-    onChange={(v) => onShowBackgroundImageChange(v === 'true')}
-    label="Background Image"
-    subtitle="Show decorative background image in dark mode"
+    options={TRANSPARENCY_OPTIONS}
+    value={showTransparency ? 'true' : 'false'}
+    onChange={(v) => onShowTransparencyChange(v === 'true')}
+    label="Transparency"
+    subtitle="Toggle the background effect in dark mode"
     icon={<Image className="w-3.5 h-3.5 text-slate-500" />}
   />
 );

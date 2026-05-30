@@ -15,8 +15,8 @@ import {
   saveExerciseTrendMode,
   getSecondarySetMultiplier,
   saveSecondarySetMultiplier,
-  getShowBackgroundImage,
-  saveShowBackgroundImage,
+  getShowTransparency,
+  saveShowTransparency,
 } from '../../utils/storage/localStorage';
 import { BodyMapGender } from '../../components/bodyMap/BodyMap';
 
@@ -47,9 +47,9 @@ export interface UseAppPreferencesReturn {
   secondarySetMultiplier: number;
   setSecondarySetMultiplier: (value: number) => void;
 
-  // Show background image
-  showBackgroundImage: boolean;
-  setShowBackgroundImage: (value: boolean) => void;
+  // Show transparency
+  showTransparency: boolean;
+  setShowTransparency: (value: boolean) => void;
 }
 
 export function useAppPreferences(): UseAppPreferencesReturn {
@@ -60,7 +60,7 @@ export function useAppPreferences(): UseAppPreferencesReturn {
   const [bodyMapGender, setBodyMapGenderState] = useState<BodyMapGender>(() => getBodyMapGender());
   const [exerciseTrendMode, setExerciseTrendModeState] = useState<ExerciseTrendMode>(() => getExerciseTrendMode());
   const [secondarySetMultiplier, setSecondarySetMultiplierState] = useState<number>(() => getSecondarySetMultiplier());
-  const [showBackgroundImage, setShowBackgroundImageState] = useState<boolean>(() => getShowBackgroundImage());
+  const [showTransparency, setShowTransparencyState] = useState<boolean>(() => getShowTransparency());
 
   // Persist weight unit
   useEffect(() => {
@@ -84,10 +84,10 @@ export function useAppPreferences(): UseAppPreferencesReturn {
     saveSecondarySetMultiplier(secondarySetMultiplier);
   }, [secondarySetMultiplier]);
 
-  // Persist show background image
+  // Persist show transparency
   useEffect(() => {
-    saveShowBackgroundImage(showBackgroundImage);
-  }, [showBackgroundImage]);
+    saveShowTransparency(showTransparency);
+  }, [showTransparency]);
 
   // Apply CSS variables - heatmap hue (warm red for dark themes)
   useLayoutEffect(() => {
@@ -110,7 +110,7 @@ export function useAppPreferences(): UseAppPreferencesReturn {
     setExerciseTrendMode: setExerciseTrendModeState,
     secondarySetMultiplier,
     setSecondarySetMultiplier: setSecondarySetMultiplierState,
-    showBackgroundImage,
-    setShowBackgroundImage: setShowBackgroundImageState,
+    showTransparency,
+    setShowTransparency: setShowTransparencyState,
   };
 }
