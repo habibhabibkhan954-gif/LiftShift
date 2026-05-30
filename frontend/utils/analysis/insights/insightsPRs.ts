@@ -54,28 +54,47 @@ export const calculatePRInsights = (data: WorkoutSet[], now: Date = new Date(0))
   const lastGoldPR = goldPRs[goldPRs.length - 1];
   const daysSinceLastPR = lastGoldPR ? differenceInDays(now, lastGoldPR.date) : 0;
 
-  const recentGoldPRs: RecentPR[] = [];
-  const seen = new Set<string>();
-  for (let i = goldPRs.length - 1; i >= 0 && recentGoldPRs.length < 10; i--) {
-    const pr = goldPRs[i];
-    if (!seen.has(pr.exercise)) {
-      seen.add(pr.exercise);
-      recentGoldPRs.push(normalizeDisplayImprovement({ ...pr, isSilver: false }));
+  const PR_TYPE_PRIORITY: Record<string, number> = {
+    weight: 3,
+    oneRm: 2,
+    volume: 1,
+  };
+
+  // Per-exercise best: highest priority type, newest if same priority
+  const bestGold = new Map<string, { pr: PRDetectionResult; priority: number }>();
+  for (const pr of goldPRs) {
+    const p = PR_TYPE_PRIORITY[pr.type] ?? 0;
+    const existing = bestGold.get(pr.exercise);
+    if (!existing || p > existing.priority || (p === existing.priority && pr.date > existing.pr.date)) {
+      bestGold.set(pr.exercise, { pr, priority: p });
     }
   }
 
-  const recentSilverPRs: RecentPR[] = [];
-  for (let i = silverPRs.length - 1; i >= 0 && recentSilverPRs.length < 5; i--) {
-    const pr = silverPRs[i];
-    if (!seen.has(pr.exercise)) {
-      seen.add(pr.exercise);
-      recentSilverPRs.push(normalizeDisplayImprovement({ ...pr, isSilver: true }));
+  const recentGoldPRs = Array.from(bestGold.values())
+    .map(({ pr }) => normalizeDisplayImprovement({ ...pr, isSilver: false }))
+    .sort((a, b) => b.date.getTime() - a.date.getTime())
+    .slice(0, 7);
+
+  // Per-exercise best for silver: highest priority, exclude exercises already in gold
+  const goldExercises = new Set(bestGold.keys());
+  const bestSilver = new Map<string, { pr: PRDetectionResult; priority: number }>();
+  for (const pr of silverPRs) {
+    if (goldExercises.has(pr.exercise)) continue;
+    const p = PR_TYPE_PRIORITY[pr.type] ?? 0;
+    const existing = bestSilver.get(pr.exercise);
+    if (!existing || p > existing.priority || (p === existing.priority && pr.date > existing.pr.date)) {
+      bestSilver.set(pr.exercise, { pr, priority: p });
     }
   }
+
+  const recentSilverPRs = Array.from(bestSilver.values())
+    .map(({ pr }) => normalizeDisplayImprovement({ ...pr, isSilver: true }))
+    .sort((a, b) => b.date.getTime() - a.date.getTime())
+    .slice(0, 5);
 
   const recentPRs = [...recentGoldPRs, ...recentSilverPRs]
     .sort((a, b) => b.date.getTime() - a.date.getTime())
-    .slice(0, 10);
+    .slice(0, 7);
 
   const thirtyDaysAgo = subDays(now, 30);
   const recentGoldCount = goldPRs.filter((pr) => pr.date >= thirtyDaysAgo).length;
