@@ -32,8 +32,8 @@ export const MuscleAnalysisExerciseListPanel: React.FC<MuscleAnalysisExerciseLis
   const displayTitle = `Exercises for ${selectedMuscle ? selectedMuscle.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : 'Full Body'}`;
   
   return (
-    <div className="bg-black/70 rounded-xl border border-slate-700/50 overflow-hidden flex flex-col h-full min-h-0">
-      <div className="bg-black/70  p-2 flex-shrink-0">
+    <div className="bg-black/30 rounded-xl border border-slate-700/50 overflow-hidden flex flex-col h-full min-h-0">
+      <div className="bg-black/30  p-2 flex-shrink-0">
         <div className="flex items-center gap-2">
           <span className="text-sm font-bold text-white" style={SEMI_FANCY_FONT}>{displayTitle}</span>
           <span className="text-xs text-slate-500">

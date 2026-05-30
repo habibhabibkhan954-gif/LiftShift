@@ -403,9 +403,9 @@ export const MuscleAnalysisGraphPanel: React.FC<MuscleAnalysisGraphPanelProps> =
       return (
         <div
           id="all-muscles-graph"
-          className="bg-black/70 rounded-xl border border-slate-700/50 overflow-hidden flex flex-col h-full min-h-0"
+          className="bg-black/30 rounded-xl border border-slate-700/50 overflow-hidden flex flex-col h-full min-h-0"
         >
-          <div className="bg-black/70 p-3 flex items-center justify-between flex-shrink-0 gap-2">
+          <div className="bg-black/30 p-3 flex items-center justify-between flex-shrink-0 gap-2">
             <div className="flex items-center gap-2 min-w-0">
               <h2 className="text-sm font-bold text-white truncate" style={SEMI_FANCY_FONT}>{title}</h2>
               <span className="text-[10px] text-slate-400 whitespace-nowrap">

@@ -73,7 +73,7 @@ export const ExerciseViewHeader: React.FC<ExerciseViewHeaderProps> = ({
   return (
     <>
       <div className="sm:hidden">
-        <div className="bg-black/70 p-2 rounded-xl">
+        <div className="bg-black/30 p-2 rounded-xl">
           {trainingStructure.activeCount > 0 ? (
             <div className="grid grid-cols-4 gap-1">
               <button

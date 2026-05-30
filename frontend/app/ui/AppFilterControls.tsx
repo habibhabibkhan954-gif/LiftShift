@@ -18,7 +18,7 @@ export const AppFilterControls: React.FC<AppFilterControlsProps> = ({
 }) => (
   <div
     className={`relative flex items-center gap-2 rounded-lg px-3 py-2 h-10 transition-all duration-300 ${
-      hasActiveCalendarFilter ? 'bg-black/70 border border-yellow-500/50' : 'bg-black/70 border border-slate-700/50'
+      hasActiveCalendarFilter ? 'bg-black/30 border border-yellow-500/50' : 'bg-black/30 border border-slate-700/50'
     }`}
   >
     <div className="flex-1 min-w-0 overflow-x-auto">

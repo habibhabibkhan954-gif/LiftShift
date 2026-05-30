@@ -130,7 +130,7 @@ export const DashboardSummaryCard: React.FC<DashboardSummaryCardProps> = ({
 
   return (
     <div 
-      className={`bg-black/50 border border-slate-700/50 rounded-xl p-4 overflow-hidden relative sm:h-auto ${isExpanded ? 'h-auto' : 'h-[120px]'}`}
+      className={`bg-black/30 border border-slate-700/50 rounded-xl p-4 overflow-hidden relative sm:h-auto ${isExpanded ? 'h-auto' : 'h-[120px]'}`}
       onClick={() => !isExpanded && isLongText && setIsExpanded(true)}
     >
       <div className="relative flex items-start gap-3">

@@ -159,7 +159,7 @@ export const KPICard: React.FC<KPICardProps> = ({
 
   return (
     <div
-      className={`bg-black/70 border border-slate-700/50 rounded-xl ${compact ? 'p-3' : 'p-4'} hover:border-slate-600/50 transition-all group overflow-hidden`}
+      className={`bg-black/30 border border-slate-700/50 rounded-xl ${compact ? 'p-3' : 'p-4'} hover:border-slate-600/50 transition-all group overflow-hidden`}
       style={{ backgroundColor: 'rgb(var(--panel-rgb) / 0.7)' }}
     >
       <div className="flex items-center justify-between gap-2 mb-2">
