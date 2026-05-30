@@ -9,6 +9,7 @@ import {
   getRollingWindowDaysForMode,
   DEFAULT_CHART_MAX_POINTS,
   pickChartAggregation,
+  uniformDownsample,
 } from '../../../utils/date/dateUtils';
 import { computationCache } from '../../../utils/storage/computationCache';
 import { dashboardCacheKeys } from '../../../utils/storage/cacheKeys';
@@ -41,11 +42,14 @@ export const useDashboardIntensityEvolution = (args: {
         : preferred;
 
     const cacheKey = dashboardCacheKeys.intensityEvolution(filterCacheKey, rangeMode, mode);
-    return computationCache.getOrCompute(
-      cacheKey,
-      fullData,
-      () => getIntensityEvolution(filtered, mode as any),
-      { ttl: 10 * 60 * 1000 }
+    return uniformDownsample(
+      computationCache.getOrCompute(
+        cacheKey,
+        fullData,
+        () => getIntensityEvolution(filtered, mode as any),
+        { ttl: 10 * 60 * 1000 }
+      ),
+      DEFAULT_CHART_MAX_POINTS
     );
   }, [fullData, rangeMode, allAggregationMode, effectiveNow, filterCacheKey]);
 

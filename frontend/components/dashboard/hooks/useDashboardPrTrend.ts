@@ -8,6 +8,7 @@ import {
   getRollingWindowDaysForMode,
   DEFAULT_CHART_MAX_POINTS,
   pickChartAggregation,
+  uniformDownsample,
 } from '../../../utils/date/dateUtils';
 import { computationCache } from '../../../utils/storage/computationCache';
 import { dashboardCacheKeys } from '../../../utils/storage/cacheKeys';
@@ -47,38 +48,41 @@ export const useDashboardPrTrend = (args: {
         : preferred;
 
     const cacheKey = dashboardCacheKeys.prTrend(filterCacheKey, rangeMode, mode);
-    return computationCache.getOrCompute(
-      cacheKey,
-      fullData,
-      () => {
-        const data = getPrsOverTime(filtered, mode as any) as PrsOverTimePoint[];
+    return uniformDownsample(
+      computationCache.getOrCompute(
+        cacheKey,
+        fullData,
+        () => {
+          const data = getPrsOverTime(filtered, mode as any) as PrsOverTimePoint[];
 
-        // Add tooltip labels and mark the current (in-progress) bucket as "to date".
-        const now = effectiveNow;
-        const currentStart =
-          mode === 'weekly'
-            ? startOfWeek(now, { weekStartsOn: 1 })
-            : mode === 'monthly'
-              ? startOfMonth(now)
-              : startOfDay(now);
-
-        return data.map((p) => {
-          const ts = p.timestamp ?? 0;
-          const isCurrent = ts > 0 && ts === currentStart.getTime();
-          const baseLabel =
+          // Add tooltip labels and mark the current (in-progress) bucket as "to date".
+          const now = effectiveNow;
+          const currentStart =
             mode === 'weekly'
-              ? `${formatDayYearContraction(new Date(ts))}`
+              ? startOfWeek(now, { weekStartsOn: 1 })
               : mode === 'monthly'
-                ? formatMonthYearContraction(new Date(ts))
-                : formatDayYearContraction(new Date(ts));
+                ? startOfMonth(now)
+                : startOfDay(now);
 
-          return {
-            ...p,
-            tooltipLabel: `${baseLabel}${isCurrent ? ' (to date)' : ''}`,
-          };
-        });
-      },
-      { ttl: 10 * 60 * 1000 }
+          return data.map((p) => {
+            const ts = p.timestamp ?? 0;
+            const isCurrent = ts > 0 && ts === currentStart.getTime();
+            const baseLabel =
+              mode === 'weekly'
+                ? `${formatDayYearContraction(new Date(ts))}`
+                : mode === 'monthly'
+                  ? formatMonthYearContraction(new Date(ts))
+                  : formatDayYearContraction(new Date(ts));
+
+            return {
+              ...p,
+              tooltipLabel: `${baseLabel}${isCurrent ? ' (to date)' : ''}`,
+            };
+          });
+        },
+        { ttl: 10 * 60 * 1000 }
+      ),
+      DEFAULT_CHART_MAX_POINTS
     );
   }, [fullData, rangeMode, allAggregationMode, effectiveNow, filterCacheKey]);
 

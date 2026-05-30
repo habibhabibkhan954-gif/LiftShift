@@ -13,6 +13,7 @@ import {
   getRollingWindowStartForMode,
   DEFAULT_CHART_MAX_POINTS,
   pickChartAggregation,
+  uniformDownsample,
 } from '../../../utils/date/dateUtils';
 import { getDisplayVolume } from '../../../utils/format/volumeDisplay';
 import { computationCache } from '../../../utils/storage/computationCache';
@@ -70,10 +71,11 @@ export const useDashboardVolumeDensity = (args: {
     const mode = pickAutoMode(source, baseMode);
 
     const cacheKey = dashboardCacheKeys.volumeDensity(filterCacheKey, rangeMode, weightUnit);
-    return computationCache.getOrCompute(
-      cacheKey,
-      dailyData,
-      () => {
+    return uniformDownsample(
+      computationCache.getOrCompute(
+        cacheKey,
+        dailyData,
+        () => {
         if (mode === 'all') {
           return source.map((d) => ({
             ...d,
@@ -148,7 +150,9 @@ export const useDashboardVolumeDensity = (args: {
         }
       },
       { ttl: 10 * 60 * 1000 }
-    );
+    ),
+    DEFAULT_CHART_MAX_POINTS
+  );
   }, [dailyData, rangeMode, smartMode, weightUnit, effectiveNow, filterCacheKey]);
 
   const volumeDensityTrend = useMemo(() => {

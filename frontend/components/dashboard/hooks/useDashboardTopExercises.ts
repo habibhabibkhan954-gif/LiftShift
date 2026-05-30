@@ -4,7 +4,7 @@ import type { ExerciseStats, WorkoutSet } from '../../../types';
 import { getTopExercisesRadial, getTopExercisesOverTime } from '../../../utils/analysis/core';
 import { calculateDelta } from '../../../utils/analysis/insights';
 import { isWarmupSet } from '../../../utils/analysis/classification';
-import { DEFAULT_CHART_MAX_POINTS, getSessionKey, pickChartAggregation } from '../../../utils/date/dateUtils';
+import { DEFAULT_CHART_MAX_POINTS, getSessionKey, pickChartAggregation, uniformDownsample } from '../../../utils/date/dateUtils';
 import { computationCache } from '../../../utils/storage/computationCache';
 import { dashboardCacheKeys } from '../../../utils/storage/cacheKeys';
 import { getWindowedWorkoutSets } from '../../../utils/analysis/classification';
@@ -153,11 +153,14 @@ export const useDashboardTopExercises = (args: {
 
     const namesKey = names.join('|');
     const cacheKey = dashboardCacheKeys.topExercisesOverTime(filterCacheKey, rangeMode, mode, namesKey);
-    return computationCache.getOrCompute(
-      cacheKey,
-      fullData,
-      () => getTopExercisesOverTime(filtered, names, mode as any),
-      { ttl: 10 * 60 * 1000 }
+    return uniformDownsample(
+      computationCache.getOrCompute(
+        cacheKey,
+        fullData,
+        () => getTopExercisesOverTime(filtered, names, mode as any),
+        { ttl: 10 * 60 * 1000 }
+      ),
+      DEFAULT_CHART_MAX_POINTS
     );
   }, [fullData, topExercisesBarData, topExercisesData, topExerciseMode, allAggregationMode, effectiveNow, filterCacheKey]);
 

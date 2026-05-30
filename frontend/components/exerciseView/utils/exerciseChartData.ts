@@ -5,6 +5,7 @@ import {
   getRollingWindowStartForMode,
   DEFAULT_CHART_MAX_POINTS,
   pickChartAggregation,
+  uniformDownsample,
   TimePeriod,
 } from '../../../utils/date/dateUtils';
 import { ExerciseSessionEntry } from '../../../utils/analysis/exerciseTrend';
@@ -313,18 +314,13 @@ export const buildExerciseChartData = (args: {
       });
   };
 
-  if (viewMode === 'yearly') {
-    return buildBucketedSeries(agg === 'monthly' ? 'monthly' : 'weekly');
-  }
+  const raw = viewMode === 'yearly'
+    ? buildBucketedSeries(agg === 'monthly' ? 'monthly' : 'weekly')
+    : viewMode === 'weekly' || viewMode === 'monthly'
+      ? buildBucketedSeries(agg === 'monthly' ? 'monthly' : agg === 'weekly' ? 'weekly' : 'daily')
+      : viewMode === 'all'
+        ? buildBucketedSeries(agg === 'monthly' ? 'monthly' : agg === 'weekly' ? 'weekly' : 'daily')
+        : [];
 
-  if (viewMode === 'weekly' || viewMode === 'monthly') {
-    // Always bucket within the window so multiple sessions per day don't become multiple points.
-    return buildBucketedSeries(agg === 'monthly' ? 'monthly' : agg === 'weekly' ? 'weekly' : 'daily');
-  }
-
-  if (viewMode === 'all') {
-    return buildBucketedSeries(agg === 'monthly' ? 'monthly' : agg === 'weekly' ? 'weekly' : 'daily');
-  }
-
-  return [];
+  return uniformDownsample(raw, DEFAULT_CHART_MAX_POINTS);
 };

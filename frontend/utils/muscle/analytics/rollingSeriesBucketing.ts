@@ -1,6 +1,6 @@
 import { format, startOfMonth, startOfWeek } from 'date-fns';
 import { formatMonthYearContraction, formatWeekContraction } from '../../date/dateUtils';
-import { DEFAULT_CHART_MAX_POINTS, pickChartAggregation } from '../../date/dateUtils';
+import { DEFAULT_CHART_MAX_POINTS, pickChartAggregation, uniformDownsample } from '../../date/dateUtils';
 
 type RollingWeeklySeriesEntry = {
   timestamp: number;
@@ -107,11 +107,13 @@ export const downsampleRollingWeeklySeries = (
     const agg = pickChartAggregation({ minTs, maxTs, preferred: 'weekly', maxPoints });
 
     if (agg === 'monthly') {
-      return bucketRollingWeeklySeriesToMonths(series);
+      const bucketed = bucketRollingWeeklySeriesToMonths(series);
+      return {
+        data: uniformDownsample(bucketed.data, maxPoints),
+        keys: bucketed.keys,
+      };
     }
   }
 
-  const weekBucketed = bucketRollingWeeklySeriesToWeeks(series);
-  if (weekBucketed.data.length <= maxPoints) return weekBucketed;
-  return bucketRollingWeeklySeriesToMonths(series);
+  return { data: uniformDownsample(data, maxPoints), keys };
 };
