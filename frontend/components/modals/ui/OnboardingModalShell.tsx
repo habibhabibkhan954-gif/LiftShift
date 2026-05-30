@@ -1,4 +1,6 @@
 import React from 'react';
+import { assetPath } from '../../../constants';
+import { useTheme } from '../../theme/ThemeProvider';
 
 type OnboardingModalShellProps = {
   children: React.ReactNode;
@@ -14,16 +16,22 @@ export function OnboardingModalShell({
   footer,
   maxWidthClassName = 'max-w-xl',
 }: OnboardingModalShellProps) {
+  const { mode } = useTheme();
+  const isLightTheme = mode === 'light';
+
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-sm overflow-y-auto overscroll-contain">
       <div className="min-h-full w-full px-3 sm:px-6 py-8 flex items-center justify-center">
         <div className={`w-full ${maxWidthClassName} mx-auto`}>
           <div className="relative bg-black/60 border border-slate-700/50 rounded-2xl p-5 sm:p-6 overflow-hidden backdrop-blur-md flex flex-col min-h-[500px] max-h-[min(720px,calc(100vh-5rem))]">
-            <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute -top-24 -right-28 w-72 h-72 rounded-full blur-3xl bg-emerald-500/10" />
-              <div className="absolute -bottom-28 -left-28 w-72 h-72 rounded-full blur-3xl bg-violet-500/10" />
-              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-black/20" />
-            </div>
+            {!isLightTheme && (
+              <img
+                src={assetPath('/images/misc/P15.avif')}
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none"
+              />
+            )}
 
             {header ? <div className="relative flex-shrink-0">{header}</div> : null}
 

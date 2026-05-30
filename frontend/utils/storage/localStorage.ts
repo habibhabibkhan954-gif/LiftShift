@@ -134,6 +134,19 @@ export const saveFontChoice = fontChoiceStorage.set;
 export const getFontChoice = fontChoiceStorage.get;
 export const clearFontChoice = fontChoiceStorage.clear;
 
+// Show Background Image
+const showBackgroundImageStorage = createStorageManager<boolean>({
+  key: 'hevy_analytics_show_background_image',
+  defaultValue: true,
+  serializer: (v) => v ? 'true' : 'false',
+  deserializer: (v) => v === 'true',
+  validator: (v) => v !== null ? v === 'true' : null,
+});
+
+export const saveShowBackgroundImage = showBackgroundImageStorage.set;
+export const getShowBackgroundImage = showBackgroundImageStorage.get;
+export const clearShowBackgroundImage = showBackgroundImageStorage.clear;
+
 // Time Filter Mode - for UI aggregation hints
 export type TimeFilterMode = 'all' | 'weekly' | 'monthly' | 'yearly';
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { Settings, X } from 'lucide-react';
 import { FontChoice, WeightUnit, ThemeMode, ExerciseTrendMode } from '../../../utils/storage/localStorage';
 import { BodyMapGender } from '../../bodyMap/BodyMap';
+import { assetPath } from '../../../constants';
 import {
   BodyMapGenderSection,
   FontSection,
@@ -9,6 +10,7 @@ import {
   TrendModeSection,
   WeightUnitSection,
   SecondarySetMultiplierSection,
+  BackgroundImageSection,
 } from './UserPreferencesSections';
 
 interface UserPreferencesModalProps {
@@ -26,6 +28,8 @@ interface UserPreferencesModalProps {
   onSecondarySetMultiplierChange: (value: number) => void;
   font: FontChoice;
   onFontChange: (font: FontChoice) => void;
+  showBackgroundImage: boolean;
+  onShowBackgroundImageChange: (value: boolean) => void;
 }
 
 export const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({
@@ -43,6 +47,8 @@ export const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({
   onSecondarySetMultiplierChange,
   font,
   onFontChange,
+  showBackgroundImage,
+  onShowBackgroundImageChange,
 }) => {
   if (!isOpen) return null;
 
@@ -50,18 +56,19 @@ export const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-sm overflow-y-auto overscroll-contain">
-      <div className="min-h-full w-full px-3 sm:px-4 py-4 sm:py-6 flex items-center justify-center">
+      <div className="min-h-full w-full px-3 sm:px-4 py-3 sm:py-6 flex items-center justify-center">
         <div className="w-full max-w-2xl mx-auto">
           <div className="relative bg-slate-950 border border-slate-700/50 rounded-xl p-4 sm:p-5 overflow-hidden backdrop-blur-md shadow-lg">
             {!isLightTheme ? (
-              <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute -top-24 -right-28 w-72 h-72 rounded-full blur-3xl bg-emerald-500/10" />
-                <div className="absolute -bottom-28 -left-28 w-72 h-72 rounded-full blur-3xl bg-violet-500/10" />
-                <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-black/20" />
-              </div>
+              <img
+                src={assetPath('/images/misc/P15.avif')}
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none"
+              />
             ) : null}
 
-            <div className="relative flex items-center justify-between mb-4">
+            <div className="relative flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
                   <Settings className="w-4 h-4 text-emerald-400" />
@@ -71,27 +78,42 @@ export const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="w-8 h-8 rounded-lg bg-slate-900/20 border border-slate-700/50 flex items-center justify-center text-slate-400 hover:text-slate-200 hover:border-slate-600 transition-all"
+                className="w-8 h-8 rounded-lg bg-slate-900/20 border border-slate-700/50 flex items-center justify-center text-slate-400 hover:text-slate-200 hover:ring-1 hover:ring-emerald-500 transition-all"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="relative space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="relative space-y-3 md:space-y-4">
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-2 md:gap-4">
                 <WeightUnitSection weightUnit={weightUnit} onWeightUnitChange={onWeightUnitChange} />
                 <BodyMapGenderSection bodyMapGender={bodyMapGender} onBodyMapGenderChange={onBodyMapGenderChange} />
               </div>
-              <TrendModeSection
-                exerciseTrendMode={exerciseTrendMode}
-                onExerciseTrendModeChange={onExerciseTrendModeChange}
-              />
+              <div className="grid grid-cols-2 gap-3 md:hidden">
+                <TrendModeSection
+                  exerciseTrendMode={exerciseTrendMode}
+                  onExerciseTrendModeChange={onExerciseTrendModeChange}
+                />
+                <FontSection font={font} onFontChange={onFontChange} />
+              </div>
+              <div className="hidden md:block">
+                <TrendModeSection
+                  exerciseTrendMode={exerciseTrendMode}
+                  onExerciseTrendModeChange={onExerciseTrendModeChange}
+                />
+              </div>
+              <div className="md:hidden">
+                <BackgroundImageSection showBackgroundImage={showBackgroundImage} onShowBackgroundImageChange={onShowBackgroundImageChange} />
+              </div>
+              <div className="hidden md:grid md:grid-cols-2 md:gap-4">
+                <FontSection font={font} onFontChange={onFontChange} />
+                <BackgroundImageSection showBackgroundImage={showBackgroundImage} onShowBackgroundImageChange={onShowBackgroundImageChange} />
+              </div>
+              <ThemeSection themeMode={themeMode} onThemeModeChange={onThemeModeChange} />
               <SecondarySetMultiplierSection
                 secondarySetMultiplier={secondarySetMultiplier}
                 onSecondarySetMultiplierChange={onSecondarySetMultiplierChange}
               />
-              <FontSection font={font} onFontChange={onFontChange} />
-              <ThemeSection themeMode={themeMode} onThemeModeChange={onThemeModeChange} />
             </div>
 
             <div className="relative mt-4 pt-3 border-t border-slate-700/50">

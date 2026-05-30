@@ -15,6 +15,8 @@ import {
   saveExerciseTrendMode,
   getSecondarySetMultiplier,
   saveSecondarySetMultiplier,
+  getShowBackgroundImage,
+  saveShowBackgroundImage,
 } from '../../utils/storage/localStorage';
 import { BodyMapGender } from '../../components/bodyMap/BodyMap';
 
@@ -44,6 +46,10 @@ export interface UseAppPreferencesReturn {
   // Secondary set multiplier
   secondarySetMultiplier: number;
   setSecondarySetMultiplier: (value: number) => void;
+
+  // Show background image
+  showBackgroundImage: boolean;
+  setShowBackgroundImage: (value: boolean) => void;
 }
 
 export function useAppPreferences(): UseAppPreferencesReturn {
@@ -54,6 +60,7 @@ export function useAppPreferences(): UseAppPreferencesReturn {
   const [bodyMapGender, setBodyMapGenderState] = useState<BodyMapGender>(() => getBodyMapGender());
   const [exerciseTrendMode, setExerciseTrendModeState] = useState<ExerciseTrendMode>(() => getExerciseTrendMode());
   const [secondarySetMultiplier, setSecondarySetMultiplierState] = useState<number>(() => getSecondarySetMultiplier());
+  const [showBackgroundImage, setShowBackgroundImageState] = useState<boolean>(() => getShowBackgroundImage());
 
   // Persist weight unit
   useEffect(() => {
@@ -77,6 +84,11 @@ export function useAppPreferences(): UseAppPreferencesReturn {
     saveSecondarySetMultiplier(secondarySetMultiplier);
   }, [secondarySetMultiplier]);
 
+  // Persist show background image
+  useEffect(() => {
+    saveShowBackgroundImage(showBackgroundImage);
+  }, [showBackgroundImage]);
+
   // Apply CSS variables - heatmap hue (warm red for dark themes)
   useLayoutEffect(() => {
     const root = document.documentElement;
@@ -98,5 +110,7 @@ export function useAppPreferences(): UseAppPreferencesReturn {
     setExerciseTrendMode: setExerciseTrendModeState,
     secondarySetMultiplier,
     setSecondarySetMultiplier: setSecondarySetMultiplierState,
+    showBackgroundImage,
+    setShowBackgroundImage: setShowBackgroundImageState,
   };
 }
