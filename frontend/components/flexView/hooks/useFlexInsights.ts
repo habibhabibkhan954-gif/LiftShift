@@ -47,8 +47,8 @@ export const useFlexInsights = ({
     const stats = exerciseStats ?? getExerciseStats(data);
     return stats
       .filter((s) => s.prCount > 0)
-      .sort((a, b) => b.maxWeight - a.maxWeight)
-      .slice(0, 3)
+      .sort((a, b) => b.prCount - a.prCount)
+      .slice(0, 2)
       .map((s) => {
         const asset = getAssetForExercise(s.name);
         const isLowerWeightBetter = getLoadProgressionDirection(s.name) === 'lower';

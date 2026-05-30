@@ -159,7 +159,7 @@ export const PersonalRecordsCard: React.FC<{
         {topPRExercises.length > 0 && (
           <div className="w-full mt-2">
             {(() => {
-              const display = topPRExercises.slice(0, 2);
+              const display = topPRExercises;
               const maxW = Math.max(...display.map((e) => e.weight), 1);
               const rowH = 48;
               const avatar = 40;

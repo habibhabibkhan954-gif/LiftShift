@@ -92,7 +92,7 @@ export const calculatePRInsights = (data: WorkoutSet[], now: Date = new Date(0))
 
   const thirtyDaysAgo = subDays(now, 30);
   const recentGoldCount = goldPRs.filter((pr) => pr.date >= thirtyDaysAgo).length;
-  const prFrequency = Math.round((recentGoldCount / 4) * 10) / 10;
+  const prFrequency = Math.round((recentGoldCount / (30 / 7)) * 10) / 10;
 
   return {
     daysSinceLastPR,

@@ -173,6 +173,9 @@ export const detectGoldAndSilverPRs = (
     const weight = set.weight_kg || 0;
     const reps = set.reps || 0;
     
+    // Skip sets without a valid date (prevents undefined date entries)
+    if (!set.parsedDate) continue;
+
     // Check if this set is a gold PR
     let isGoldPR = false;
     for (const tracker of goldTrackers) {
@@ -185,7 +188,7 @@ export const detectGoldAndSilverPRs = (
           exercise,
           weight,
           reps,
-          date: set.parsedDate!,
+          date: set.parsedDate,
           previousBest,
           improvement: tracker.getImprovement(exercise, previousBest, currentValue),
           type: tracker.type,
@@ -195,7 +198,7 @@ export const detectGoldAndSilverPRs = (
     }
     
     // Track the last gold PR date
-    if (isGoldPR && set.parsedDate) {
+    if (isGoldPR) {
       const current = exerciseStatus.get(exercise);
       if (!current || !current.lastGoldPRDate || set.parsedDate > current.lastGoldPRDate) {
         exerciseStatus.set(exercise, {
@@ -219,8 +222,8 @@ export const detectGoldAndSilverPRs = (
     const exercise = set.exercise_title || 'Unknown';
     const status = exerciseStatus.get(exercise);
     
-    // Skip if exercise has recent gold PR
-    if (!status || status.hasRecentGoldPR) continue;
+    // Skip if exercise has recent gold PR (exercises without any gold PR are eligible)
+    if (status?.hasRecentGoldPR) continue;
     
     const weight = set.weight_kg || 0;
     const reps = set.reps || 0;
