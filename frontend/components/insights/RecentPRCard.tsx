@@ -37,8 +37,8 @@ export const RecentPRCard: React.FC<RecentPRCardProps> = ({
   const isToday = now ? date.toDateString() === now.toDateString() : false;
 
   const cardClass = isSilver 
-    ? (isLatest ? 'bg-slate-500/15 border border-slate-500/40' : 'bg-black/30')
-    : (isLatest ? 'bg-emerald-500/5 border border-emerald-500/20' : 'bg-black/30');
+    ? (isLatest ? 'bg-slate-500/15 border border-slate-500/40' : 'bg-black/20')
+    : (isLatest ? 'bg-emerald-500/5 border border-emerald-500/20' : 'bg-black/20');
     
   const improvementClass = isSilver ? 'text-slate-300' : 'text-emerald-400';
 

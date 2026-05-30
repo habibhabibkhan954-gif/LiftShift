@@ -1,5 +1,5 @@
 import React from 'react';
-import { assetPath } from '../../../constants';
+import bgImage from '../../../src/assets/images/misc/P15.avif';
 
 export type CardTheme = 'dark' | 'light';
 
@@ -16,7 +16,7 @@ export const FlexCard: React.FC<FlexCardProps> = ({ children, theme, className =
     ? 'bg-cover bg-center bg-no-repeat'
     : 'bg-gradient-to-b from-[#F5F7FA] via-[#EAF2F5] to-[#5CC6D0]';
   const cardBgStyle = isDark
-    ? { backgroundImage: `url(${assetPath('/images/misc/P15.avif')})` }
+    ? { backgroundImage: `url(${bgImage})` }
     : {};
   const glassSurface = isDark ? 'bg-[#0F172A]/72' : 'bg-white/70';
   const cardShadow = isDark

@@ -41,7 +41,7 @@ export const HistorySetRow: React.FC<HistorySetRowProps> = ({
   const isLowerWeightBetter = getLoadProgressionDirection(set.exercise_title) === 'lower';
 
   let rowStatusClass = 'border-transparent';
-  let dotClass = 'bg-black/30 border-slate-700';
+  let dotClass = 'bg-black/20 border-slate-700';
   let isPrRow = false;
 
   const prDelta = (() => {

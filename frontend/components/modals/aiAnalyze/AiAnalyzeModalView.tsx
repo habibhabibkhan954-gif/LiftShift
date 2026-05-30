@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { assetPath } from '../../../constants';
+import bgImage from '../../../src/assets/images/misc/P15.avif';
 import type { TooltipData } from '../../ui/Tooltip';
 import type {
   AnalysisCategory,
@@ -64,7 +64,7 @@ export const AiAnalyzeModalView: React.FC<AiAnalyzeModalViewProps> = ({
         >
           {!isLightTheme && (
             <img
-              src={assetPath('/images/misc/P15.avif')}
+              src={bgImage}
               alt=""
               aria-hidden="true"
               className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none"

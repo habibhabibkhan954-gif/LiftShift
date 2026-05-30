@@ -114,7 +114,7 @@ export const CalendarWeekGrid: React.FC<CalendarWeekGridProps> = ({
                 <button
                   onClick={() => onSelectWeek && enabledWeek && onSelectWeek({ start: weekStart, end: weekEnd })}
                   className={`text-[9px] px-1.5 py-1 rounded border w-[72px] shrink-0 truncate ${
-                    enabledWeek ? 'bg-black/30 hover:bg-black/60 border-slate-700/50' : 'bg-black/40 border-slate-700/50 opacity-25 cursor-not-allowed'
+                    enabledWeek ? 'bg-black/20 hover:bg-black/60 border-slate-700/50' : 'bg-black/40 border-slate-700/50 opacity-25 cursor-not-allowed'
                   }`}
                   title={`${formatDayContraction(weekStart)}–${formatDayContraction(weekEnd)}`}
                 >

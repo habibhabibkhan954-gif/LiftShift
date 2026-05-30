@@ -53,7 +53,7 @@ export const MuscleTrendCard = ({
   tooltipStyle: Record<string, unknown>;
   muscleVsLabel: string;
 }) => (
-  <div className="bg-black/30 border border-slate-700/50 px-2 sm:px-3 py-4 sm:py-6 rounded-xl min-h-[400px] sm:min-h-[520px] flex flex-col transition-[opacity,transform] duration-300 min-w-0" style={{ backgroundColor: 'rgb(var(--panel-rgb) / 0.5)' }}>
+  <div className="bg-black/20 border border-slate-700/50 px-2 sm:px-3 py-4 sm:py-6 rounded-xl min-h-[400px] sm:min-h-[520px] flex flex-col transition-[opacity,transform] duration-300 min-w-0" style={{ backgroundColor: 'rgb(var(--panel-rgb) / 0.5)' }}>
     <MuscleTrendHeader
       muscleGrouping={muscleGrouping}
       setMuscleGrouping={setMuscleGrouping}

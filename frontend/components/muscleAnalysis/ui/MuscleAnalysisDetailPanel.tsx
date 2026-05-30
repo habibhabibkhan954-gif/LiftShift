@@ -65,8 +65,8 @@ export const MuscleAnalysisDetailPanel: React.FC<MuscleAnalysisDetailPanelProps>
   const totalSetsInWindow = windowedSelectionBreakdown?.totalSetsInWindow ?? 0;
 
   return (
-    <div data-muscle-detail-panel className="bg-black/30 rounded-xl border border-slate-700/50 overflow-hidden flex flex-col">
-      <div className="bg-black/30  p-3 flex items-center justify-between">
+    <div data-muscle-detail-panel className="bg-black/20 rounded-xl border border-slate-700/50 overflow-hidden flex flex-col">
+      <div className="bg-black/20  p-3 flex items-center justify-between">
         <div className="flex items-center gap-2 min-w-0 flex-wrap">
           <h2 className="text-lg font-bold text-white truncate" style={SEMI_FANCY_FONT}>{title}</h2>
           <span

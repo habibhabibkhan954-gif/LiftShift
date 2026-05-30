@@ -33,7 +33,7 @@ export const HevyMethodModal: React.FC<HevyMethodModalProps> = ({
             <button
               type="button"
               onClick={onBack}
-              className="inline-flex items-center justify-center w-9 h-9 rounded-md text-xs font-semibold bg-black/60 hover:bg-black/30 border border-slate-700/50 text-slate-200 cursor-pointer"
+              className="inline-flex items-center justify-center w-9 h-9 rounded-md text-xs font-semibold bg-black/60 hover:bg-black/20 border border-slate-700/50 text-slate-200 cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
@@ -49,7 +49,7 @@ export const HevyMethodModal: React.FC<HevyMethodModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="inline-flex items-center justify-center h-9 px-3 rounded-md text-xs font-semibold bg-black/60 hover:bg-black/30 border border-slate-700/50 text-slate-200 cursor-pointer"
+                className="inline-flex items-center justify-center h-9 px-3 rounded-md text-xs font-semibold bg-black/60 hover:bg-black/20 border border-slate-700/50 text-slate-200 cursor-pointer"
               >
                 Close
               </button>

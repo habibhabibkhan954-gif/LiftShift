@@ -17,7 +17,7 @@ export const StatCard = ({
   delta?: number;
   deltaSuffix?: string;
 }) => (
-  <div className="bg-black/30 border border-slate-700/50 p-4 md:p-5 rounded-lg flex items-center justify-between group hover:border-slate-600/50 transition-colors duration-300 h-full">
+  <div className="bg-black/20 border border-slate-700/50 p-4 md:p-5 rounded-lg flex items-center justify-between group hover:border-slate-600/50 transition-colors duration-300 h-full">
     <div>
       <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-0.5">{label}</p>
       <div className="flex items-baseline gap-1">

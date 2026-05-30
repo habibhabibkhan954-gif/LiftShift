@@ -46,7 +46,7 @@ export const SET_TYPE_CONFIG: Record<SetTypeId, SetTypeConfig> = {
     label: 'Working Set',
     shortLabel: '',
     color: 'text-white',
-    bgColor: 'bg-black/30',
+    bgColor: 'bg-black/20',
     borderColor: 'border-slate-700',
     description: 'Standard working set',
     isWorkingSet: true,

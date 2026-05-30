@@ -2,7 +2,7 @@ import React from 'react';
 
 export const HistoryCardSkeleton: React.FC<{ minHeight?: number }> = ({ minHeight = 220 }) => (
   <div
-    className="bg-black/30 border border-slate-700/50 rounded-2xl p-4 sm:p-5 overflow-hidden"
+    className="bg-black/20 border border-slate-700/50 rounded-2xl p-4 sm:p-5 overflow-hidden"
     style={{ minHeight, backgroundColor: 'rgb(var(--panel-rgb) / 0.5)' }}
   >
     <div className="animate-pulse">

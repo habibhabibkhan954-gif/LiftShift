@@ -1,5 +1,5 @@
 import React from 'react';
-import { assetPath } from '../../../constants';
+import bgImage from '../../../src/assets/images/misc/P15.avif';
 import { useTheme } from '../../theme/ThemeProvider';
 
 type OnboardingModalShellProps = {
@@ -26,7 +26,7 @@ export function OnboardingModalShell({
           <div className="relative bg-black/60 border border-slate-700/50 rounded-2xl p-5 sm:p-6 overflow-hidden backdrop-blur-md flex flex-col min-h-[500px] max-h-[min(720px,calc(100vh-5rem))]">
             {!isLightTheme && (
               <img
-                src={assetPath('/images/misc/P15.avif')}
+                src={bgImage}
                 alt=""
                 aria-hidden="true"
                 className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none"
