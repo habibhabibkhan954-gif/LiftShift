@@ -27,10 +27,8 @@ export const RecentPRsPanel: React.FC<RecentPRsPanelProps> = memo(function Recen
 
   if (recentPRs.length === 0) return null;
 
-  const displayPRs = recentPRs.slice(0, 5);
-
   return (
-    <div className="bg-black/30 border border-slate-700/50 rounded-xl p-4" style={{ backgroundColor: 'rgb(var(--panel-rgb) / 0.7)' }}>
+    <div className="bg-black/20 border border-slate-700/50 rounded-xl p-4" style={{ backgroundColor: 'rgb(var(--panel-rgb) / 0.7)' }}>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="p-1.5 rounded-lg bg-yellow-500/10">
@@ -53,7 +51,7 @@ export const RecentPRsPanel: React.FC<RecentPRsPanelProps> = memo(function Recen
       </div>
       <div className="overflow-x-auto -mx-2 px-2 pb-2">
         <div className="flex gap-2" style={{ minWidth: 'min-content' }}>
-          {displayPRs.map((pr, idx) => (
+          {recentPRs.map((pr, idx) => (
             <div key={`${pr.exercise}-${pr.date.getTime()}`} className="min-w-[220px] flex-shrink-0">
               <RecentPRCard
                 pr={pr}
