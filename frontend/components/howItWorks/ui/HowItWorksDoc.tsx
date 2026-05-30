@@ -261,18 +261,10 @@ export const HowItWorksDoc: React.FC<Props> = ({ className = '', showTitle = tru
   }, [navItems]);
 
   return (
-    <div className={`space-y-8 ${className}`}>
-      {showTitle ? (
-        <div className="px-5 sm:px-6">
-          <h1 className={`text-2xl sm:text-3xl font-bold tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>How LiftShift works</h1>
-          <p className={`mt-2 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-            A user-friendly overview of the features, assumptions, and definitions behind the workout analytics dashboard.
-          </p>
-        </div>
-      ) : null}
-
+    <div className={`space-y-2 ${className}`}>
+    
       {/* Mobile burger */}
-      <div className="lg:hidden flex justify-end px-5 sm:px-6">
+      <div className="lg:hidden flex justify-end px-3 sm:px-3">
         <button
           onClick={() => setMobileMenuOpen((prev) => !prev)}
           className={`p-2.5 rounded-xl border-2 transition-colors ${
@@ -288,8 +280,8 @@ export const HowItWorksDoc: React.FC<Props> = ({ className = '', showTitle = tru
       {/* Docs layout: sidebar (left) + content (right) */}
       <div ref={flexRef} className="flex items-start">
         {/* Sidebar */}
-        <aside ref={sidebarRef} className={`hidden lg:flex lg:flex-col w-[280px] shrink-0 border-r sticky top-0 self-start ${isLight ? 'border-slate-300/50' : 'border-slate-800/40'}`}>
-          <div className={`sticky top-0 z-10 shrink-0 px-5 py-3.5 border-b ${isLight ? 'border-slate-300/30 bg-white/50' : 'border-slate-800/30 bg-black/25'}`}>
+        <aside ref={sidebarRef} className={`hidden lg:flex lg:flex-col w-[280px] shrink-0  sticky top-0 self-start ${isLight ? 'border-slate-300/50' : 'border-slate-800/40'}`}>
+          <div className={`sticky top-0 z-10 shrink-0 px-5 py-3.5 `}>
             <span className={`text-[11px] font-bold uppercase tracking-widest ${isLight ? 'text-slate-500' : 'text-slate-500'}`}>Contents</span>
           </div>
           <nav className="py-3 space-y-0">
