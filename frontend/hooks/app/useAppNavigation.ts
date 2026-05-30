@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useLayoutEffect, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useLayoutEffect, useEffect, startTransition } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { Tab, getPathForTab, getTabFromPathname, parseLocalDateFromYyyyMmDd, formatLocalDateAsYyyyMmDd } from '../../app/navigation';
 import { trackEvent } from '../../utils/integrations/analytics';
@@ -84,7 +84,9 @@ export function useAppNavigation(): UseAppNavigationReturn {
       tabScrollPositionsRef.current[activeTabRef.current] = el.scrollTop;
     }
     pendingNavRef.current = { tab, kind };
-    setActiveTab(tab);
+    startTransition(() => {
+      setActiveTab(tab);
+    });
   }, []);
 
   // URL param synchronization

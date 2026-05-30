@@ -65,7 +65,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   now,
   secondarySetMultiplier = 0.5,
 }) => {
-  const [isMounted, setIsMounted] = useState(false);
+  const [isMounted, setIsMounted] = useState(true);
   const { mode: themeMode } = useTheme();
 
   const effectiveNow = useMemo(() => now ?? getEffectiveNowFromWorkoutData(parsedData), [now, parsedData]);
@@ -123,12 +123,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
     prTrend: chartOverrides.prTrend ?? 'monthly',
   }), [chartOverrides]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsMounted(true);
-    }, 50);
-    return () => clearTimeout(timer);
-  }, []);
 
   const toggleChartMode = (chart: string, mode: TimeFilterMode) => {
     setChartOverrides((prev) => ({ ...prev, [chart]: mode }));

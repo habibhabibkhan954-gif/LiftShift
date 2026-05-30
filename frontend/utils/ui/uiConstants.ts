@@ -86,6 +86,11 @@ export const ANIMATION_KEYFRAMES = `
     to { transform: rotate(360deg); }
   }
 
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
   :root {
     --meteor-border-bg: rgb(var(--panel-rgb));
     --meteor-dot: 255 255 255;
