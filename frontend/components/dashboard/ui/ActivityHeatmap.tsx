@@ -275,7 +275,7 @@ export const ActivityHeatmap = memo(({
 
       <div className="flex-1 w-full overflow-x-auto pb-2 custom-scrollbar" ref={scrollContainerRef}>
         <div className="w-max">
-          <div className="flex items-start gap-3">
+          <div className="flex items-start gap-5">
             <div className="flex flex-col items-center justify-center min-w-[40px] self-center">
               {hasOlderData && (
                 <button
