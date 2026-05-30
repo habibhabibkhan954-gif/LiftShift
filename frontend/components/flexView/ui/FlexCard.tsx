@@ -1,4 +1,5 @@
 import React from 'react';
+import { assetPath } from '../../../constants';
 
 export type CardTheme = 'dark' | 'light';
 
@@ -11,9 +12,12 @@ interface FlexCardProps {
 // Shared card wrapper for consistent styling
 export const FlexCard: React.FC<FlexCardProps> = ({ children, theme, className = '' }) => {
   const isDark = theme === 'dark';
-  const cardGradient = isDark
-    ? 'bg-gradient-to-b from-[#0B1220] via-[#0F172A] to-[#0F4C5C]'
+  const cardBgClass = isDark
+    ? 'bg-cover bg-center bg-no-repeat'
     : 'bg-gradient-to-b from-[#F5F7FA] via-[#EAF2F5] to-[#5CC6D0]';
+  const cardBgStyle = isDark
+    ? { backgroundImage: `url(${assetPath('/images/misc/P15.avif')})` }
+    : {};
   const glassSurface = isDark ? 'bg-[#0F172A]/72' : 'bg-white/70';
   const cardShadow = isDark
     ? 'shadow-[0_28px_65px_rgba(0,0,0,0.42)]'
@@ -22,7 +26,7 @@ export const FlexCard: React.FC<FlexCardProps> = ({ children, theme, className =
 
   return (
     <div className={`relative isolate overflow-hidden rounded-3xl ${cardShadow} transition-all duration-500`}>
-      <div className={`absolute inset-0 ${cardGradient}`} />
+      <div className={`absolute inset-0 ${cardBgClass}`} style={cardBgStyle} />
       <div className={`absolute inset-0  ${glassSurface}`} />
       <div className={`pointer-events-none absolute -right-20 -top-20 h-52 w-52 rounded-full blur-3xl ${glowClass}`} />
       <div className={`relative z-10 h-full ${className}`}>
