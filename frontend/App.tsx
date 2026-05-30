@@ -591,6 +591,7 @@ const App: React.FC = () => {
             className={`fixed inset-0 w-full h-full object-cover z-[-1] pointer-events-none transition-opacity duration-500 ${bgImageLoaded ? 'opacity-40' : 'opacity-0'}`}
           />
         )}
+        {onboarding?.step !== 'platform' && (
         <AppShell
         onboardingIntent={onboarding?.intent ?? null}
         onSetOnboarding={setOnboarding}
@@ -642,6 +643,7 @@ const App: React.FC = () => {
         secondarySetMultiplier={secondarySetMultiplier}
         now={filteredEffectiveNow}
       />
+        )}
 
       <UserPreferencesModal
         isOpen={preferencesModalOpen}
