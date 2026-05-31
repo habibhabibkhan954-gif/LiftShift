@@ -1,5 +1,5 @@
 import React from 'react';
-import { Area, AreaChart, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis, YAxis } from 'recharts';
+import { Area, ComposedChart, Line, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis, YAxis } from 'recharts';
 import { TrendingDown, TrendingUp, X } from 'lucide-react';
 import { LazyRender } from '../../ui/LazyRender';
 import { ChartSkeleton } from '../../ui/ChartSkeleton';
@@ -115,7 +115,7 @@ export const MuscleAnalysisDetailPanel: React.FC<MuscleAnalysisDetailPanelProps>
             {trendData.length > 0 ? (
               <LazyRender className="w-full h-full" placeholder={<ChartSkeleton className="h-full" />}>
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={trendData}>
+                  <ComposedChart data={trendData}>
                     <defs>
                       <linearGradient id="muscleColorGradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor={volumeDelta?.direction === 'down' ? '#f43f5e' : '#10b981'} stopOpacity={0.4} />
@@ -130,6 +130,12 @@ export const MuscleAnalysisDetailPanel: React.FC<MuscleAnalysisDetailPanelProps>
                       <mask id="efMask" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox">
                         <rect x="0" y="0" width="1" height="1" fill="url(#efGrad)" />
                       </mask>
+                      <marker id="muscleArrowUp" viewBox="0 0 6 10" refX="4.8" refY="5" markerWidth="5" markerHeight="9" orient="auto" markerUnits="userSpaceOnUse">
+                        <path d="M 0 0 L 6 5 L 0 10 z" fill="#10b981" />
+                      </marker>
+                      <marker id="muscleArrowDown" viewBox="0 0 6 10" refX="4.8" refY="5" markerWidth="5" markerHeight="9" orient="auto" markerUnits="userSpaceOnUse">
+                        <path d="M 0 0 L 6 5 L 0 10 z" fill="#f43f5e" />
+                      </marker>
                     </defs>
                     <XAxis
                       dataKey="period"
@@ -158,16 +164,30 @@ export const MuscleAnalysisDetailPanel: React.FC<MuscleAnalysisDetailPanelProps>
                         return [`${v} sets/wk`];
                       }}
                     />
-                    <Area
+                    <><Area
+                      type="monotone"
+                      dataKey="sets"
+                      stroke="none"
+                      fill="url(#muscleColorGradient)"
+                      mask="url(#efMask)"
+                      dot={false}
+                      activeDot={false}
+                      animationDuration={500}
+                    />
+                    <Line
                       type="monotone"
                       dataKey="sets"
                       stroke={volumeDelta?.direction === 'down' ? '#f43f5e' : '#10b981'}
                       strokeWidth={2}
-                      fill="url(#muscleColorGradient)"
-                      mask="url(#efMask)"
+                      fill="none"
+                      dot={false}
+                      activeDot={{ r: 5, strokeWidth: 0 }}
+                      isAnimationActive={true}
                       animationDuration={500}
+                      markerEnd={`url(#${volumeDelta?.direction === 'down' ? 'muscleArrowDown' : 'muscleArrowUp'})`}
                     />
-                  </AreaChart>
+                    </>
+                  </ComposedChart>
                 </ResponsiveContainer>
               </LazyRender>
             ) : (

@@ -1,7 +1,8 @@
 import React, { useMemo } from "react";
 import {
   Area,
-  AreaChart,
+  ComposedChart,
+  Line,
   ResponsiveContainer,
   Tooltip as RechartsTooltip,
   XAxis,
@@ -507,7 +508,7 @@ export const MuscleAnalysisGraphPanel: React.FC<MuscleAnalysisGraphPanelProps> =
             {trendData.length > 0 ? (
               <div className="h-[180px] sm:h-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart
+                  <ComposedChart
                     data={displayDataWithZone}
                     margin={{ top: 10, right: 20, left: 5, bottom: 0 }}
                   >
@@ -586,6 +587,9 @@ export const MuscleAnalysisGraphPanel: React.FC<MuscleAnalysisGraphPanelProps> =
                           style={{ mixBlendMode: 'multiply' }}
                         />
                       </mask>
+                      <marker id="graphArrow" viewBox="0 0 6 10" refX="4.8" refY="5" markerWidth="5" markerHeight="9" orient="auto" markerUnits="userSpaceOnUse">
+                        <path d="M 0 0 L 6 5 L 0 10 z" fill="#175c0f" />
+                      </marker>
                     </defs>
                     <XAxis
                       dataKey="timestamp"
@@ -626,15 +630,19 @@ export const MuscleAnalysisGraphPanel: React.FC<MuscleAnalysisGraphPanelProps> =
                       mask="url(#zoneAreaTopFadeMaskDef)"
                       animationDuration={500}
                     />
-                    <Area
+                    <Line
                       type="monotone"
                       dataKey="sets"
                       stroke="#175c0f"
                       strokeWidth={0.5}
                       fill="none"
+                      dot={false}
+                      activeDot={{ r: 5, strokeWidth: 0 }}
+                      isAnimationActive={true}
                       animationDuration={500}
+                      markerEnd="url(#graphArrow)"
                     />
-                  </AreaChart>
+                  </ComposedChart>
                 </ResponsiveContainer>
               </div>
             ) : (
