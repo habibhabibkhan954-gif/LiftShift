@@ -513,79 +513,29 @@ export const MuscleAnalysisGraphPanel: React.FC<MuscleAnalysisGraphPanelProps> =
                     margin={{ top: 10, right: 20, left: 5, bottom: 0 }}
                   >
                     <defs>
-                      <linearGradient
-                        id="zoneGradient"
-                        x1="0"
-                        y1="0"
-                        x2="1"
-                        y2="0"
-                      >
-                        {gradientStops.map((stop, idx) => (
-                          <stop
-                            key={idx}
-                            offset={`${stop.offset * 100}%`}
-                            stopColor={stop.color}
-                            stopOpacity={1}
-                          />
+                      <linearGradient id="zoneGradient" x1="0" y1="0" x2="1" y2="0">
+                        {gradientStops.length > 0 && (
+                          <>
+                            <stop offset="0%" stopColor={gradientStops[0].color} stopOpacity={0} />
+                            <stop offset="6%" stopColor={gradientStops[0].color} stopOpacity={1} />
+                          </>
+                        )}
+                        {gradientStops.slice(1, -1).map((stop, idx) => (
+                          <stop key={idx} offset={`${stop.offset * 100}%`} stopColor={stop.color} stopOpacity={1} />
                         ))}
+                        {gradientStops.length > 0 && (
+                          <>
+                            <stop offset="94%" stopColor={gradientStops[gradientStops.length - 1].color} stopOpacity={1} />
+                            <stop offset="100%" stopColor={gradientStops[gradientStops.length - 1].color} stopOpacity={0} />
+                          </>
+                        )}
                       </linearGradient>
-                      <linearGradient
-                        id="zoneAreaTopFadeMask"
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
-                        <stop offset="0%" stopColor="#ffffff" />
-                        <stop
-                          offset="40%"
-                          stopColor="#999999"
-                        />
-                        <stop
-                          offset="60%"
-                          stopColor="#666666"
-                        />
-                        <stop
-                          offset="80%"
-                          stopColor="#333333"
-                        />
-                        <stop
-                          offset="100%"
-                          stopColor="#000000"
-                        />
+                      <linearGradient id="zoneAreaTopFadeMask" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#ffffff" stopOpacity={0.5} />
+                        <stop offset="95%" stopColor="#ffffff" stopOpacity={0} />
                       </linearGradient>
-                      <linearGradient
-                        id="efGrad"
-                        x1="0"
-                        y1="0"
-                        x2="1"
-                        y2="0"
-                      >
-                        <stop offset="0%" stopColor="#000000" />
-                        <stop offset="12%" stopColor="#ffffff" />
-                        <stop offset="88%" stopColor="#ffffff" />
-                        <stop offset="100%" stopColor="#000000" />
-                      </linearGradient>
-                      <mask
-                        id="zoneAreaTopFadeMaskDef"
-                        maskUnits="objectBoundingBox"
-                        maskContentUnits="objectBoundingBox"
-                      >
-                        <rect
-                          x="0"
-                          y="0"
-                          width="1"
-                          height="1"
-                          fill="url(#zoneAreaTopFadeMask)"
-                        />
-                        <rect
-                          x="0"
-                          y="0"
-                          width="1"
-                          height="1"
-                          fill="url(#efGrad)"
-                          style={{ mixBlendMode: 'multiply' }}
-                        />
+                      <mask id="zoneAreaTopFadeMaskDef" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox">
+                        <rect x="0" y="0" width="1" height="1" fill="url(#zoneAreaTopFadeMask)" />
                       </mask>
                       <marker id="graphArrow" viewBox="0 0 6 10" refX="4.8" refY="5" markerWidth="5" markerHeight="9" orient="auto" markerUnits="userSpaceOnUse">
                         <path d="M 0 0 L 6 5 L 0 10 z" fill="#175c0f" />
