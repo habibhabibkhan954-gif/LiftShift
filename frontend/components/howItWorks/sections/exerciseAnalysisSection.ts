@@ -25,8 +25,8 @@ export const EXERCISE_ANALYSIS_SECTION: HowItWorksSection = {
         {
           type: 'ul',
           items: [
-            'Getting stronger (> +2%): clear positive change. Trend is up.',
-            'Plateauing (between -3% and +2%): roughly stable. Time for a small push.',
+            'Getting stronger (> +1%): clear positive change. Trend is up.',
+            'Plateauing (between -3% and +1%): roughly stable. Time for a small push.',
             'Taking a dip (< -3%): clear drop. Fatigue, deload, or life stress showing.',
             'New: not enough sessions yet to read a trend (fewer than 2 sessions).',
           ],

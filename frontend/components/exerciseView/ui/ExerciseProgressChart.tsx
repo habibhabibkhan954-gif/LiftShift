@@ -17,6 +17,7 @@ import { SegmentControl } from '../../ui/SegmentControl';
 import { formatNumber } from '../../../utils/format/formatters';
 import { RECHARTS_XAXIS_PADDING, RECHARTS_YAXIS_MARGIN, calculateYAxisDomain, formatAxisNumber } from '../../../utils/chart/chartEnhancements';
 import type { ExerciseSessionEntry } from '../../../utils/analysis/exerciseTrend';
+import { GAINING_PCT_THRESHOLD, LOSING_PCT_THRESHOLD } from '../../../utils/analysis/exerciseTrend';
 import type { WeightUnit } from '../../../utils/storage/localStorage';
 import { CustomTooltip } from './ExerciseChartTooltip';
 import { StrengthProgressionValueDot } from './StrengthProgressionValueDot';
@@ -87,8 +88,6 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
     
     const valueKey = isBodyweightLike ? 'reps' : 'oneRepMax';
     const stops: Array<{ offset: number; color: string }> = [];
-    const plateauThreshold = 0.02; // 2% change threshold for plateau
-    
     // Zone colors: gaining=green, plateauing=yellow, losing=red
     const colors = {
       gaining: '#22c55e',
@@ -100,7 +99,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
     const getProgressionType = (current: number, previous: number): keyof typeof colors => {
       if (previous === 0) return 'plateauing';
       const change = (current - previous) / previous;
-      if (Math.abs(change) <= plateauThreshold) return 'plateauing';
+      if (change >= LOSING_PCT_THRESHOLD / 100 && change <= GAINING_PCT_THRESHOLD / 100) return 'plateauing';
       if (isBodyweightLike) return change > 0 ? 'gaining' : 'losing';
       if (isLowerWeightBetter) return change < 0 ? 'gaining' : 'losing';
       return change > 0 ? 'gaining' : 'losing';

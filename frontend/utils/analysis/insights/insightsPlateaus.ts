@@ -1,5 +1,6 @@
 import { ExerciseStats, WorkoutSet } from '../../../types';
 import { analyzeExerciseTrendCore, summarizeExerciseHistory } from '../exerciseTrend/exerciseTrend';
+import { GAINING_PCT_THRESHOLD } from '../exerciseTrend/exerciseTrendCore';
 import { ExerciseTrendMode, WeightUnit } from '../../storage/localStorage';
 import { getPlateauAdvice } from '../../../components/exerciseView/trend/exerciseTrendUi';
 import { calculateDirectionalStrengthScore, directionalPercentChange } from '../../exercise/loadProgression';
@@ -47,7 +48,6 @@ export const detectPlateaus = (
       : calculateDirectionalStrengthScore(stat.name, sessions[0]?.weight ?? 0, sessions[0]?.reps ?? 0, sessions[0]?.oneRepMax);
 
     let sessionsSinceProgress = 1;
-    const GAINING_PCT_THRESHOLD = 2.0;
 
     for (let i = 1; i < sessions.length; i++) {
       const sessionBest = core.isBodyweightLike

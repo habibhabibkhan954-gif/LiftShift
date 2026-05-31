@@ -20,7 +20,7 @@ export const PLATEAU_DETECTION_SECTION: HowItWorksSection = {
         {
           type: 'p',
           text:
-            'LiftShift analyzes each exercise\'s trend using a windowed comparison. A recent window of sessions is compared to the immediately preceding window. If the directional strength change is between -3% and +2%, the exercise is flagged as plateauing.',
+            'LiftShift analyzes each exercise\'s trend using a windowed comparison. A recent window of sessions is compared to the immediately preceding window. If the directional strength change is between -3% and +1%, the exercise is flagged as plateauing.',
         },
         {
           type: 'p',

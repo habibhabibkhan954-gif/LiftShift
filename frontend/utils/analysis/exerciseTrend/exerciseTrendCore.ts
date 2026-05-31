@@ -23,10 +23,10 @@ export const FAKE_PR_FOLLOWUP_REGRESSION = -2.0; // Reduced from 3% to 2% - easi
 export const FAKE_PR_POST_PR_DROP_THRESHOLD = -2.5; // Reduced from 4% to 2.5% - more lenient post-PR drop detection
 
 // Status thresholds (UX-driven)
-// - Gaining: > +2%
-// - Plateauing: between -3% and +2% (inclusive)
+// - Gaining: > +1%
+// - Plateauing: between -3% and +1% (inclusive)
 // - Losing: < -3%
-export const GAINING_PCT_THRESHOLD = 2.0;
+export const GAINING_PCT_THRESHOLD = 1.0;
 export const LOSING_PCT_THRESHOLD = -3.0;
 export const MIN_SESSIONS_FOR_TREND = 2;
 

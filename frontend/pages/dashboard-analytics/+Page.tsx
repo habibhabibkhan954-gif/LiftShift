@@ -33,8 +33,8 @@ const sections = [
           Every exercise you&rsquo;ve logged gets analyzed and labeled:
         </p>
         <ul className="list-disc list-inside space-y-1 text-slate-300 leading-relaxed mb-4">
-          <li><strong>Getting stronger</strong> — Clear positive trend (&gt; +2% strength change).</li>
-          <li><strong>Plateauing</strong> — Roughly stable (between -3% and +2%).</li>
+          <li><strong>Getting stronger</strong> — Clear positive trend (&gt; +1% strength change).</li>
+          <li><strong>Plateauing</strong> — Roughly stable (between -3% and +1%).</li>
           <li><strong>Taking a dip</strong> — Clear drop (&gt; -3%).</li>
           <li><strong>New</strong> — Not enough sessions yet to read a trend.</li>
         </ul>
