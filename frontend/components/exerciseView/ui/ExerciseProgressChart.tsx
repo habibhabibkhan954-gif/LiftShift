@@ -281,9 +281,21 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
               >
                 <defs>
                   <linearGradient id="color1RM" x1="0" y1="0" x2="1" y2="0">
-                    {progressionGradientStops.map((stop, idx) => (
+                    {progressionGradientStops.length > 0 && (
+                      <>
+                        <stop offset="0%" stopColor={progressionGradientStops[0].color} stopOpacity={0} />
+                        <stop offset="6%" stopColor={progressionGradientStops[0].color} stopOpacity={isDarkMode ? 0.2 : 0.5} />
+                      </>
+                    )}
+                    {progressionGradientStops.slice(1, -1).map((stop, idx) => (
                       <stop key={idx} offset={`${stop.offset * 100}%`} stopColor={stop.color} stopOpacity={isDarkMode ? 0.2 : 0.5} />
                     ))}
+                    {progressionGradientStops.length > 0 && (
+                      <>
+                        <stop offset="94%" stopColor={progressionGradientStops[progressionGradientStops.length - 1].color} stopOpacity={isDarkMode ? 0.2 : 0.5} />
+                        <stop offset="100%" stopColor={progressionGradientStops[progressionGradientStops.length - 1].color} stopOpacity={0} />
+                      </>
+                    )}
                   </linearGradient>
 
                   <linearGradient id="areaTopFadeMask" x1="0" y1="0" x2="0" y2="1">
@@ -295,6 +307,15 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
                   </linearGradient>
                   <mask id="areaTopFadeMaskDef" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox">
                     <rect x="0" y="0" width="1" height="1" fill="url(#areaTopFadeMask)" />
+                  </mask>
+                  <linearGradient id="efGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
+                    <stop offset="6%" stopColor="#ffffff" stopOpacity="1" />
+                    <stop offset="94%" stopColor="#ffffff" stopOpacity="1" />
+                    <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+                  </linearGradient>
+                  <mask id="efMask" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox">
+                    <rect x="0" y="0" width="1" height="1" fill="url(#efGrad)" />
                   </mask>
                   <linearGradient id="colorLeftRM" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#06b6d4" stopOpacity={0.25} />
@@ -397,7 +418,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
                       stroke="#06b6d4"
                       strokeWidth={2.5}
                       fill="url(#colorLeftRM)"
-                      mask="url(#areaTopFadeMaskDef)"
+                      mask="url(#efMask)"
                       dot={false}
                       activeDot={{ r: 5, strokeWidth: 0, fill: '#06b6d4' }}
                       isAnimationActive={true}
@@ -411,7 +432,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
                       stroke="#8b5cf6"
                       strokeWidth={2.5}
                       fill="url(#colorRightRM)"
-                      mask="url(#areaTopFadeMaskDef)"
+                      mask="url(#efMask)"
                       dot={false}
                       activeDot={{ r: 5, strokeWidth: 0, fill: '#8b5cf6' }}
                       isAnimationActive={true}
