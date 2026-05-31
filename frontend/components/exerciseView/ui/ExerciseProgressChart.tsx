@@ -125,7 +125,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
   }, [chartData, isBodyweightLike]);
 
   return (
-    <div className="w-full bg-black/20 border border-slate-700/50 rounded-2xl p-1 sm:p-2 relative flex flex-col h-[280px] sm:h-[322px]">
+    <div className="w-full bg-black/70 border border-slate-700/50 rounded-2xl p-1 sm:p-2 relative flex flex-col h-[280px] sm:h-[322px]">
       {/* Mobile header - compact 2-line layout */}
       <div className="sm:hidden flex flex-col gap-1 mb-2 shrink-0">
         <div className="flex items-center justify-between gap-2">
@@ -199,7 +199,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
         </div>
         <div className="flex items-center gap-4 text-xs font-medium">
           <div className="hidden sm:flex items-center gap-2">
-            <div className="flex items-center gap-2 px-2 py-1.5 min-h-8 bg-black/20 border border-slate-700/50 rounded-lg">
+            <div className="flex items-center gap-2 px-2 py-1.5 min-h-8 bg-black/70 border border-slate-700/50 rounded-lg">
               <Activity className="w-3 h-3 text-slate-400" />
               <div className="flex items-center gap-1 text-[10px]">
                 <span className="text-white font-bold">{sessionsCount}</span>
@@ -285,23 +285,21 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
                       <stop key={idx} offset={`${stop.offset * 100}%`} stopColor={stop.color} stopOpacity={isDarkMode ? 0.2 : 0.5} />
                     ))}
                   </linearGradient>
-                  <linearGradient id="areaTopFadeMask" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#ffffff" />
-                    <stop offset="40%" stopColor="#999999" />
-                    <stop offset="60%" stopColor="#666666" />
-                    <stop offset="80%" stopColor="#333333" />
-                    <stop offset="100%" stopColor="#000000" />
+
+                  <linearGradient id="horizontalEdgeMask" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#ffffff" stopOpacity={0} />
+                    <stop offset="12%" stopColor="#ffffff" stopOpacity={1} />
+                    <stop offset="88%" stopColor="#ffffff" stopOpacity={1} />
+                    <stop offset="100%" stopColor="#ffffff" stopOpacity={0} />
                   </linearGradient>
-                  <linearGradient id="efGrad" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#000000" />
-                    <stop offset="12%" stopColor="#ffffff" />
-                    <stop offset="88%" stopColor="#ffffff" />
-                    <stop offset="100%" stopColor="#000000" />
-                  </linearGradient>
-                  <mask id="areaTopFadeMaskDef" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox">
-                    <rect x="0" y="0" width="1" height="1" fill="url(#areaTopFadeMask)" />
-                    <rect x="0" y="0" width="1" height="1" fill="url(#efGrad)" style={{ mixBlendMode: 'multiply' }} />
+                  <mask id="horizontalEdgeMaskDef" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox">
+                    <rect x="0" y="0" width="1" height="1" fill="url(#horizontalEdgeMask)" />
                   </mask>
+                  <linearGradient id="topFadeOverlay" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#000" stopOpacity={0.35} />
+                    <stop offset="40%" stopColor="#000" stopOpacity={0.15} />
+                    <stop offset="100%" stopColor="#000" stopOpacity={0} />
+                  </linearGradient>
                   <linearGradient id="colorLeftRM" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#06b6d4" stopOpacity={0.25} />
                     <stop offset="60%" stopColor="#06b6d4" stopOpacity={0.25} />
@@ -341,11 +339,21 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
                       dataKey={isBodyweightLike ? 'reps' : 'oneRepMax'}
                       stroke="none"
                       fill="url(#color1RM)"
-                      mask="url(#areaTopFadeMaskDef)"
+                      mask="url(#horizontalEdgeMaskDef)"
                       dot={false}
                       activeDot={false}
                       isAnimationActive={true}
                       animationDuration={500}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey={isBodyweightLike ? 'reps' : 'oneRepMax'}
+                      stroke="none"
+                      fill="url(#topFadeOverlay)"
+                      mask="url(#horizontalEdgeMaskDef)"
+                      dot={false}
+                      activeDot={false}
+                      isAnimationActive={false}
                     />
                     <Line
                       type="monotone"
@@ -403,7 +411,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
                       stroke="#06b6d4"
                       strokeWidth={2.5}
                       fill="url(#colorLeftRM)"
-                      mask="url(#areaTopFadeMaskDef)"
+                      mask="url(#horizontalEdgeMaskDef)"
                       dot={false}
                       activeDot={{ r: 5, strokeWidth: 0, fill: '#06b6d4' }}
                       isAnimationActive={true}
@@ -413,17 +421,37 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
                     />
                     <Area
                       type="monotone"
+                      dataKey={isBodyweightLike ? 'leftReps' : 'leftOneRepMax'}
+                      stroke="none"
+                      fill="url(#topFadeOverlay)"
+                      mask="url(#horizontalEdgeMaskDef)"
+                      dot={false}
+                      activeDot={false}
+                      isAnimationActive={false}
+                    />
+                    <Area
+                      type="monotone"
                       dataKey={isBodyweightLike ? 'rightReps' : 'rightOneRepMax'}
                       stroke="#8b5cf6"
                       strokeWidth={2.5}
                       fill="url(#colorRightRM)"
-                      mask="url(#areaTopFadeMaskDef)"
+                      mask="url(#horizontalEdgeMaskDef)"
                       dot={false}
                       activeDot={{ r: 5, strokeWidth: 0, fill: '#8b5cf6' }}
                       isAnimationActive={true}
                       animationDuration={500}
                       name="Right"
                       connectNulls
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey={isBodyweightLike ? 'rightReps' : 'rightOneRepMax'}
+                      stroke="none"
+                      fill="url(#topFadeOverlay)"
+                      mask="url(#horizontalEdgeMaskDef)"
+                      dot={false}
+                      activeDot={false}
+                      isAnimationActive={false}
                     />
                   </>
                 )}
