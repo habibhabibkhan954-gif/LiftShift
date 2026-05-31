@@ -57,9 +57,11 @@ export const StrengthProgressionValueDot = (props: any) => {
       
       if (typeof v !== 'number') continue;
 
-      // Track global best
+      // Track global best — update to latest occurrence for equal values
       if (isBetterValue(v, globalBestValue)) {
         globalBestValue = v;
+        firstGlobalBestIndex = i;
+      } else if (Number.isFinite(v) && Math.abs(v - globalBestValue) <= eps) {
         firstGlobalBestIndex = i;
       }
 
@@ -87,11 +89,6 @@ export const StrengthProgressionValueDot = (props: any) => {
     ? allPrTypes.filter((t: PrType) => prTypesToShow.includes(t))
     : allPrTypes;
 
-
-  // Check for Gold PR
-  const shouldShowPr = isGlobalBest && filteredPrTypes.length > 0;
-  
- 
   // Get Silver PR types
   const combinedSilverPrTypes: PrType[] = payload.silverPrTypes || [];
   let allSilverPrTypes: PrType[] = combinedSilverPrTypes;
@@ -110,6 +107,9 @@ export const StrengthProgressionValueDot = (props: any) => {
   if (prTypesToShow?.includes('oneRm') && payload.silverWeightPrTypes?.length > 0 && payload.silverOneRmPrTypes?.length > 0) {
     filteredSilverPrTypes = filteredSilverPrTypes.filter((t: PrType) => t !== 'oneRm');
   }
+
+  // Check for Gold PR — any point at the global best value gets gold
+  const shouldShowPr = isGlobalBest;
 
   // Check for Silver PR (only if not showing gold)
   const isSilverPr = !shouldShowPr && payload.isSilverPr && filteredSilverPrTypes.length > 0;
@@ -165,8 +165,10 @@ export const StrengthProgressionValueDot = (props: any) => {
 
   const trophyY = labelY - 8;
 
-  // Select icon
-  const activePrTypes = shouldShowPr ? filteredPrTypes : filteredSilverPrTypes;
+  // Select icon — for gold points, prefer gold types but fall back to silver types
+  const activePrTypes = shouldShowPr 
+    ? (filteredPrTypes.length > 0 ? filteredPrTypes : filteredSilverPrTypes) 
+    : filteredSilverPrTypes;
   let TrophyIcon = Trophy;
   if (activePrTypes.includes('weight')) {
     TrophyIcon = Dumbbell;
