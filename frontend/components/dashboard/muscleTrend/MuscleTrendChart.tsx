@@ -91,8 +91,8 @@ export const MuscleTrendChart: React.FC<MuscleTrendChartProps> = ({
               <defs>
                 <linearGradient id="efGrad" x1="0" y1="0" x2="1" y2="0">
                   <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
-                  <stop offset="12%" stopColor="#ffffff" stopOpacity="1" />
-                  <stop offset="88%" stopColor="#ffffff" stopOpacity="1" />
+                    <stop offset="6%" stopColor="#ffffff" stopOpacity="1" />
+                    <stop offset="94%" stopColor="#ffffff" stopOpacity="1" />
                   <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
                 </linearGradient>
                 <mask id="efMask" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox">
