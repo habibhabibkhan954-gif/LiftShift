@@ -1,7 +1,5 @@
 import React from 'react';
 
-
-
 import type { RecentPR } from '../../utils/analysis/insights';
 import type { ExerciseAsset } from '../../utils/data/exerciseAssets';
 import type { WeightUnit } from '../../utils/storage/localStorage';
@@ -60,7 +58,7 @@ export const RecentPRCard: React.FC<RecentPRCardProps> = ({
       <div className="text-right">
         <div className="text-sm font-bold text-[color:var(--text-primary)]">{convertWeight(weight, weightUnit)}{weightUnit}</div>
         <div className={`text-[10px] font-bold ${improvementClass} flex items-center justify-end gap-0.5`}>
-          <TrendingUp className="w-3 h-3" />{type === 'oneRm' ? '1RM' : type === 'volume' ? 'Volume' : 'Weight'} PR
+          {type === 'oneRm' ? '1RM' : type === 'volume' ? 'Volume' : 'Weight'} PR
         </div>
       </div>
     </button>
