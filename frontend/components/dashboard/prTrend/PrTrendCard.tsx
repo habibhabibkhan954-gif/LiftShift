@@ -73,6 +73,13 @@ export const PrTrendCard = ({
     return getRechartsTickIndexMap(chartData.length);
   }, [chartData.length]);
 
+  const dotShowMap = useMemo(() => {
+    if (!tickIndexMap || chartData.length === 0) return {};
+    const map = { ...tickIndexMap };
+    delete map[chartData.length - 1];
+    return map;
+  }, [tickIndexMap, chartData.length]);
+
   return (
     <div className="bg-black/20 border border-slate-700/50 px-2 sm:px-3 py-4 sm:py-6 rounded-xl min-h-[400px] sm:min-h-[480px] flex flex-col transition-[opacity,transform] duration-300" style={{ backgroundColor: 'rgb(var(--panel-rgb) / 0.5)' }}>
       <div className={`flex flex-row justify-between items-center mb-3 gap-3 transition-opacity duration-700 ${isMounted ? 'opacity-100' : 'opacity-0'}`}>
@@ -122,6 +129,9 @@ export const PrTrendCard = ({
                 <mask id="efMask" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox">
                   <rect x="0" y="0" width="1" height="1" fill="url(#efGrad)" />
                 </mask>
+                <marker id="prArrow" viewBox="0 0 6 10" refX="4.8" refY="5" markerWidth="5" markerHeight="9" orient="auto" markerUnits="userSpaceOnUse">
+                  <path d="M 0 0 L 6 5 L 0 10 z" fill="#eab308" />
+                </marker>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
               <XAxis
@@ -145,18 +155,31 @@ export const PrTrendCard = ({
                 }}
               />
               {view === 'area' ? (
-                <Area
+                <><Area
+                  type="monotone"
+                  dataKey="count"
+                  name="PRs"
+                  stroke="none"
+                  fill="url(#gPRs)"
+                  mask="url(#efMask)"
+                  dot={false}
+                  activeDot={false}
+                  animationDuration={500}
+                />
+                <Line
                   type="monotone"
                   dataKey="count"
                   name="PRs"
                   stroke="#eab308"
                   strokeWidth={1}
-                  fill="url(#gPRs)"
-                  mask="url(#efMask)"
-                  dot={<ValueDot valueKey="count" unit="" data={chartData} color="#eab308" showAtIndexMap={tickIndexMap} showDotWhenHidden={false} />}
-                  activeDot={{ r: 1, strokeWidth: 0 }}
+                  fill="none"
+                  dot={<ValueDot valueKey="count" unit="" data={chartData} color="#eab308" showAtIndexMap={dotShowMap} showDotWhenHidden={false} />}
+                  activeDot={{ r: 5, strokeWidth: 0 }}
+                  isAnimationActive={true}
                   animationDuration={500}
+                  markerEnd="url(#prArrow)"
                 />
+                </>
               ) : (
                 <Bar dataKey="count" name="PRs" fill="#eab308" radius={[8, 8, 0, 0]} animationDuration={500} />
               )}

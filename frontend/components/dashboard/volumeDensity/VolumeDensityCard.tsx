@@ -121,6 +121,9 @@ export const VolumeDensityCard = ({
               <mask id="efMask" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox">
                 <rect x="0" y="0" width="1" height="1" fill="url(#efGrad)" />
               </mask>
+              <marker id="densityArrow" viewBox="0 0 6 10" refX="4.8" refY="5" markerWidth="5" markerHeight="9" orient="auto" markerUnits="userSpaceOnUse">
+                <path d="M 0 0 L 6 5 L 0 10 z" fill="#8b5cf6" />
+              </marker>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
             <XAxis
@@ -152,17 +155,30 @@ export const VolumeDensityCard = ({
               }}
             />
             {view === 'area' ? (
-              <Area
+              <><Area
+                type="monotone"
+                dataKey="volumePerSet"
+                stroke="none"
+                fill="url(#gDensityArea)"
+                mask="url(#efMask)"
+                dot={false}
+                activeDot={false}
+                animationDuration={500}
+              />
+              <Line
                 type="monotone"
                 dataKey="volumePerSet"
                 name={`Volume per Set (${weightUnit})`}
                 stroke="#8b5cf6"
                 strokeWidth={1.5}
-                fill="url(#gDensityArea)"
-                mask="url(#efMask)"
+                fill="none"
+                dot={false}
                 activeDot={{ r: 5, strokeWidth: 0 }}
+                isAnimationActive={true}
                 animationDuration={500}
+                markerEnd="url(#densityArrow)"
               />
+              </>
             ) : (
               <Bar
                 dataKey="volumePerSet"

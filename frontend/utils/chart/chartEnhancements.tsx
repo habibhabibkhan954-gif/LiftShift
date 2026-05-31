@@ -63,7 +63,7 @@ export const ValueDot = (props: any) => {
   const shouldShowByIndexMap = showAtIndexMap && typeof showAtIndexMap === 'object' ? !!showAtIndexMap[index] : null;
   const shouldShowLabel =
     shouldShowByIndexMap !== null
-      ? (shouldShowByIndexMap || index === n - 1 || index === 0)
+      ? shouldShowByIndexMap
       : (step <= 1 || index % step === 0 || index === n - 1 || index === 0);
   
   if (!shouldShowLabel) {
