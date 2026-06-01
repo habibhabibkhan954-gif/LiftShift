@@ -21,7 +21,11 @@ interface AppOnboardingLayerProps {
   onSetLyfatLoginError: (msg: string | null) => void;
   onClearCacheAndRestart: () => void;
   onForceRefreshAndRelogin?: () => void;
-  onProcessFile: (file: File, platform: 'strong' | 'hevy' | 'lyfta' | 'other' | 'motra', unitOverride?: WeightUnit) => void;
+  onProcessFile: (
+    file: File,
+    platform: 'strong' | 'hevy' | 'lyfta' | 'other' | 'motra',
+    unitOverride?: WeightUnit,
+  ) => void;
   onHevyLogin: (emailOrUsername: string, password: string) => void;
   onHevyApiKeyLogin: (apiKey: string) => void;
   onHevySyncSaved: () => void;
@@ -31,7 +35,6 @@ interface AppOnboardingLayerProps {
 
 export const AppOnboardingLayer: React.FC<AppOnboardingLayerProps> = ({
   onboarding,
-  dataSource: _dataSource,
   bodyMapGender,
   weightUnit,
   isAnalyzing,
@@ -58,7 +61,7 @@ export const AppOnboardingLayer: React.FC<AppOnboardingLayerProps> = ({
   return (
     <AppOnboardingSteps
       onboarding={onboarding}
-      dataSource={_dataSource}
+      dataSource={null}
       bodyMapGender={bodyMapGender}
       weightUnit={weightUnit}
       isAnalyzing={isAnalyzing}

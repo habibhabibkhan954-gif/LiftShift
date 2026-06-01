@@ -3,62 +3,28 @@ import type { BodyMapGender } from '../bodyMap/BodyMap';
 import type { WeightUnit } from '../../utils/storage/localStorage';
 import type { OnboardingFlow } from '../../app/onboarding/types';
 import { LandingPage } from '../landing/ui/LandingPage';
-import { getPreferencesConfirmed, clearCSVData } from '../../utils/storage/localStorage';
-import { OnboardingPreferencesStep } from './OnboardingPreferencesStep';
+import {
+  getPreferencesConfirmed,
+  clearCSVData,
+  savePreferencesConfirmed,
+} from '../../utils/storage/localStorage';
+import {
+  getHevyAuthToken,
+  getHevyRefreshToken,
+} from '../../utils/storage/dataSourceStorage';
+import {
+  getHevyProApiKey,
+  getLyftaApiKey,
+} from '../../utils/storage/hevyCredentialsStorage';
 import { OnboardingDemoStep } from './OnboardingDemoStep';
-import { HevyLoginStep, LyftaLoginStep } from './OnboardingLoginSteps';
-import { OnboardingCsvStep } from './OnboardingCsvStep';
 import { AddSourcePickerModal } from './AddSourcePickerModal';
+import { UnifiedPlatformModal } from '../modals/platform/UnifiedPlatformModal';
 
-const chooseNextStep = (
-  intent: OnboardingFlow['intent'],
-  source: 'strong' | 'hevy' | 'lyfta' | 'other' | 'motra',
-  preferencesConfirmed: boolean,
-  fromCombine = false
-): OnboardingFlow => {
-  if (source === 'strong') {
-    return {
-      intent,
-      step: preferencesConfirmed ? 'strong_csv' : 'strong_prefs',
-      platform: 'strong',
-      backStep: 'strong_prefs',
-    };
-  }
-  if (source === 'lyfta') {
-    return {
-      intent,
-      step: preferencesConfirmed ? 'lyfta_login' : 'lyfta_prefs',
-      platform: 'lyfta',
-      backStep: fromCombine && intent === 'update' && preferencesConfirmed ? 'add_source_platform' : undefined,
-    };
-  }
-  if (source === 'other') {
-    return {
-      intent,
-      step: preferencesConfirmed ? 'other_csv' : 'other_prefs',
-      platform: 'other',
-      backStep: 'other_prefs',
-    };
-  }
-  if (source === 'motra') {
-    return {
-      intent,
-      step: preferencesConfirmed ? 'motra_csv' : 'motra_prefs',
-      platform: 'motra',
-      backStep: 'motra_prefs',
-    };
-  }
-  return {
-    intent,
-    step: preferencesConfirmed ? 'hevy_login' : 'hevy_prefs',
-    platform: 'hevy',
-    backStep: fromCombine && intent === 'update' && preferencesConfirmed ? 'add_source_platform' : undefined,
-  };
-};
+type Platform = 'hevy' | 'strong' | 'lyfta' | 'other' | 'motra';
 
 interface AppOnboardingStepsProps {
   onboarding: OnboardingFlow;
-  dataSource: 'strong' | 'hevy' | 'lyfta' | 'other' | 'motra' | null;
+  dataSource: Platform | null;
   bodyMapGender: BodyMapGender;
   weightUnit: WeightUnit;
   isAnalyzing: boolean;
@@ -73,7 +39,11 @@ interface AppOnboardingStepsProps {
   onSetLyfatLoginError: (msg: string | null) => void;
   onClearCacheAndRestart: () => void;
   onForceRefreshAndRelogin?: () => void;
-  onProcessFile: (file: File, platform: 'strong' | 'hevy' | 'lyfta' | 'other' | 'motra', unitOverride?: WeightUnit) => void;
+  onProcessFile: (
+    file: File,
+    platform: Platform,
+    unitOverride?: WeightUnit,
+  ) => void;
   onHevyLogin: (emailOrUsername: string, password: string) => void;
   onHevyApiKeyLogin: (apiKey: string) => void;
   onHevySyncSaved: () => void;
@@ -104,26 +74,39 @@ export const AppOnboardingSteps: React.FC<AppOnboardingStepsProps> = ({
   onLyfatLogin,
   onLyfatSyncSaved,
 }) => {
-  const closeForUpdate = onboarding.intent === 'update' ? () => {
-    clearCSVData();
-    onSetOnboarding(null);
-  } : undefined;
+  const closeForUpdate =
+    onboarding.intent === 'update'
+      ? () => {
+          clearCSVData();
+          onSetOnboarding(null);
+        }
+      : undefined;
 
-  const handleSelectPlatform = (source: 'strong' | 'hevy' | 'lyfta' | 'other' | 'motra') => {
+  const handleSelectPlatform = (source: Platform) => {
     onSetCsvImportError(null);
     onSetHevyLoginError(null);
     onSetLyfatLoginError(null);
-    const skipPrefs = onboarding.intent === 'update' && getPreferencesConfirmed();
-    onSetOnboarding(chooseNextStep(onboarding.intent, source, skipPrefs, false));
+    onSetOnboarding({
+      intent: onboarding.intent,
+      step: 'unified_modal',
+      platform: source,
+    });
   };
 
-  const handleSelectPlatformForCombine = (source: 'strong' | 'hevy' | 'lyfta' | 'other' | 'motra') => {
+  const handleSelectPlatformForCombine = (source: Platform) => {
     onSetCsvImportError(null);
     onSetHevyLoginError(null);
     onSetLyfatLoginError(null);
-    const skipPrefs = onboarding.intent === 'update' && getPreferencesConfirmed();
-    onSetOnboarding(chooseNextStep(onboarding.intent, source, skipPrefs, true));
+    onSetOnboarding({
+      intent: onboarding.intent,
+      step: 'unified_modal',
+      platform: source,
+    });
   };
+
+  const [preferencesConfirmed, setPreferencesConfirmed] = React.useState(
+    () => getPreferencesConfirmed(),
+  );
 
   if (onboarding.step === 'platform') {
     return (
@@ -133,7 +116,11 @@ export const AppOnboardingSteps: React.FC<AppOnboardingStepsProps> = ({
           onSetCsvImportError(null);
           onSetHevyLoginError(null);
           onSetLyfatLoginError(null);
-          onSetOnboarding({ intent: 'initial', step: 'demo_prefs', platform: 'other' });
+          onSetOnboarding({
+            intent: 'initial',
+            step: 'demo_prefs',
+            platform: 'other',
+          });
         }}
       />
     );
@@ -165,241 +152,69 @@ export const AppOnboardingSteps: React.FC<AppOnboardingStepsProps> = ({
     );
   }
 
-  if (onboarding.step === 'hevy_prefs') {
-    return (
-      <OnboardingPreferencesStep
-        intent={onboarding.intent}
-        platform="hevy"
-        nextStep="hevy_login"
-        backStep="platform"
-        bodyMapGender={bodyMapGender}
-        weightUnit={weightUnit}
-        isAnalyzing={isAnalyzing}
-        onSetOnboarding={onSetOnboarding}
-        onSetBodyMapGender={onSetBodyMapGender}
-        onSetWeightUnit={onSetWeightUnit}
-        onClose={closeForUpdate}
-      />
-    );
-  }
+  if (onboarding.step === 'unified_modal') {
+    const platform = (onboarding.platform || 'other') as Platform;
 
-  if (onboarding.step === 'lyfta_prefs') {
-    return (
-      <OnboardingPreferencesStep
-        intent={onboarding.intent}
-        platform="lyfta"
-        nextStep="lyfta_login"
-        backStep="platform"
-        bodyMapGender={bodyMapGender}
-        weightUnit={weightUnit}
-        isAnalyzing={isAnalyzing}
-        onSetOnboarding={onSetOnboarding}
-        onSetBodyMapGender={onSetBodyMapGender}
-        onSetWeightUnit={onSetWeightUnit}
-        onClose={closeForUpdate}
-      />
-    );
-  }
+    const hasSavedHevySession =
+      Boolean(getHevyAuthToken() || getHevyProApiKey()) &&
+      getPreferencesConfirmed();
 
-  if (onboarding.step === 'strong_prefs') {
-    return (
-      <OnboardingPreferencesStep
-        intent={onboarding.intent}
-        platform="strong"
-        nextStep="strong_csv"
-        nextBackStep="strong_prefs"
-        backStep="platform"
-        bodyMapGender={bodyMapGender}
-        weightUnit={weightUnit}
-        isAnalyzing={isAnalyzing}
-        onSetOnboarding={onSetOnboarding}
-        onSetBodyMapGender={onSetBodyMapGender}
-        onSetWeightUnit={onSetWeightUnit}
-        onClose={closeForUpdate}
-      />
-    );
-  }
+    const hasSavedLyftaSession =
+      Boolean(getLyftaApiKey()) && getPreferencesConfirmed();
 
-  if (onboarding.step === 'other_prefs') {
-    return (
-      <OnboardingPreferencesStep
-        intent={onboarding.intent}
-        platform="other"
-        nextStep="other_csv"
-        nextBackStep="other_prefs"
-        backStep="platform"
-        bodyMapGender={bodyMapGender}
-        weightUnit={weightUnit}
-        isAnalyzing={isAnalyzing}
-        onSetOnboarding={onSetOnboarding}
-        onSetBodyMapGender={onSetBodyMapGender}
-        onSetWeightUnit={onSetWeightUnit}
-        onClose={closeForUpdate}
-      />
-    );
-  }
+    const hasSavedSession =
+      platform === 'hevy'
+        ? hasSavedHevySession
+        : platform === 'lyfta'
+          ? hasSavedLyftaSession
+          : false;
 
-  if (onboarding.step === 'motra_prefs') {
     return (
-      <OnboardingPreferencesStep
+      <UnifiedPlatformModal
         intent={onboarding.intent}
-        platform="motra"
-        nextStep="motra_csv"
-        nextBackStep="motra_prefs"
-        backStep="platform"
-        bodyMapGender={bodyMapGender}
-        weightUnit={weightUnit}
-        isAnalyzing={isAnalyzing}
-        onSetOnboarding={onSetOnboarding}
-        onSetBodyMapGender={onSetBodyMapGender}
-        onSetWeightUnit={onSetWeightUnit}
-        onClose={closeForUpdate}
-      />
-    );
-  }
-
-  if (onboarding.step === 'hevy_login') {
-    return (
-      <HevyLoginStep
-        intent={onboarding.intent}
-        hevyLoginError={hevyLoginError}
-        isAnalyzing={isAnalyzing}
+        platform={platform}
         onHevyLogin={onHevyLogin}
         onHevyApiKeyLogin={onHevyApiKeyLogin}
-        onHevySyncSaved={onHevySyncSaved}
-        onClearCacheAndRestart={onClearCacheAndRestart}
-        onForceRefreshAndRelogin={onForceRefreshAndRelogin}
-        onSetOnboarding={onSetOnboarding}
-        backToCombinePicker={onboarding.backStep === 'add_source_platform'}
-        onOpenAddSourcePicker={onboarding.backStep === 'add_source_platform' ? undefined : () => onSetOnboarding({ intent: 'update', step: 'add_source_platform' })}
-      />
-    );
-  }
-
-  if (onboarding.step === 'lyfta_login') {
-    return (
-      <LyftaLoginStep
-        intent={onboarding.intent}
-        lyfatLoginError={lyfatLoginError}
-        isAnalyzing={isAnalyzing}
-        onLyfatLogin={onLyfatLogin}
-        onLyfatSyncSaved={onLyfatSyncSaved}
-        onClearCacheAndRestart={onClearCacheAndRestart}
-        onForceRefreshAndRelogin={onForceRefreshAndRelogin}
-        onSetOnboarding={onSetOnboarding}
-        backToCombinePicker={onboarding.backStep === 'add_source_platform'}
-        onOpenAddSourcePicker={onboarding.backStep === 'add_source_platform' ? undefined : () => onSetOnboarding({ intent: 'update', step: 'add_source_platform' })}
-      />
-    );
-  }
-
-  if (onboarding.step === 'strong_csv') {
-    return (
-      <OnboardingCsvStep
-        intent={onboarding.intent}
-        platform="strong"
+        hevyLoginError={hevyLoginError}
+        onSetHevyLoginError={onSetHevyLoginError}
+        onLyftaLogin={onLyfatLogin}
+        lyftaLoginError={lyfatLoginError}
+        onSetLyftaLoginError={onSetLyfatLoginError}
+        onProcessFile={onProcessFile}
+        csvImportError={csvImportError}
+        onSetCsvImportError={onSetCsvImportError}
+        preferencesConfirmed={preferencesConfirmed}
         bodyMapGender={bodyMapGender}
         weightUnit={weightUnit}
-        isAnalyzing={isAnalyzing}
-        csvImportError={csvImportError}
-        backStep={onboarding.backStep ?? 'strong_prefs'}
-        onSetOnboarding={onSetOnboarding}
         onSetBodyMapGender={onSetBodyMapGender}
         onSetWeightUnit={onSetWeightUnit}
-        onSetCsvImportError={onSetCsvImportError}
-        onProcessFile={onProcessFile}
-        onClearCacheAndRestart={onClearCacheAndRestart}
-        onClose={closeForUpdate}
-        onOpenAddSourcePicker={onboarding.backStep === 'add_source_platform' ? undefined : () => onSetOnboarding({ intent: 'update', step: 'add_source_platform' })}
-      />
-    );
-  }
-
-  if (onboarding.step === 'other_csv') {
-    return (
-      <OnboardingCsvStep
-        intent={onboarding.intent}
-        platform="other"
-        bodyMapGender={bodyMapGender}
-        weightUnit={weightUnit}
+        onSetPreferencesConfirmed={setPreferencesConfirmed}
+        hasSavedSession={hasSavedSession}
+        onSyncSaved={
+          platform === 'hevy'
+            ? onHevySyncSaved
+            : platform === 'lyfta'
+              ? onLyfatSyncSaved
+              : undefined
+        }
         isAnalyzing={isAnalyzing}
-        csvImportError={csvImportError}
-        backStep={onboarding.backStep ?? 'other_prefs'}
-        onSetOnboarding={onSetOnboarding}
-        onSetBodyMapGender={onSetBodyMapGender}
-        onSetWeightUnit={onSetWeightUnit}
-        onSetCsvImportError={onSetCsvImportError}
-        onProcessFile={onProcessFile}
-        onClearCacheAndRestart={onClearCacheAndRestart}
+        onClearCache={onClearCacheAndRestart}
+        onAddDataSource={
+          onboarding.backStep === 'add_source_platform'
+            ? undefined
+            : () =>
+                onSetOnboarding({
+                  intent: 'update',
+                  step: 'add_source_platform',
+                })
+        }
+        onBack={() =>
+          onSetOnboarding({
+            intent: onboarding.intent,
+            step: 'platform',
+          })
+        }
         onClose={closeForUpdate}
-        onOpenAddSourcePicker={onboarding.backStep === 'add_source_platform' ? undefined : () => onSetOnboarding({ intent: 'update', step: 'add_source_platform' })}
-      />
-    );
-  }
-
-  if (onboarding.step === 'motra_csv') {
-    return (
-      <OnboardingCsvStep
-        intent={onboarding.intent}
-        platform="motra"
-        bodyMapGender={bodyMapGender}
-        weightUnit={weightUnit}
-        isAnalyzing={isAnalyzing}
-        csvImportError={csvImportError}
-        backStep={onboarding.backStep ?? 'motra_prefs'}
-        onSetOnboarding={onSetOnboarding}
-        onSetBodyMapGender={onSetBodyMapGender}
-        onSetWeightUnit={onSetWeightUnit}
-        onSetCsvImportError={onSetCsvImportError}
-        onProcessFile={onProcessFile}
-        onClearCacheAndRestart={onClearCacheAndRestart}
-        onClose={closeForUpdate}
-        onOpenAddSourcePicker={onboarding.backStep === 'add_source_platform' ? undefined : () => onSetOnboarding({ intent: 'update', step: 'add_source_platform' })}
-      />
-    );
-  }
-
-  if (onboarding.step === 'lyfta_csv') {
-    return (
-      <OnboardingCsvStep
-        intent={onboarding.intent}
-        platform="lyfta"
-        bodyMapGender={bodyMapGender}
-        weightUnit={weightUnit}
-        isAnalyzing={isAnalyzing}
-        csvImportError={csvImportError}
-        backStep={onboarding.backStep ?? 'lyfta_prefs'}
-        onSetOnboarding={onSetOnboarding}
-        onSetBodyMapGender={onSetBodyMapGender}
-        onSetWeightUnit={onSetWeightUnit}
-        onSetCsvImportError={onSetCsvImportError}
-        onProcessFile={onProcessFile}
-        onClearCacheAndRestart={onClearCacheAndRestart}
-        onClose={closeForUpdate}
-        onOpenAddSourcePicker={onboarding.backStep === 'add_source_platform' ? undefined : () => onSetOnboarding({ intent: 'update', step: 'add_source_platform' })}
-      />
-    );
-  }
-
-  if (onboarding.step === 'hevy_csv') {
-    return (
-      <OnboardingCsvStep
-        intent={onboarding.intent}
-        platform="hevy"
-        bodyMapGender={bodyMapGender}
-        weightUnit={weightUnit}
-        isAnalyzing={isAnalyzing}
-        csvImportError={csvImportError}
-        backStep={onboarding.backStep ?? 'hevy_login'}
-        onSetOnboarding={onSetOnboarding}
-        onSetBodyMapGender={onSetBodyMapGender}
-        onSetWeightUnit={onSetWeightUnit}
-        onSetCsvImportError={onSetCsvImportError}
-        onProcessFile={onProcessFile}
-        onClearCacheAndRestart={onClearCacheAndRestart}
-        onClose={closeForUpdate}
-        withPreferences={true}
-        onOpenAddSourcePicker={onboarding.backStep === 'add_source_platform' ? undefined : () => onSetOnboarding({ intent: 'update', step: 'add_source_platform' })}
       />
     );
   }
