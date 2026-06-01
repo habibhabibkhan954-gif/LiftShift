@@ -190,6 +190,7 @@ export const ActivityHeatmap = memo(({
     if (isCurrentMonthFuture) return { bgClass: 'bg-slate-800/20 border border-slate-700/20', style: { opacity: 0.6 } };
     if (isFuture) return { bgClass: 'bg-slate-800/40 border border-slate-700/50', style: {} };
     if (volume === 0) return { bgClass: 'bg-slate-800/50', style: {} };
+    if (volume === maxVolume) return { bgClass: '', style: { backgroundColor: '#fbbf24' } };
 
     const intensity = Math.min(volume / maxVolume, 1);
     const { lightness, saturation } = getHSLForIntensity(intensity);
@@ -201,6 +202,7 @@ export const ActivityHeatmap = memo(({
     if (isCurrentMonthFuture) return 'text-slate-500/30';
     if (isFuture) return 'text-slate-600';
     if (volume === 0) return 'text-slate-600';
+    if (volume === maxVolume) return 'text-slate-900';
 
     const intensity = Math.min(volume / maxVolume, 1);
     const { lightness } = getHSLForIntensity(intensity);
@@ -214,11 +216,14 @@ export const ActivityHeatmap = memo(({
   const handleMouseEnter = (e: React.MouseEvent, day: any) => {
     if (!day || day.count === 0) return;
     const rect = e.currentTarget.getBoundingClientRect();
+    const peak = isPeakDay(day.totalVolume);
+    const dateStr = formatHumanReadableDate(day.date, { now });
     setTooltip({
       rect,
-      title: formatHumanReadableDate(day.date, { now }),
+      title: peak ? `Best Volume Session • ${dateStr}` : dateStr,
+      titleColor: peak ? '#fbbf24' : undefined,
       body: `${day.totalVolume.toLocaleString()} kg${day.title ? `\n${day.title}` : ''}`,
-      footer: isPeakDay(day.totalVolume) ? 'Best volume session — Click to view details' : 'Click to view details',
+      footer: 'See exercises',
       status: (day.totalVolume > 3000 ? 'success' : 'info') as TooltipData['status'],
     });
   };
@@ -315,7 +320,7 @@ export const ActivityHeatmap = memo(({
                       return (
                         <div
                           key={day.date.toISOString()}
-                          className={`w-[18px] h-[18px] rounded-full flex items-center justify-center text-[8px] font-medium ${bgClass} ${textColor} transition-all duration-300 ${day.totalVolume > 0 && !isFuture ? 'cursor-pointer hover:ring-2 hover:ring-white/30' : 'cursor-default'} ${isPeakDay(day.totalVolume) ? 'ring-2 ring-amber-400' : isToday ? 'ring-2 ring-blue-400/70' : ''}`}
+                          className={`w-[18px] h-[18px] rounded-full flex items-center justify-center text-[8px] font-medium ${bgClass} ${textColor} transition-all duration-300 hover:ring-1 hover:ring-white/20 ${day.totalVolume > 0 && !isFuture ? 'cursor-pointer' : 'cursor-default'} ${isToday ? 'ring-2 ring-blue-400/70' : ''}`}
                           style={style}
                           onClick={() => day.count > 0 && !isFuture && onDayClick?.(day.date)}
                           onMouseEnter={(e) => !isFuture && handleMouseEnter(e, day)}
