@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { CheckCircle2, Loader2 } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { CheckCircle2, Loader2, RefreshCw } from 'lucide-react';
 import { SEMI_FANCY_FONT } from '../../utils/ui/uiConstants';
 import { CsvLoadingAnimation, PuzzleLoadingAnimation } from '../modals/csvImport';
 
 interface AppLoadingOverlayProps {
   open: boolean;
   isCompleting: boolean;
+  onReload?: () => void;
 }
+
+const SLOW_LOAD_THRESHOLD_MS = 20 * 1000;
 
 // Single message pool - no phases
 const LOADING_MESSAGES = [
@@ -70,26 +73,56 @@ const getVisibleMessages = (baseIndex: number, isCompleting: boolean) => {
 export const AppLoadingOverlay: React.FC<AppLoadingOverlayProps> = ({
   open,
   isCompleting,
+  onReload,
 }) => {
   const [baseIndex, setBaseIndex] = useState(0);
   const [slideOffset, setSlideOffset] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [showSlowLoadMessage, setShowSlowLoadMessage] = useState(false);
+  const slowLoadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!open) {
       setBaseIndex(0);
       setSlideOffset(0);
       setIsTransitioning(false);
+      setShowSlowLoadMessage(false);
+      if (slowLoadTimerRef.current) {
+        clearTimeout(slowLoadTimerRef.current);
+        slowLoadTimerRef.current = null;
+      }
       return;
     }
 
+    if (isCompleting) {
+      setShowSlowLoadMessage(false);
+      if (slowLoadTimerRef.current) {
+        clearTimeout(slowLoadTimerRef.current);
+        slowLoadTimerRef.current = null;
+      }
+      return;
+    }
+
+    slowLoadTimerRef.current = setTimeout(() => {
+      setShowSlowLoadMessage(true);
+    }, SLOW_LOAD_THRESHOLD_MS);
+
+    return () => {
+      if (slowLoadTimerRef.current) {
+        clearTimeout(slowLoadTimerRef.current);
+        slowLoadTimerRef.current = null;
+      }
+    };
+  }, [open, isCompleting]);
+
+  useEffect(() => {
+    if (!open) return;
+
     let tickTimeout: number | null = null;
     const advance = () => {
-      // Enable transition and start sliding up
       setIsTransitioning(true);
       setSlideOffset(-ROW_HEIGHT);
-      
-      // After animation completes, update index and reset position instantly (no transition)
+
       tickTimeout = window.setTimeout(() => {
         const lastWindowStart = Math.max(0, LOADING_MESSAGES.length - VISIBLE_COUNT);
         setBaseIndex((prev) => (prev >= lastWindowStart ? prev : prev + 1));
@@ -162,6 +195,20 @@ export const AppLoadingOverlay: React.FC<AppLoadingOverlayProps> = ({
             </div>
           </div>
 
+          {showSlowLoadMessage && (
+            <div className="mt-6 pt-4 animate-fade-in">
+              <p className="text-xs text-slate-500 text-center mb-3">
+                Taking longer than expected?
+              </p>
+              <button
+                onClick={onReload ?? (() => window.location.reload())}
+                className="flex items-center justify-center w-full gap-2 px-4 py-2.5 text-sm font-medium text-slate-400 border border-slate-700 rounded-lg hover:bg-slate-800 hover:text-white hover:border-slate-600 active:bg-slate-700 transition-all duration-200"
+              >
+                <RefreshCw className="w-4 h-4" />
+                Reload page
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
