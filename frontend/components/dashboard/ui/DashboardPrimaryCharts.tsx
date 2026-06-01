@@ -3,7 +3,8 @@ import { ChartSkeleton } from '../../ui/ChartSkeleton';
 import { LazyRender } from '../../ui/LazyRender';
 import type { BodyMapGender } from '../../bodyMap/BodyMap';
 import type { DailySummary, ExerciseStats, WorkoutSet } from '../../../types';
-import type { WeightUnit, TimeFilterMode, ThemeMode } from '../../../utils/storage/localStorage';
+import type { WeightUnit, TimeFilterMode } from '../../../utils/storage/localStorage';
+import type { TrainingLevel } from '../../../utils/muscle/hypertrophy/muscleParams';
 import { DashboardAIAnalysisCard } from './DashboardAIAnalysisCard';
 
 const WeeklySetsCard = React.lazy(() => import('../weeklySets/WeeklySetsCard').then((m) => ({ default: m.WeeklySetsCard })));
@@ -15,14 +16,22 @@ const HypertrophyBarCard = React.lazy(() => import('../hypertrophy/HypertrophyBa
 const VolumeDensityCard = React.lazy(() => import('../volumeDensity/VolumeDensityCard').then((m) => ({ default: m.VolumeDensityCard })));
 
 interface DashboardPrimaryChartsProps {
+  fullData: WorkoutSet[];
+  dailyData: DailySummary[];
+  exerciseStats: ExerciseStats[];
+  effectiveNow: Date;
+  hypertrophyData: any[];
+  hypertrophyData30d?: any[];
+  hypertrophyPeriod: '7d' | '30d';
+  setHypertrophyPeriod: (v: '7d' | '30d') => void;
   isMounted: boolean;
   chartModes: { volumeVsDuration: TimeFilterMode; intensityEvo: TimeFilterMode; prTrend: TimeFilterMode };
-  toggleChartMode: (key: 'volumeVsDuration' | 'intensityEvo' | 'prTrend', mode: TimeFilterMode) => void;
+  toggleChartMode: (key: string, mode: TimeFilterMode) => void;
   prTrendView: 'area' | 'bar';
   setPrTrendView: (v: 'area' | 'bar') => void;
   prsData: any[];
-  prTrendDelta: any;
-  prTrendDelta7d: any;
+  prTrendDelta: number;
+  prTrendDelta7d: number;
   weeklySetsView: 'heatmap' | 'radar';
   setWeeklySetsView: (v: 'heatmap' | 'radar') => void;
   compositionGrouping: 'muscles' | 'groups';
@@ -31,34 +40,25 @@ interface DashboardPrimaryChartsProps {
   weeklySetsDashboard: any;
   onMuscleClick?: (muscleId: string, weeklySetsWindow: 'all' | '7d' | '30d' | '365d') => void;
   bodyMapGender: BodyMapGender;
-  trainingLevel: import('../../../utils/muscle/hypertrophy/muscleParams').TrainingLevel;
+  tooltipStyle: any;
+  trainingLevel: TrainingLevel;
+  volumeView: 'area' | 'bar';
+  setVolumeView: (v: 'area' | 'bar') => void;
+  weightUnit: WeightUnit;
+  volumeDurationData: any[];
+  volumeDensityTrend: any;
   intensityData: any[];
   intensityInsight: any;
   muscleGrouping: 'groups' | 'muscles';
   setMuscleGrouping: (v: 'groups' | 'muscles') => void;
-  musclePeriod: TimeFilterMode | 'all' | 'daily';
-  setMusclePeriod: (v: TimeFilterMode | 'all' | 'daily') => void;
+  musclePeriod: TimeFilterMode | 'daily';
+  setMusclePeriod: (v: any) => void;
   muscleTrendView: 'area' | 'stackedBar';
   setMuscleTrendView: (v: 'area' | 'stackedBar') => void;
   trendData: any[];
   trendKeys: string[];
   muscleTrendInsight: any;
   muscleVsLabel: string;
-  tooltipStyle: any;
-  volumeView: 'area' | 'bar';
-  setVolumeView: (v: 'area' | 'bar') => void;
-  weightUnit: WeightUnit;
-  volumeDurationData: any[];
-  volumeDensityTrend: any;
-  fullData: WorkoutSet[];
-  dailyData: DailySummary[];
-  exerciseStats: ExerciseStats[];
-  effectiveNow: Date;
-  themeMode: ThemeMode;
-  hypertrophyData: any[];
-  hypertrophyData30d?: any[];
-  hypertrophyPeriod: '7d' | '30d';
-  setHypertrophyPeriod: (v: '7d' | '30d') => void;
 }
 
 export const DashboardPrimaryCharts: React.FC<DashboardPrimaryChartsProps> = ({
@@ -79,7 +79,20 @@ export const DashboardPrimaryCharts: React.FC<DashboardPrimaryChartsProps> = ({
   onMuscleClick,
   bodyMapGender,
   effectiveNow,
+  hypertrophyData,
+  hypertrophyData30d,
+  hypertrophyPeriod,
+  setHypertrophyPeriod,
+  tooltipStyle,
   trainingLevel,
+  fullData,
+  dailyData,
+  exerciseStats,
+  volumeView,
+  setVolumeView,
+  weightUnit,
+  volumeDurationData,
+  volumeDensityTrend,
   intensityData,
   intensityInsight,
   muscleGrouping,
@@ -92,20 +105,6 @@ export const DashboardPrimaryCharts: React.FC<DashboardPrimaryChartsProps> = ({
   trendKeys,
   muscleTrendInsight,
   muscleVsLabel,
-  tooltipStyle,
-  volumeView,
-  setVolumeView,
-  weightUnit,
-  volumeDurationData,
-  volumeDensityTrend,
-  fullData,
-  dailyData,
-  exerciseStats,
-  themeMode,
-  hypertrophyData,
-  hypertrophyData30d,
-  hypertrophyPeriod,
-  setHypertrophyPeriod,
 }) => {
   const scatterHypertrophyData = useMemo(() =>
     hypertrophyData.filter(m => m.score.raw.weeklySets >= 1.0 && m.score.raw.daysPerWeek >= 1.0),
@@ -178,7 +177,6 @@ export const DashboardPrimaryCharts: React.FC<DashboardPrimaryChartsProps> = ({
         dailyData={dailyData}
         exerciseStats={exerciseStats}
         effectiveNow={effectiveNow}
-        themeMode={themeMode}
       />
 
       <LazyRender className="min-w-0" placeholder={<ChartSkeleton className="min-h-[400px] sm:min-h-[520px]" />}>
