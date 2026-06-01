@@ -361,38 +361,27 @@ export function UnifiedPlatformModal({
                     <li>
                       Go to{' '}
                       <a
-                        href="https://lyfta.app/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-semibold text-purple-300 hover:text-purple-200 underline"
-                      >
-                        lyfta.app
-                      </a>
-                    </li>
-                    <li>
-                      Sign in to your{' '}
-                      <a
-                        href="https://lyfta.app/login"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-semibold text-purple-300 hover:text-purple-200 underline"
-                      >
-                        Lyfta account
-                      </a>
-                    </li>
-                    <li>
-                      Community → API access →{' '}
-                      <a
                         href="https://my.lyfta.app/community/api"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="font-semibold text-purple-300 hover:text-purple-200 underline"
                       >
-                        Generate API Key
+                        my.lyfta.app/community/api
                       </a>
                     </li>
-                    <li>Copy your API key and paste it above</li>
+                    <li>
+                      Click the blue{' '}
+                      <span className="font-semibold text-purple-200">
+                        Generate API Key
+                      </span>{' '}
+                      button
+                    </li>
                   </ol>
+                  <p className="text-xs text-purple-100/60">
+                    Seeing{' '}
+                    <span className="text-red-300">"Key not found"</span>? You
+                    need to sign in to Lyfta first, then try again.
+                  </p>
                 </motion.div>
               ) : null}
               {activeMethod === 'csv' &&
