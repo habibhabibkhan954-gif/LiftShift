@@ -17,6 +17,10 @@ import {
   saveSecondarySetMultiplier,
   getShowTransparency,
   saveShowTransparency,
+  getDarkBgChoice,
+  saveDarkBgChoice,
+  getLightBgChoice,
+  saveLightBgChoice,
 } from '../../utils/storage/localStorage';
 import { BodyMapGender } from '../../components/bodyMap/BodyMap';
 
@@ -50,6 +54,12 @@ export interface UseAppPreferencesReturn {
   // Show transparency
   showTransparency: boolean;
   setShowTransparency: (value: boolean) => void;
+
+  // Background image choices
+  darkBgChoice: string;
+  setDarkBgChoice: (value: string) => void;
+  lightBgChoice: string;
+  setLightBgChoice: (value: string) => void;
 }
 
 export function useAppPreferences(): UseAppPreferencesReturn {
@@ -61,6 +71,8 @@ export function useAppPreferences(): UseAppPreferencesReturn {
   const [exerciseTrendMode, setExerciseTrendModeState] = useState<ExerciseTrendMode>(() => getExerciseTrendMode());
   const [secondarySetMultiplier, setSecondarySetMultiplierState] = useState<number>(() => getSecondarySetMultiplier());
   const [showTransparency, setShowTransparencyState] = useState<boolean>(() => getShowTransparency());
+  const [darkBgChoice, setDarkBgChoiceState] = useState<string>(() => getDarkBgChoice());
+  const [lightBgChoice, setLightBgChoiceState] = useState<string>(() => getLightBgChoice());
 
   // Persist weight unit
   useEffect(() => {
@@ -89,6 +101,16 @@ export function useAppPreferences(): UseAppPreferencesReturn {
     saveShowTransparency(showTransparency);
   }, [showTransparency]);
 
+  // Persist dark bg choice
+  useEffect(() => {
+    saveDarkBgChoice(darkBgChoice);
+  }, [darkBgChoice]);
+
+  // Persist light bg choice
+  useEffect(() => {
+    saveLightBgChoice(lightBgChoice);
+  }, [lightBgChoice]);
+
   // Apply CSS variables - heatmap hue (warm red for dark themes)
   useLayoutEffect(() => {
     const root = document.documentElement;
@@ -112,5 +134,9 @@ export function useAppPreferences(): UseAppPreferencesReturn {
     setSecondarySetMultiplier: setSecondarySetMultiplierState,
     showTransparency,
     setShowTransparency: setShowTransparencyState,
+    darkBgChoice,
+    setDarkBgChoice: setDarkBgChoiceState,
+    lightBgChoice,
+    setLightBgChoice: setLightBgChoiceState,
   };
 }

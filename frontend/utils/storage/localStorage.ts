@@ -147,6 +147,26 @@ export const saveShowTransparency = showTransparencyStorage.set;
 export const getShowTransparency = showTransparencyStorage.get;
 export const clearShowTransparency = showTransparencyStorage.clear;
 
+// Dark background choice
+const darkBgChoiceStorage = createStorageManager<string>({
+  key: 'hevy_analytics_dark_bg_choice',
+  defaultValue: 'dark-bg5',
+  validator: (v) => v !== null ? ['dark-bg1', 'dark-bg5'].includes(v) ? v : null : null,
+});
+
+export const saveDarkBgChoice = darkBgChoiceStorage.set;
+export const getDarkBgChoice = darkBgChoiceStorage.get;
+
+// Light background choice
+const lightBgChoiceStorage = createStorageManager<string>({
+  key: 'hevy_analytics_light_bg_choice',
+  defaultValue: 'light-bg1',
+  validator: (v) => v !== null ? ['light-bg1'].includes(v) ? v : null : null,
+});
+
+export const saveLightBgChoice = lightBgChoiceStorage.set;
+export const getLightBgChoice = lightBgChoiceStorage.get;
+
 // Time Filter Mode - for UI aggregation hints
 export type TimeFilterMode = 'all' | 'weekly' | 'monthly' | 'yearly';
 

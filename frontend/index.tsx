@@ -5,7 +5,8 @@ import { HashRouter } from 'react-router';
 import { initGA } from './utils/integrations/ga';
 import { ThemeProvider } from './components/theme/ThemeProvider';
 import './tailwind.css';
-import bgImage from './src/assets/images/misc/P15.avif';
+import { getDarkBgChoice } from './utils/storage/localStorage';
+import { resolveDarkBgByMode } from './src/assets/images/misc/bgConfig';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -18,7 +19,7 @@ initGA();
 const preloadLink = document.createElement('link');
 preloadLink.rel = 'preload';
 preloadLink.as = 'image';
-preloadLink.href = bgImage;
+preloadLink.href = resolveDarkBgByMode('pure-black', getDarkBgChoice());
 document.head.appendChild(preloadLink);
 
 const getRouterBasename = (): string => {
