@@ -1,6 +1,6 @@
 import type { TrainingLevel } from '../muscle/hypertrophy/muscleParams';
 import {
-  JOURNEY_TIERS,
+  DASHBOARD_TIERS,
   calculateAchievement,
   findTierByAchievement,
   calculateProgressToNextTier,
@@ -13,7 +13,7 @@ import {
 
 // Re-export for backward compatibility
 export type { TierDef };
-export { JOURNEY_TIERS, getTierColor, getTierByKey };
+export { DASHBOARD_TIERS as JOURNEY_TIERS, getTierColor, getTierByKey };
 
 // ---------------------------------------------------------------------------
 // Training Timeline – Unified sets + months progression system
@@ -55,11 +55,11 @@ export interface TimelineProgress {
 }
 
 /** Alias for backward compatibility */
-export const CHECKPOINTS = JOURNEY_TIERS;
+export const CHECKPOINTS = DASHBOARD_TIERS;
 
 /** Helper: get checkpoints belonging to a given phase */
 export function getPhaseCheckpoints(phase: TrainingLevel): TierDef[] {
-  return JOURNEY_TIERS.filter(c => c.phase === phase);
+  return DASHBOARD_TIERS.filter(c => c.phase === phase);
 }
 
 // ---------------------------------------------------------------------------
@@ -84,8 +84,8 @@ export function calculateUnifiedScore(totalSets: number, monthsTraining: number)
  */
 export function findCurrentCheckpointIndexByScore(unifiedScore: number): number {
   let idx = 0;
-  for (let i = JOURNEY_TIERS.length - 1; i >= 0; i--) {
-    if (unifiedScore >= JOURNEY_TIERS[i].positionPercent) {
+  for (let i = DASHBOARD_TIERS.length - 1; i >= 0; i--) {
+    if (unifiedScore >= DASHBOARD_TIERS[i].positionPercent) {
       idx = i;
       break;
     }
@@ -104,6 +104,7 @@ export function computeTimelineProgress(
   totalSets: number,
   monthsTraining: number,
   setsPerWeek?: number | null,
+  checkpointAchievedAtMonths?: Map<string, number | null>,
 ): TimelineProgress {
   // Calculate weeks of training
   const weeksTraining = Math.max(1, Math.round(monthsTraining * 4.33));
@@ -111,11 +112,11 @@ export function computeTimelineProgress(
   // Calculate unified score first
   const unifiedScore = calculateUnifiedScore(totalSets, monthsTraining);
   const currentIndex = findCurrentCheckpointIndexByScore(unifiedScore);
-  const currentCheckpoint = JOURNEY_TIERS[currentIndex];
-  const isLegend = currentIndex === JOURNEY_TIERS.length - 1;
+  const currentCheckpoint = DASHBOARD_TIERS[currentIndex];
+  const isLegend = currentIndex === DASHBOARD_TIERS.length - 1;
 
-  const nextCheckpoint = !isLegend && currentIndex < JOURNEY_TIERS.length - 1
-    ? JOURNEY_TIERS[currentIndex + 1]
+  const nextCheckpoint = !isLegend && currentIndex < DASHBOARD_TIERS.length - 1
+    ? DASHBOARD_TIERS[currentIndex + 1]
     : null;
 
   // Calculate progress to next based on unified score and checkpoint positions
@@ -139,21 +140,6 @@ export function computeTimelineProgress(
     weeklyProgressRate = setsProgressPerWeek * 0.6 * 100;
   }
 
-  // Estimate when each checkpoint was achieved (simple linear interpolation)
-  const checkpointAchievedAtMonths = new Map<string, number | null>();
-  if (unifiedScore > 0 && monthsTraining > 0) {
-    for (const cp of JOURNEY_TIERS) {
-      if (cp.positionPercent <= unifiedScore && cp.positionPercent > 0) {
-        const achievedAt = (cp.positionPercent / unifiedScore) * monthsTraining;
-        checkpointAchievedAtMonths.set(cp.key, Math.round(achievedAt * 10) / 10);
-      } else if (cp.positionPercent === 0) {
-        checkpointAchievedAtMonths.set(cp.key, 0);
-      } else {
-        checkpointAchievedAtMonths.set(cp.key, null);
-      }
-    }
-  }
-
   return {
     unifiedScore,
     currentCheckpoint,
@@ -168,7 +154,7 @@ export function computeTimelineProgress(
     setsPerWeek: setsPerWeek ?? null,
     weeklyProgressRate,
     isLegend,
-    checkpointAchievedAtMonths,
+    checkpointAchievedAtMonths: checkpointAchievedAtMonths ?? new Map(),
   };
 }
 
@@ -179,6 +165,7 @@ export function computeTimelineProgress(
 /** Format a week count into a human-readable label */
 export function formatEta(weeks: number | null): string {
   if (weeks === null || weeks <= 0) return 'Reached';
+  if (weeks > 104) return '>2 years';
   if (weeks <= 1) return '~1 week';
   if (weeks < 6) return `~${weeks} weeks`;
   const months = Math.round(weeks / 4.33);

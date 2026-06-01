@@ -5,8 +5,64 @@ import { isWarmupSet } from '../../utils/analysis/classification';
 import { isUnilateralSet } from '../../utils/analysis/classification/setClassification';
 import {
   computeTimelineProgress,
+  calculateUnifiedScore,
+  JOURNEY_TIERS,
   type TimelineProgress,
 } from '../../utils/training/trainingTimeline';
+
+/**
+ * Walk through workout history chronologically and compute the actual month number
+ * (relative to earliestDate) when the unified score first crossed each checkpoint threshold.
+ */
+function computeActualCheckpointAchievedMonths(
+  data: WorkoutSet[],
+  earliestDate: Date,
+): Map<string, number | null> {
+  const result = new Map<string, number | null>();
+  const recorded = new Set<string>();
+
+  for (const cp of JOURNEY_TIERS) {
+    if (cp.positionPercent === 0) {
+      result.set(cp.key, 0);
+      recorded.add(cp.key);
+    } else {
+      result.set(cp.key, null);
+    }
+  }
+
+  // Group sets by unique date, accumulating counts per day
+  const dateMap = new Map<string, { date: Date; sets: number }>();
+  for (const s of data) {
+    if (!s.parsedDate || isWarmupSet(s)) continue;
+    const key = s.parsedDate.toISOString().split('T')[0];
+    const existing = dateMap.get(key);
+    if (existing) {
+      existing.sets += isUnilateralSet(s) ? 0.5 : 1;
+    } else {
+      dateMap.set(key, { date: s.parsedDate, sets: isUnilateralSet(s) ? 0.5 : 1 });
+    }
+  }
+
+  // Sort chronologically
+  const sorted = [...dateMap.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+
+  let cumulativeSets = 0;
+  for (const [, { date, sets }] of sorted) {
+    cumulativeSets += sets;
+    const monthsAtDate = Math.max(0, differenceInMonths(date, earliestDate));
+    const score = calculateUnifiedScore(cumulativeSets, monthsAtDate);
+
+    for (const cp of JOURNEY_TIERS) {
+      if (recorded.has(cp.key)) continue;
+      if (score >= cp.positionPercent) {
+        result.set(cp.key, Math.round(monthsAtDate * 10) / 10);
+        recorded.add(cp.key);
+      }
+    }
+  }
+
+  return result;
+}
 
 /**
  * Compute the user's position on the training timeline using a unified score system.
@@ -78,6 +134,9 @@ export const useTrainingTimeline = (
     // Use recent pace for better ETA estimates
     const paceForEta = recentSets > 0 ? recentSetsPerWeek : setsPerWeek;
 
-    return computeTimelineProgress(totalSets, monthsTraining, paceForEta);
+    // Compute actual checkpoint achieved dates from workout history
+    const checkpointAchievedAtMonths = computeActualCheckpointAchievedMonths(data, earliestDate);
+
+    return computeTimelineProgress(totalSets, monthsTraining, paceForEta, checkpointAchievedAtMonths);
   }, [data, effectiveNow]);
 };
