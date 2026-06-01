@@ -3,6 +3,7 @@ import { Menu, X } from 'lucide-react';
 import { useTheme } from '../../theme/ThemeProvider';
 import { assetPath } from '../../../constants';
 import type { HowItWorksSection, HowItWorksNode } from '../utils/howItWorksDocContent';
+import type { HowItWorksCTA } from '../utils/howItWorksTypes';
 import { HOW_IT_WORKS_SECTIONS } from '../utils/howItWorksDocContent';
 
 type Props = {
@@ -85,6 +86,25 @@ const NodeView: React.FC<{ node: HowItWorksNode; linkTarget: '_self' | '_blank';
   );
 };
 
+const CTAView: React.FC<{ cta: HowItWorksCTA; isLight: boolean }> = ({ cta, isLight }) => (
+  <div className={`mt-6 rounded-2xl border ${isLight ? 'border-emerald-500/30 bg-emerald-50/50' : 'border-emerald-500/25 bg-emerald-500/10'} p-4`}>
+    <p className={`text-sm font-semibold mb-3 ${isLight ? 'text-emerald-800' : 'text-emerald-200'}`}>
+      {cta.text}
+    </p>
+    <div className="flex flex-wrap gap-2">
+      {cta.links.map((l) => (
+        <a
+          key={l.hrefPath}
+          href={assetPath(l.hrefPath)}
+          className={`inline-flex items-center rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${isLight ? 'border-emerald-600/30 bg-emerald-100/50 text-emerald-700 hover:bg-emerald-200/60' : 'border-emerald-500/30 bg-emerald-500/15 text-emerald-200 hover:bg-emerald-500/25'}`}
+        >
+          {l.label}
+        </a>
+      ))}
+    </div>
+  </div>
+);
+
 const SectionView: React.FC<{ section: HowItWorksSection; level: number; linkTarget: '_self' | '_blank'; flashingId: string | null; isLight: boolean }> = ({ section, level, linkTarget, flashingId, isLight }) => {
   const HeadingTag = level === 2 ? 'h2' : 'h3';
   const isFlashing = flashingId === section.id;
@@ -107,6 +127,8 @@ const SectionView: React.FC<{ section: HowItWorksSection; level: number; linkTar
           ))}
         </div>
       </div>
+
+      {section.cta ? <CTAView cta={section.cta} isLight={isLight} /> : null}
 
       {section.children && section.children.length > 0 ? (
         <div className="mt-6 space-y-6">

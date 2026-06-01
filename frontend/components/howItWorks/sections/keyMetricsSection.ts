@@ -109,4 +109,10 @@ export const KEY_METRICS_SECTION: HowItWorksSection = {
       ],
     },
   ],
+  cta: {
+    text: 'See your own training volume, PRs, and stats:',
+    links: [
+      { label: 'Open LiftShift →', hrefPath: '/' },
+    ],
+  },
 };

@@ -11,6 +11,12 @@ export const AI_EXPORT_SECTION: HowItWorksSection = {
         'LiftShift can export your full structured training data in a format designed for AI analysis. Pick a timeframe, optionally select analysis modules, then paste into any AI tool and ask your own questions.',
     },
   ],
+  cta: {
+    text: 'Export your training data for AI analysis:',
+    links: [
+      { label: 'Open LiftShift to export →', hrefPath: '/' },
+    ],
+  },
   children: [
     {
       id: 'ai-export-how',

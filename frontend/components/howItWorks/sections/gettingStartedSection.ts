@@ -25,4 +25,13 @@ export const GETTING_STARTED_SECTION: HowItWorksSection = {
         'All analytics run locally in your browser. When you use login or API-key syncing, LiftShift uses your credentials only to retrieve workout data — analysis is still done on your device.',
     },
   ],
+  cta: {
+    text: 'Connect your app and get started in 60 seconds:',
+    links: [
+      { label: 'Hevy', hrefPath: '/?platform=hevy' },
+      { label: 'Strong', hrefPath: '/?platform=strong' },
+      { label: 'Lyfta', hrefPath: '/?platform=lyfta' },
+      { label: 'Upload CSV', hrefPath: '/?platform=other' },
+    ],
+  },
 };

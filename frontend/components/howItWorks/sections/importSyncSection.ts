@@ -11,6 +11,15 @@ export const IMPORT_SYNC_SECTION: HowItWorksSection = {
         'You can bring data into LiftShift a few different ways. Pick the method that matches your app and comfort level.',
     },
   ],
+  cta: {
+    text: 'Ready to import? Pick your platform:',
+    links: [
+      { label: 'Hevy — Login or API key', hrefPath: '/?platform=hevy' },
+      { label: 'Lyfta — API key', hrefPath: '/?platform=lyfta' },
+      { label: 'Strong — CSV upload', hrefPath: '/?platform=strong' },
+      { label: 'Other CSV', hrefPath: '/?platform=other' },
+    ],
+  },
   children: [
     {
       id: 'import-hevy-login',
