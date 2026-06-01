@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dumbbell, Trophy } from 'lucide-react';
+import { Award, Dumbbell, Trophy } from 'lucide-react';
 import { FlexCard, type CardTheme, FlexCardFooter } from './FlexCard';
 import { FANCY_FONT, FANCY_FONT_NUMBERS, SEMI_FANCY_FONT } from '../../../utils/ui/uiConstants';
 
@@ -50,7 +50,7 @@ export const TopExercisesCard: React.FC<{
                 const pct = Math.max(4, Math.round((exercise.count / max) * 100));
 
                 const medal = idx === 0 ? 'gold' : idx === 1 ? 'silver' : 'bronze';
-                const medalEmoji = medal === 'gold' ? '🥇' : medal === 'silver' ? '🥈' : '🥉';
+                const medalIcon = medal === 'gold' ? <Trophy className="inline w-4 h-4 -mt-0.5" /> : medal === 'silver' ? <Award className="inline w-4 h-4 -mt-0.5" /> : <Award className="inline w-4 h-4 -mt-0.5" />;
                 const countClass =
                   medal === 'gold'
                     ? isDark
@@ -100,7 +100,7 @@ export const TopExercisesCard: React.FC<{
                           className="relative z-10 h-full flex items-center pl-4"
                           style={{ paddingRight: `${avatar + 14}px` }}
                         >
-                          <div className="text-white font-semibold text-sm truncate" style={SEMI_FANCY_FONT}>{`${medalEmoji} ${exercise.name}`}</div>
+                          <div className="text-white font-semibold text-sm truncate" style={SEMI_FANCY_FONT}>{medalIcon} {exercise.name}</div>
                         </div>
 
                         <div

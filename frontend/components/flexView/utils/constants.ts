@@ -1,5 +1,5 @@
 export const ZERO_LIFT_MESSAGES = [
-  "No weights lifted yet? The bar is waiting for you! 🏋️",
+  "No weights lifted yet? The bar is waiting for you!",
   "Zero volume? Even gravity is confused right now.",
   "Your muscles are on vacation. Time to call them back!",
   "The iron misses you. Go say hello.",

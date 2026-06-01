@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trophy } from 'lucide-react';
+import { Medal, Sparkles, Trophy } from 'lucide-react';
 import { WeightUnit } from '../../../utils/storage/localStorage';
 import { PRInsights } from '../../../utils/analysis/insights';
 import { assetPath } from '../../../constants';
@@ -169,7 +169,7 @@ export const PersonalRecordsCard: React.FC<{
                   {display.map((exercise, idx) => {
                     const pct = Math.max(4, Math.round((exercise.weight / maxW) * 100));
                     const medal = idx === 0 ? 'gold' : 'silver';
-                    const medalEmoji = medal === 'gold' ? '🏅' : '✨';
+                    const medalEmoji = medal === 'gold' ? <Medal className="inline w-4 h-4 -mt-0.5" /> : <Sparkles className="inline w-4 h-4 -mt-0.5" />;
                     const countClass =
                       medal === 'gold'
                         ? isDark

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles } from 'lucide-react';
+import { BicepsFlexed, Sparkles } from 'lucide-react';
 import CountUp from '../../ui/CountUp';
 import { FlexCard, type CardTheme, FlexCardFooter } from './FlexCard';
 import { WeightUnit } from '../../../utils/storage/localStorage';
@@ -38,7 +38,7 @@ export const SummaryCard: React.FC<{
         </div>
 
         <h2 className={`text-2xl sm:text-3xl font-bold ${textPrimary} mb-8`} style={FANCY_FONT}>
-          Your Fitness Summary 💪
+          Your Fitness Summary <BicepsFlexed className="inline-block w-7 h-7" />
         </h2>
 
         <div className="mb-6">

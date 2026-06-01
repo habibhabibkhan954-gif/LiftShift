@@ -1,4 +1,5 @@
 import React from 'react';
+import { Award, Trophy } from 'lucide-react';
 import type { ExerciseAsset } from '../../../utils/data/exerciseAssets';
 import { ExerciseThumbnail } from '../../common/ExerciseThumbnail';
 import type { TopExerciseBarDatum } from './TopExercisesCard';
@@ -77,7 +78,7 @@ export const TopExercisesBarView: React.FC<TopExercisesBarViewProps> = ({
                 const pct = Math.max(6, Math.round((exercise.count / max) * 100));
 
                 const medal = idx === 0 ? 'gold' : idx === 1 ? 'silver' : idx === 2 ? 'bronze' : null;
-                const medalEmoji = medal === 'gold' ? '🥇' : medal === 'silver' ? '🥈' : medal === 'bronze' ? '🥉' : '';
+                const medalIcon = medal === 'gold' ? <Trophy className="inline w-4 h-4 -mt-0.5" /> : medal === 'silver' ? <Award className="inline w-4 h-4 -mt-0.5" /> : medal === 'bronze' ? <Award className="inline w-4 h-4 -mt-0.5" /> : null;
                 const countClass =
                   medal === 'gold'
                     ? 'text-amber-300'
@@ -145,7 +146,7 @@ export const TopExercisesBarView: React.FC<TopExercisesBarViewProps> = ({
 
                         <div className="relative z-10 h-full flex items-center pl-4" style={{ paddingRight: `${avatar + 14}px` }}>
                           <div className="text-white font-semibold text-sm sm:text-base truncate" style={SEMI_FANCY_FONT}>
-                            {medalEmoji ? `${medalEmoji} ${exercise.name}` : exercise.name}
+                            {medalIcon ? <>{medalIcon} {exercise.name}</> : exercise.name}
                           </div>
                         </div>
 
@@ -194,7 +195,7 @@ export const TopExercisesBarView: React.FC<TopExercisesBarViewProps> = ({
 
                         <div className="relative z-10 h-full flex items-center pl-4" style={{ paddingRight: `${avatar + 14}px` }}>
                           <div className="text-white font-semibold text-sm sm:text-base truncate" style={SEMI_FANCY_FONT}>
-                            {medalEmoji ? `${medalEmoji} ${exercise.name}` : exercise.name}
+                            {medalIcon ? <>{medalIcon} {exercise.name}</> : exercise.name}
                           </div>
                         </div>
 
