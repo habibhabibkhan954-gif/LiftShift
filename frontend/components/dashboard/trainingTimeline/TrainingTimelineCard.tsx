@@ -21,15 +21,15 @@ import { useIsMobile } from '../../insights/useIsMobile';
 // ---------------------------------------------------------------------------
 
 const ICON_MAP: Record<string, React.FC<{ className?: string }>> = {
-  seedling:   Sprout,
-  sprout:     Leaf,
-  sapling:    TreePine,
-  foundation: Hammer,
-  builder:    Pickaxe,
-  sculptor:   Gem,
-  elite:      Target,
-  master:     Crown,
-  legend:     Zap,
+  newcomer:              Sprout,
+  beginner:              Leaf,
+  committed:             TreePine,
+  'early-intermediate':  Hammer,
+  intermediate:          Pickaxe,
+  'advanced-intermediate': Gem,
+  elite:                 Target,
+  master:                Crown,
+  legend:                Zap,
 };
 
 const CheckpointIcon: React.FC<{ checkpointKey: string; className?: string }> = ({
@@ -141,15 +141,17 @@ const CheckpointIconNode: React.FC<{
   checkpoint: TimelineCheckpointDef;
   isReached: boolean;
   isCurrent: boolean;
+  isNext: boolean;
   onMouseEnter: (e: React.MouseEvent) => void;
   onMouseLeave: () => void;
-}> = ({ checkpoint, isReached, isCurrent, onMouseEnter, onMouseLeave }) => {
+}> = ({ checkpoint, isReached, isCurrent, isNext, onMouseEnter, onMouseLeave }) => {
   const ringSize = 'w-7 h-7 sm:w-8 sm:h-8';
   const iconSize = 'w-3.5 h-3.5 sm:w-4 sm:h-4';
+  const interactive = isReached || isCurrent || isNext;
 
   return (
     <div
-      className="flex flex-col items-center flex-shrink-0 cursor-pointer group"
+      className={`flex flex-col items-center flex-shrink-0 ${interactive ? 'cursor-pointer' : ''} group`}
       data-current={isCurrent}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
@@ -244,6 +246,7 @@ const PhaseSection: React.FC<{
           const globalIdx = allCheckpoints.indexOf(cp);
           const isReached = globalIdx <= currentIndex;
           const isCurrent = globalIdx === currentIndex;
+          const isNext = globalIdx === currentIndex + 1;
 
           const segment = i > 0 ? (
             <SegmentLine
@@ -259,6 +262,7 @@ const PhaseSection: React.FC<{
                 checkpoint={cp}
                 isReached={isReached}
                 isCurrent={isCurrent}
+                isNext={isNext}
                 onMouseEnter={(e) => onCheckpointHover(e, cp)}
                 onMouseLeave={onCheckpointLeave}
               />
@@ -320,9 +324,6 @@ export const TrainingTimelineCard: React.FC<TrainingTimelineCardProps> = ({ prog
   const {
     unifiedScore,
     currentCheckpoint,
-    nextCheckpoint,
-    progressToNext,
-    remainingToNext,
     currentIndex,
     monthsTraining,
     weeklyProgressRate,
@@ -352,17 +353,18 @@ export const TrainingTimelineCard: React.FC<TrainingTimelineCardProps> = ({ prog
     checkpoints: getPhaseCheckpoints(phase),
   }));
 
-  // Determine if a checkpoint is the "next" one
-  const isNextCheckpoint = (cp: TimelineCheckpointDef): boolean => {
-    return nextCheckpoint !== null && cp.key === nextCheckpoint.key;
-  };
-
-  // Tooltip handler
+  // Tooltip handler — only for past, current, and immediate next
   const handleCheckpointHover = (e: React.MouseEvent, checkpoint: TimelineCheckpointDef) => {
     const cpIndex = CHECKPOINTS.indexOf(checkpoint);
     const isReached = cpIndex <= currentIndex;
     const isCurrent = cpIndex === currentIndex;
-    const isNext = isNextCheckpoint(checkpoint);
+    const isNext = cpIndex === currentIndex + 1;
+
+    if (!isReached && !isNext) {
+      hideTooltip();
+      return;
+    }
+
     const achievedAt = checkpointAchievedAtMonths.get(checkpoint.key);
 
     let body = '';
@@ -370,25 +372,21 @@ export const TrainingTimelineCard: React.FC<TrainingTimelineCardProps> = ({ prog
 
     if (isCurrent && isLegend) {
       body = `${checkpoint.description}\n\nYou made it.`;
-    } else if (isCurrent) {
-      // Current: description + ETA to next
-      const weeks = remainingToNext > 0 && weeklyProgressRate > 0 
-        ? Math.ceil(remainingToNext / weeklyProgressRate) 
-        : null;
-      body = `${checkpoint.description}\n\n${formatEta(weeks)} to reach ${nextCheckpoint?.label}`;
-    } else if (isNext) {
-      // Next: description + ETA to here
-      const weeks = remainingToNext > 0 && weeklyProgressRate > 0 
-        ? Math.ceil(remainingToNext / weeklyProgressRate) 
-        : null;
-      body = `${checkpoint.description}\n\n${formatEta(weeks)} to reach`;
-    } else if (isReached) {
-      // Past: description + when reached
-      const monthsAgo = achievedAt != null ? Math.round(monthsTraining - (achievedAt ?? 0)) : 0;
-      body = `${checkpoint.description}\n\nReached ${formatMonths(monthsAgo)} ago`;
+    } else if (isCurrent || isReached) {
+      // Past/current: description + when reached
+      const monthsAgo = achievedAt != null ? Math.round(monthsTraining - achievedAt) : 0;
+      const prefix = monthsAgo <= 0 ? 'Reached recently' : `Reached ${formatMonths(monthsAgo)} ago`;
+      body = `${checkpoint.description}\n\n${prefix}`;
     } else {
-      // Future: description only
-      body = checkpoint.description;
+      // Next: description + ETA at current rate
+      const remainingPoints = checkpoint.positionPercent - unifiedScore;
+      const weeks = remainingPoints > 0 && weeklyProgressRate > 0
+        ? Math.ceil(remainingPoints / weeklyProgressRate)
+        : null;
+      const eta = weeks !== null && weeks > 0
+        ? `${formatEta(weeks)} to reach at current rate`
+        : 'Insufficient data to estimate timeline';
+      body = `${checkpoint.description}\n\n${eta}`;
     }
 
     showTooltip(e, {
