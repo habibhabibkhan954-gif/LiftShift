@@ -7,6 +7,7 @@ import { AppOnboardingSteps } from './AppOnboardingSteps';
 interface AppOnboardingLayerProps {
   onboarding: OnboardingFlow | null;
   dataSource: 'strong' | 'hevy' | 'lyfta' | 'other' | 'motra' | null;
+  hasDashboardData: boolean;
   bodyMapGender: BodyMapGender;
   weightUnit: WeightUnit;
   isAnalyzing: boolean;
@@ -35,6 +36,7 @@ interface AppOnboardingLayerProps {
 
 export const AppOnboardingLayer: React.FC<AppOnboardingLayerProps> = ({
   onboarding,
+  hasDashboardData,
   bodyMapGender,
   weightUnit,
   isAnalyzing,
@@ -62,6 +64,7 @@ export const AppOnboardingLayer: React.FC<AppOnboardingLayerProps> = ({
     <AppOnboardingSteps
       onboarding={onboarding}
       dataSource={null}
+      hasDashboardData={hasDashboardData}
       bodyMapGender={bodyMapGender}
       weightUnit={weightUnit}
       isAnalyzing={isAnalyzing}

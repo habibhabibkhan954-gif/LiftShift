@@ -25,6 +25,7 @@ type Platform = 'hevy' | 'strong' | 'lyfta' | 'other' | 'motra';
 interface AppOnboardingStepsProps {
   onboarding: OnboardingFlow;
   dataSource: Platform | null;
+  hasDashboardData: boolean;
   bodyMapGender: BodyMapGender;
   weightUnit: WeightUnit;
   isAnalyzing: boolean;
@@ -53,6 +54,7 @@ interface AppOnboardingStepsProps {
 
 export const AppOnboardingSteps: React.FC<AppOnboardingStepsProps> = ({
   onboarding,
+  hasDashboardData,
   bodyMapGender,
   weightUnit,
   isAnalyzing,
@@ -198,7 +200,7 @@ export const AppOnboardingSteps: React.FC<AppOnboardingStepsProps> = ({
               : undefined
         }
         isAnalyzing={isAnalyzing}
-        onClearCache={onClearCacheAndRestart}
+        onClearCache={hasDashboardData ? onClearCacheAndRestart : undefined}
         onAddDataSource={
           onboarding.backStep === 'add_source_platform'
             ? undefined

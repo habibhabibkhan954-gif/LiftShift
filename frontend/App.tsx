@@ -667,6 +667,7 @@ const App: React.FC = () => {
       <AppOnboardingLayer
         onboarding={onboarding}
         dataSource={dataSource}
+        hasDashboardData={parsedData.length > 0}
         bodyMapGender={bodyMapGender}
         weightUnit={weightUnit}
         isAnalyzing={isAnalyzing}
