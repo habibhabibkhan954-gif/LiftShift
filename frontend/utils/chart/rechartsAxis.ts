@@ -5,10 +5,14 @@ export const RECHARTS_YAXIS_MARGIN = { left: -10, right: 20 } as const;
 export const formatAxisNumber = (val: number, unit?: string): string => {
   const num = Number(val);
   if (Number.isNaN(num)) return `${val}`;
-  if (num >= 1000) {
-    return `${(num / 1000).toFixed(1).replace(/\.0$/, '')}k${unit || ''}`;
+  const suffix = unit ? ` ${unit}` : '';
+  if (num >= 1_000_000) {
+    return `${(num / 1_000_000).toFixed(1).replace(/\.0$/, '')}M${suffix}`;
   }
-  return `${Math.round(num)}${unit || ''}`;
+  if (num >= 1_000) {
+    return `${(num / 1_000).toFixed(1).replace(/\.0$/, '')}K${suffix}`;
+  }
+  return `${Math.round(num)}${suffix}`;
 };
 
 const DEFAULT_MAX_TICKS_DESKTOP = 8;
