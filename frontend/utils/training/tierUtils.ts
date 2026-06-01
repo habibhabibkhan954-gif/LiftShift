@@ -107,6 +107,102 @@ export const JOURNEY_TIERS: readonly TierDef[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Dashboard Tier System
+//
+// Same position percents, but with normal-people labels and advice-style
+// descriptions for the Training Journey card.
+// ---------------------------------------------------------------------------
+
+export const DASHBOARD_TIERS: readonly TierDef[] = [
+  // ── Beginner phase ────────────────────────────────────────────────────────
+  {
+    key: 'newcomer',
+    label: 'Newcomer',
+    description: "You're starting from zero, and that's fine. Don't worry about what program to follow or which exercises are 'best.' Just show up. Make it a habit. Everything else comes later.",
+    phase: 'beginner',
+    positionPercent: 0,
+    color: 'text-emerald-300',
+    hexColor: '#6ee7b7',
+  },
+  {
+    key: 'beginner',
+    label: 'Beginner',
+    description: "You've built the habit. Now keep it going. Motivation fades, discipline is what gets you to the gym on days you don't feel like it. Your only job right now is consistency.",
+    phase: 'beginner',
+    positionPercent: 2,
+    color: 'text-emerald-400',
+    hexColor: '#34d399',
+  },
+  {
+    key: 'committed',
+    label: 'Committed',
+    description: "You're all in, training is part of your routine. Now get intentional: track your lifts, follow a real program, and focus on progressive overload. The next level demands purpose.",
+    phase: 'beginner',
+    positionPercent: 4,
+    color: 'text-teal-400',
+    hexColor: '#2dd4bf',
+  },
+
+  // ── Intermediate phase ──────────────────────────────────────────────────
+  {
+    key: 'early-intermediate',
+    label: 'Early Intermediate',
+    description: 'You\'ve built a real foundation. The easy gains are behind you. Structure your training, think about splits, exercise selection, and managing fatigue. Winging it won\'t cut it anymore.',
+    phase: 'intermediate',
+    positionPercent: 7,
+    color: 'text-cyan-400',
+    hexColor: '#22d3ee',
+  },
+  {
+    key: 'intermediate',
+    label: 'Intermediate',
+    description: 'You know the basics inside out. The gap between good and great is in the margins: sleep, nutrition, recovery, and consistent intensity. What you do outside the gym matters.',
+    phase: 'intermediate',
+    positionPercent: 14,
+    color: 'text-emerald-400',
+    hexColor: '#34d399',
+  },
+  {
+    key: 'advanced-intermediate',
+    label: 'Advanced Intermediate',
+    description: "You've outgrown generic programs. Personalize everything, mesocycles, weak point training, planned deloads. Listen to what your body tells you and train smarter.",
+    phase: 'intermediate',
+    positionPercent: 25,
+    color: 'text-lime-400',
+    hexColor: '#a3e635',
+  },
+
+  // ── Advanced phase ────────────────────────────────────────────────────────
+  {
+    key: 'elite',
+    label: 'Elite',
+    description: "You're in rare territory. At this level, technique, nutrition timing, and stress management separate you from the rest. Keep refining every detail.",
+    phase: 'advanced',
+    positionPercent: 35,
+    color: 'text-amber-400',
+    hexColor: '#fbbf24',
+  },
+  {
+    key: 'master',
+    label: 'Master',
+    description: "Years of dedication have shaped you. Focus shifts to longevity, training smart, preventing injuries, and enjoying the process. You've earned the wisdom.",
+    phase: 'advanced',
+    positionPercent: 55,
+    color: 'text-orange-400',
+    hexColor: '#fb923c',
+  },
+  {
+    key: 'legend',
+    label: 'Legend',
+    description: "The pinnacle. Not many make it here. Enjoy the lifestyle you've built and share what you've learned with others.",
+    phase: 'advanced',
+    positionPercent: 100,
+    color: 'text-red-400',
+    hexColor: '#f87171',
+  },
+];
+
+// ---------------------------------------------------------------------------
 // Achievement calculation with diminishing returns
 // ---------------------------------------------------------------------------
 
