@@ -1,3 +1,1 @@
-export { HevyLoginModal } from './HevyLoginModal';
-export { HevyMethodModal } from './HevyMethodModal';
-export { LyftaLoginModal } from './LyftaLoginModal';
+export { HevyLoginHelp } from './HevyLoginHelp';
