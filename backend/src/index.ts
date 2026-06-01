@@ -124,6 +124,10 @@ app.get('/ping', (req, res) => {
   res.send('OK');
 });
 
+app.get('/', (req, res) => {
+  res.redirect(301, 'https://liftshift.app/');
+});
+
 const posthogProxy = createPosthogProxy(posthogProxyPath);
 const posthogAssetProxy = createPosthogAssetProxy();
 const posthogStaticPath = `${posthogProxyPath}/static`;
