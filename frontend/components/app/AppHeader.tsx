@@ -142,15 +142,15 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
         <nav className="grid grid-cols-6 gap-1 sm:grid sm:grid-cols-5 sm:gap-2">
           <button
             onClick={() => onSelectTab(Tab.DASHBOARD)}
-            className={`w-full flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 rounded-md whitespace-nowrap focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 border transition-all duration-200 cursor-pointer ${activeTab === Tab.DASHBOARD ? 'bg-white/10 border-slate-600/70 text-white shadow-sm' : 'bg-transparent border-black/70 text-slate-400 hover:border-white hover:text-white hover:bg-white/5'}`}
+            className={`w-full flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 rounded-md whitespace-nowrap focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 border transition-all duration-200 cursor-pointer ${activeTab === Tab.DASHBOARD ? 'bg-black/40 border-slate-600/60 text-white shadow-sm' : 'bg-transparent border-black/70 text-slate-400 hover:border-white hover:text-white hover:bg-white/5'}`}
           >
             <LayoutDashboard className="w-5 h-5" />
-            <span className="font-medium text-[7px] sm:text-xs scale-150 sm:scale-100">Dashboard</span>
+            <span className="font-medium text-[7px] sm:text-xs scale-140 sm:scale-100">Dashboard</span>
           </button>
 
           <button
             onClick={() => onSelectTab(Tab.EXERCISES)}
-            className={`w-full flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 rounded-lg whitespace-nowrap focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 border transition-all duration-200 cursor-pointer ${activeTab === Tab.EXERCISES ? 'bg-white/10 border-slate-600/70 text-white shadow-sm' : 'bg-transparent border-black/70 text-slate-400 hover:border-white hover:text-white hover:bg-white/5'}`}
+            className={`w-full flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 rounded-lg whitespace-nowrap focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 border transition-all duration-200 cursor-pointer ${activeTab === Tab.EXERCISES ? 'bg-black/40 border-slate-600/60 text-white shadow-sm' : 'bg-transparent border-black/70 text-slate-400 hover:border-white hover:text-white hover:bg-white/5'}`}
           >
             <svg
               className="w-5 h-5"
@@ -175,7 +175,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
 
           <button
             onClick={() => onSelectTab(Tab.MUSCLE_ANALYSIS)}
-            className={`w-full flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 rounded-md whitespace-nowrap focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 border transition-all duration-200 cursor-pointer ${activeTab === Tab.MUSCLE_ANALYSIS ? 'bg-white/10 border-slate-600/70 text-white shadow-sm' : 'bg-transparent border-black/70 text-slate-400 hover:border-white hover:text-white hover:bg-white/5'}`}
+            className={`w-full flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 rounded-md whitespace-nowrap focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 border transition-all duration-200 cursor-pointer ${activeTab === Tab.MUSCLE_ANALYSIS ? 'bg-black/40 border-slate-600/60 text-white shadow-sm' : 'bg-transparent border-black/70 text-slate-400 hover:border-white hover:text-white hover:bg-white/5'}`}
           >
             <svg
               className="w-5 h-5"
@@ -194,7 +194,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
 
           <button
             onClick={() => onSelectTab(Tab.HISTORY)}
-            className={`w-full flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 rounded-md whitespace-nowrap focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 border transition-all duration-200 cursor-pointer ${activeTab === Tab.HISTORY ? 'bg-white/10 border-slate-600/70 text-white shadow-sm' : 'bg-transparent border-black/70 text-slate-400 hover:border-white hover:text-white hover:bg-white/5'}`}
+            className={`w-full flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 rounded-md whitespace-nowrap focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 border transition-all duration-200 cursor-pointer ${activeTab === Tab.HISTORY ? 'bg-black/40 border-slate-600/60 text-white shadow-sm' : 'bg-transparent border-black/70 text-slate-400 hover:border-white hover:text-white hover:bg-white/5'}`}
           >
             <svg
               className="w-5 h-5"
@@ -226,7 +226,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
 
           <button
             onClick={() => onSelectTab(Tab.FLEX)}
-            className={`w-full flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 rounded-md whitespace-nowrap focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 border transition-all duration-200 cursor-pointer ${activeTab === Tab.FLEX ? 'bg-white/10 border-slate-600/70 text-white shadow-sm' : 'bg-transparent border-black/70 text-slate-400 hover:border-white hover:text-white hover:bg-white/5'}`}
+            className={`w-full flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 rounded-md whitespace-nowrap focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 border transition-all duration-200 cursor-pointer ${activeTab === Tab.FLEX ? 'bg-black/40 border-slate-600/60 text-white shadow-sm' : 'bg-transparent border-black/70 text-slate-400 hover:border-white hover:text-white hover:bg-white/5'}`}
           >
             <svg
               className="w-5 h-5"
