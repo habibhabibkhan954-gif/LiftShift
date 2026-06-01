@@ -153,7 +153,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectPlatform, onTr
                   <div className="mb-8">
                     <button
                       onClick={onTryDemo}
-                      className={`group cursor-pointer inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-semibold h-11 px-8 border transition-all duration-200 ${isLight ? 'border-slate-400/40 text-slate-600 hover:border-emerald-600 hover:text-emerald-600' : 'border-slate-600/40 text-slate-400 hover:border-emerald-400 hover:text-emerald-300'}`}
+                      className={`group cursor-pointer inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-semibold h-11 px-8 border transition-all duration-200 ${isLight ? 'border-emerald-300/40 text-slate-600 hover:border-emerald-600 hover:text-emerald-600' : 'border-emerald-400/30 text-slate-400 hover:border-emerald-400 hover:text-emerald-300'}`}
                     >
                       <span>Try it with sample data</span>
                     </button>

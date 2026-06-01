@@ -15,6 +15,7 @@ import { MuscleAnalysisGraphPanel } from './MuscleAnalysisGraphPanel';
 import { MuscleAnalysisExerciseListPanel } from './MuscleAnalysisExerciseListPanel';
 import { LifetimeAchievementCard } from './LifetimeAchievementCard';
 import { TooltipData } from '../../ui/Tooltip';
+import { TabSkeleton } from '../../ui/TabSkeleton';
 import { prefetchHistoryData } from '../../../utils/prefetch/prefetchStrategies';
 import { calculateHypertrophyScoresWithExerciseTrends, HypertrophyScoreResult } from '../../../utils/muscle/hypertrophy/hypertrophyScore';
 import type { MuscleVolumeThresholds } from '../../../utils/muscle/hypertrophy/muscleParams';
@@ -212,11 +213,7 @@ export const MuscleAnalysis: React.FC<MuscleAnalysisProps> = ({
   });
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <div className="text-slate-400">Loading muscle data...</div>
-      </div>
-    );
+    return <TabSkeleton rows={6} className="py-2" />;
   }
 
   if (data.length === 0) {

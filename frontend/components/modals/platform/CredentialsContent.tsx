@@ -45,8 +45,8 @@ export function CredentialsContent({
   );
 
   const inputBg = isLight
-    ? 'bg-white/80 border-slate-300 focus:border-emerald-500/60'
-    : 'bg-slate-900/20 border-slate-700/60 focus:border-emerald-500/60';
+    ? 'bg-slate-300 border-slate-300 focus:border-emerald-500/60'
+    : 'bg-slate-950 border-slate-800 focus:border-emerald-500/60';
   const inputText = isLight ? 'text-slate-800' : 'text-slate-200';
   const placeholderColor = isLight ? 'placeholder:text-slate-400' : 'placeholder:text-slate-500';
   const labelText = isLight ? 'text-slate-700' : 'text-slate-200';

@@ -15,7 +15,7 @@ interface SegmentControlProps<T extends string = string> {
 
 const ACTIVE_CLASS = 'bg-blue-500/20 text-blue-400';
 
-const INACTIVE_CLASS = 'text-slate-400/80 hover:text-slate-200';
+const INACTIVE_CLASS = 'text-slate-500 hover:text-slate-200';
 
 export function SegmentControl<T extends string = string>({
   options,

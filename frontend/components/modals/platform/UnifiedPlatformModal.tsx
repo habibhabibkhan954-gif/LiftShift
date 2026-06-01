@@ -273,11 +273,11 @@ export function UnifiedPlatformModal({
           </button>
         </div>
       ) : (
-        <div className={`flex flex-col min-h-0 ${showHelp ? '' : 'justify-center'} ${phase === 'content' ? 'pt-3' : ''}`}>
+        <div className={`flex flex-col min-h-0 ${showHelp ? '' : 'justify-center'} ${phase === 'content' ? 'pt-1' : ''}`}>
           {!showHelp ? (
             <>
               <p
-                className={`text-sm text-center mb-5 ${
+                className={`text-sm text-center mb-4 ${
                   isLight ? 'text-slate-500' : 'text-slate-400'
                 }`}
               >
@@ -335,7 +335,7 @@ export function UnifiedPlatformModal({
           ) : (
             <div className="flex-1">
               <p
-                className={`text-sm text-center mb-5 ${
+                className={`text-sm text-center mb-4 ${
                   isLight ? 'text-slate-500' : 'text-slate-400'
                 }`}
               >
