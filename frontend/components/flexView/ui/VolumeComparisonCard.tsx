@@ -72,9 +72,6 @@ export const VolumeComparisonCard: React.FC<{
 
   return (
     <FlexCard theme={theme} className="min-h-[460px] sm:min-h-[500px]">
-      <div className={`absolute top-0 right-0 w-56 h-56 rounded-full blur-3xl pointer-events-none ${isDark ? 'bg-blue-500/5' : 'bg-blue-200/30'}`} />
-      <div className={`absolute bottom-0 left-0 w-44 h-44 rounded-full blur-3xl pointer-events-none ${isDark ? 'bg-purple-500/5' : 'bg-purple-200/20'}`} />
-
       {showThemeToggle && (
         <button
           onClick={(e) => {
@@ -116,13 +113,6 @@ export const VolumeComparisonCard: React.FC<{
           ) : comparison ? (
             <div className="flex flex-col items-center justify-center py-3">
               <div className="relative mb-3">
-                <div
-                  className={`absolute inset-0 rounded-full blur-3xl ${
-                    isDark
-                      ? 'bg-gradient-to-tr from-blue-500/35 via-cyan-500/18 to-purple-500/28'
-                      : 'bg-gradient-to-tr from-blue-300/55 via-cyan-200/40 to-purple-300/45'
-                  }`}
-                />
                 <img
                   src={assetPath(`/comparisonImages/${comparison.filename.replace(/\.svg$/, '.avif')}`)}
                   alt={comparison.item.label}

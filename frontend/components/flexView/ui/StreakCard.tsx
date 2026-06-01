@@ -18,16 +18,11 @@ export const StreakCard: React.FC<{
   return (
     <FlexCard theme={theme} className="min-h-[500px] flex flex-col">
       <div className="relative z-[1] pt-6 px-6 pb-16 flex flex-col items-center text-center flex-1 justify-center">
-        <div className={`absolute top-10 right-10 w-32 h-32 rounded-full blur-3xl pointer-events-none ${isDark ? 'bg-orange-500/20' : 'bg-orange-200/50'}`} />
-        <div className={`absolute bottom-32 left-10 w-28 h-28 rounded-full blur-3xl pointer-events-none ${isDark ? 'bg-red-500/15' : 'bg-red-200/40'}`} />
-
         <h2 className={`text-2xl sm:text-3xl font-bold ${textPrimary} mb-12`} style={FANCY_FONT}>
           Your Longest Streak
         </h2>
 
         <div className="relative mb-8">
-          <div className="absolute inset-0 blur-2xl bg-gradient-to-t from-orange-500/40 to-red-500/30 scale-150" />
-
           <div className="relative">
             <svg
               className="w-[120px] h-[120px] sm:w-[150px] sm:h-[150px] leading-none filter drop-shadow-lg"

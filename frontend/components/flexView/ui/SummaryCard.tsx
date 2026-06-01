@@ -28,9 +28,6 @@ export const SummaryCard: React.FC<{
   return (
     <FlexCard theme={theme} className="min-h-[500px] flex flex-col">
       <div className="relative z-[1] pt-6 px-6 pb-16 flex flex-col items-center text-center flex-1">
-        <div className={`absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl pointer-events-none ${isDark ? 'bg-blue-500/10' : 'bg-blue-200/40'}`} />
-        <div className={`absolute bottom-20 left-0 w-32 h-32 rounded-full blur-3xl pointer-events-none ${isDark ? 'bg-purple-500/10' : 'bg-purple-200/30'}`} />
-
         <div className={`flex items-center gap-2 mb-4 ${textMuted}`}>
           <Sparkles className="w-4 h-4" />
           <span className="text-xs font-semibold uppercase tracking-widest">Your Journey</span>

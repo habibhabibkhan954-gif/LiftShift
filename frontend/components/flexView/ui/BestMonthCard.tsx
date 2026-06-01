@@ -35,8 +35,6 @@ export const BestMonthCard: React.FC<{
   return (
     <FlexCard theme={theme} className="min-h-[500px] flex flex-col">
       <div className="relative z-[1] pt-6 px-6 pb-14 flex flex-col items-center text-center flex-1">
-        <div className={`absolute top-0 left-0 w-40 h-40 rounded-full blur-3xl pointer-events-none ${isDark ? 'bg-cyan-500/10' : 'bg-cyan-200/40'}`} />
-
         <h2 className={`text-xl sm:text-2xl font-bold ${textPrimary} mb-2`} style={FANCY_FONT}>
           {bestMonth.workouts > 0 ? `${MONTH_NAMES[bestMonth.month]} ${selectedYear}` : 'Building baseline'}
         </h2>
