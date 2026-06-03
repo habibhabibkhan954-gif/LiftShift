@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'node:fs';
+import http from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, loadEnv } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
@@ -168,6 +169,7 @@ export default defineConfig(({ mode }) => {
           target: backendUrl,
           changeOrigin: true,
           secure: false,
+          agent: new http.Agent({ family: 4, keepAlive: true }),
           configure: (proxy) => {
             proxy.on('proxyReq', (proxyReq) => {
               // The frontend calls /api via same-origin. Stripping Origin avoids backend CORS
