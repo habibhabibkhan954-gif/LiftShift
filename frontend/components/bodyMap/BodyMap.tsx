@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useRef, useCallback, useMemo } from 'react';
-import { getVolumeColor, getExerciseMuscleColor, getHypertrophyColor, SVG_MUSCLE_GROUPS, CSV_TO_SVG_MUSCLE_MAP } from '../../utils/muscle/mapping';
+import { getVolumeColor, getExerciseMuscleColor, getHypertrophyColor, SVG_MUSCLE_GROUPS, CSV_TO_SVG_MUSCLE_MAP, getMuscleIdForDetailedSvgId } from '../../utils/muscle/mapping';
 import { INTERACTIVE_MUSCLE_IDS } from '../../utils/muscle/mapping';
 import { getMuscleWithFallback } from '../../utils/muscle/mapping/bodyMapAvailability';
 import type { MuscleVolumeThresholds } from '../../utils/muscle/hypertrophy/muscleParams';
@@ -46,15 +46,24 @@ const SELECTION_HIGHLIGHT = 'rgb(var(--bodymap-selection-rgb) / 1)';
 
 const INTERACTIVE_MUSCLES: readonly string[] = INTERACTIVE_MUSCLE_IDS;
 
-const getRelatedMuscleIds = (muscleGroup: string | null): string[] => {
+export const getRelatedMuscleIds = (muscleGroup: string | null): string[] => {
   if (!muscleGroup) return [];
   const groupName = SVG_MUSCLE_GROUPS[muscleGroup];
-  if (!groupName) return [muscleGroup];
-  const relatedIds: string[] = [];
-  for (const [csvMuscle, svgIds] of Object.entries(CSV_TO_SVG_MUSCLE_MAP)) {
-    if (csvMuscle === groupName) relatedIds.push(...svgIds);
+  if (!groupName) {
+    const capitalized = muscleGroup.charAt(0).toUpperCase() + muscleGroup.slice(1);
+    const direct = CSV_TO_SVG_MUSCLE_MAP[muscleGroup] ?? CSV_TO_SVG_MUSCLE_MAP[capitalized];
+    return direct ?? [muscleGroup];
   }
-  return relatedIds.length > 0 ? relatedIds : [muscleGroup];
+  const relatedIds = new Set<string>();
+  relatedIds.add(muscleGroup);
+  const csvEntry = CSV_TO_SVG_MUSCLE_MAP[groupName];
+  if (csvEntry) {
+    csvEntry.forEach(id => relatedIds.add(id));
+  }
+  for (const [svgId, grp] of Object.entries(SVG_MUSCLE_GROUPS)) {
+    if (grp === groupName) relatedIds.add(svgId);
+  }
+  return Array.from(relatedIds);
 };
 
 export const BodyMap: React.FC<BodyMapProps> = ({
@@ -79,7 +88,9 @@ export const BodyMap: React.FC<BodyMapProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const hoveredMuscleRef = useRef<string | null>(null);
   const selectedMuscleIds = useMemo(
-    () => selectedMuscleIdsOverride ?? getRelatedMuscleIds(selectedPart),
+    () => selectedMuscleIdsOverride
+      ? selectedMuscleIdsOverride.flatMap(id => getRelatedMuscleIds(id))
+      : getRelatedMuscleIds(selectedPart),
     [selectedMuscleIdsOverride, selectedPart]
   );
 
@@ -93,7 +104,8 @@ export const BodyMap: React.FC<BodyMapProps> = ({
       const elements = containerRef.current?.querySelectorAll(`#${targetId}`);
       const isOriginalSelection = muscleId !== targetId;
       elements?.forEach(el => {
-        const volume = muscleVolumes.get(muscleId) || 0;
+        const headlessId = getMuscleIdForDetailedSvgId(muscleId) ?? muscleId;
+        const volume = muscleVolumes.get(muscleId) ?? muscleVolumes.get(headlessId) ?? 0;
         const color = useExerciseColors
           ? getExerciseMuscleColor(volume)
           : useHypertrophyColors
@@ -101,7 +113,7 @@ export const BodyMap: React.FC<BodyMapProps> = ({
             : getVolumeColor(volume, volumeThresholds, maxVolume);
         const isSelected = selectedMuscleIds.includes(muscleId) || (isOriginalSelection && selectedMuscleIds.includes(targetId));
         const isHovered = hoveredMuscleIdsOverride
-          ? hoveredMuscleIdsOverride.includes(muscleId)
+          ? hoveredMuscleIdsOverride.some(id => getRelatedMuscleIds(id).includes(muscleId))
           : (hoveredId === muscleId || (hoveredId && getRelatedMuscleIds(hoveredId).includes(muscleId)));
         
         el.querySelectorAll('path').forEach(path => {
