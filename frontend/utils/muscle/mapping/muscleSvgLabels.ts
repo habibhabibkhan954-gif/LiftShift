@@ -7,46 +7,58 @@ export const SVG_MUSCLE_GROUPS: Record<string, string> = {
   'anterior-deltoid': 'Shoulders',
   'lateral-deltoid': 'Shoulders',
   'posterior-deltoid': 'Shoulders',
+  'shoulders': 'Shoulders',
   // Chest group
   'mid-lower-pectoralis': 'Chest',
   'upper-pectoralis': 'Chest',
+  'chest': 'Chest',
   // Biceps group
   'long-head-bicep': 'Biceps',
   'short-head-bicep': 'Biceps',
+  'biceps': 'Biceps',
   // Triceps group
   'medial-head-triceps': 'Triceps',
   'long-head-triceps': 'Triceps',
   'lateral-head-triceps': 'Triceps',
+  'triceps': 'Triceps',
   // Abs group
   'lower-abdominals': 'Abdominals',
   'upper-abdominals': 'Abdominals',
+  'abdominals': 'Abdominals',
   // Quads group
   'outer-quadricep': 'Quadriceps',
   'rectus-femoris': 'Quadriceps',
   'inner-quadricep': 'Quadriceps',
+  'quads': 'Quadriceps',
+  'adductors': 'Quadriceps',
+  'inner-thigh': 'Quadriceps',
   // Hamstrings group
   'medial-hamstrings': 'Hamstrings',
   'lateral-hamstrings': 'Hamstrings',
+  'hamstrings': 'Hamstrings',
   // Glutes group
   'gluteus-maximus': 'Glutes',
   'gluteus-medius': 'Glutes',
+  'glutes': 'Glutes',
   // Calves group
   'gastrocnemius': 'Calves',
   'soleus': 'Calves',
   'tibialis': 'Calves',
+  'calves': 'Calves',
   // Traps group
   'upper-trapezius': 'Traps',
   'lower-trapezius': 'Traps',
   'traps-middle': 'Traps',
+  'traps': 'Traps',
   // Forearms group
   'wrist-extensors': 'Forearms',
   'wrist-flexors': 'Forearms',
+  'forearms': 'Forearms',
   // Single muscles
   'lats': 'Lats',
   'lowerback': 'Lower Back',
   'obliques': 'Obliques',
   'neck': 'Neck',
-  'inner-thigh': 'Adductors',
 };
 
 /**
@@ -97,8 +109,8 @@ export const SVG_MUSCLE_NAMES: Record<string, string> = {
   'lateral-head-triceps': 'Triceps',
   // Other
   'neck': 'Neck',
-  'inner-thigh': 'Adductors',
-  'adductors': 'Adductors',
+  'inner-thigh': 'Quadriceps',
+  'adductors': 'Quadriceps',
   'abductors': 'Abductors',
 };
 

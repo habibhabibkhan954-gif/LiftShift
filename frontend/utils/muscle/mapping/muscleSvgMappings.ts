@@ -42,7 +42,8 @@ export const DETAILED_SVG_ID_TO_MUSCLE_ID: Readonly<Record<string, MuscleId>> = 
   gastrocnemius: 'calves',
   soleus: 'calves',
   tibialis: 'calves',
-  // Note: 'inner-thigh' intentionally has no headless target (not present in group SVG).
+  adductors: 'quads',
+  'inner-thigh': 'quads',
 };
 
 /** @deprecated Use DETAILED_SVG_ID_TO_MUSCLE_ID instead */
@@ -88,7 +89,8 @@ export const DETAILED_SVG_ID_TO_HEADLESS_ID: Readonly<Record<string, HeadlessMus
   gastrocnemius: 'calves',
   soleus: 'calves',
   tibialis: 'calves',
-  // Note: 'inner-thigh' intentionally has no headless target (not present in group SVG).
+  adductors: 'quads',
+  'inner-thigh': 'quads',
 };
 
 export const MUSCLE_ID_TO_DETAILED_SVG_IDS: Readonly<Record<MuscleId, readonly string[]>> = {
@@ -106,7 +108,7 @@ export const MUSCLE_ID_TO_DETAILED_SVG_IDS: Readonly<Record<MuscleId, readonly s
   hamstrings: ['medial-hamstrings', 'lateral-hamstrings'],
   glutes: ['gluteus-maximus', 'gluteus-medius'],
   calves: ['gastrocnemius', 'soleus', 'tibialis'],
-  adductors: ['inner-thigh'],
+  adductors: ['gluteus-maximus', 'gluteus-medius'],
   abductors: ['gluteus-medius'],
   neck: ['neck'],
 };
