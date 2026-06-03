@@ -6,6 +6,7 @@ import { Tab } from './app/navigation';
 import { AppOnboardingLayer } from './components/app/AppOnboardingLayer';
 import { AppLoadingOverlay } from './components/app/AppLoadingOverlay';
 import { UserPreferencesModal } from './components/modals/userPreferences/UserPreferencesModal';
+import { BuyMeACoffeeModal } from './components/modals/buyMeACoffee/BuyMeACoffeeModal';
 import { ToastProvider, useToast } from './components/ui/ToastProvider';
 import type { OnboardingFlow } from './app/onboarding/types';
 import { getEffectiveNowFromWorkoutData } from './utils/date/dateUtils';
@@ -128,6 +129,7 @@ const App: React.FC = () => {
   });
   const [dataSource, setDataSource] = useState(() => getDataSourceChoice());
   const [preferencesModalOpen, setPreferencesModalOpen] = useState(false);
+  const [showBmcModal, setShowBmcModal] = useState(false);
   const [bgLoaded, setBgLoaded] = useState(false);
 
   const {
@@ -578,6 +580,69 @@ const App: React.FC = () => {
     prevHasFilterRef.current = hasActiveCalendarFilter;
   }, [hasActiveCalendarFilter, onboarding?.intent]);
 
+  useEffect(() => {
+    if (parsedData.length === 0) return;
+    if (onboarding !== null) return;
+    try {
+      if (localStorage.getItem('hevy_analytics_demo_mode') === '1') return;
+    } catch {}
+
+    try {
+      const last = localStorage.getItem('bmc_last_session_ts');
+      if (last) {
+        const elapsed = Date.now() - parseInt(last, 10);
+        if (elapsed < 30 * 60 * 1000) return;
+      }
+      const count = parseInt(localStorage.getItem('bmc_session_count') || '0', 10);
+      localStorage.setItem('bmc_session_count', String(count + 1));
+      localStorage.setItem('bmc_last_session_ts', String(Date.now()));
+    } catch {}
+  }, [parsedData.length, onboarding]);
+
+  useEffect(() => {
+    const APP_TABS: Tab[] = [Tab.DASHBOARD, Tab.EXERCISES, Tab.HISTORY, Tab.MUSCLE_ANALYSIS, Tab.FLEX];
+
+    const inAppTab = APP_TABS.includes(activeTab);
+    const isDemoMode = (() => {
+      try { return localStorage.getItem('hevy_analytics_demo_mode') === '1'; } catch { return false; }
+    })();
+
+    if (!inAppTab || isDemoMode || onboarding) {
+      try { localStorage.removeItem('bmc_session_start'); } catch {}
+      return;
+    }
+
+    try {
+      const sessionCount = parseInt(localStorage.getItem('bmc_session_count') || '0', 10);
+      if (sessionCount < 3) return;
+      if (sessionCount % 3 !== 0) return;
+
+      const supporterTs = localStorage.getItem('bmc_supporter_cooldown');
+      if (supporterTs) {
+        const elapsed = Date.now() - parseInt(supporterTs, 10);
+        if (elapsed < 60 * 24 * 60 * 60 * 1000) return;
+      }
+    } catch {}
+
+    try {
+      localStorage.setItem('bmc_session_start', String(Date.now()));
+    } catch {}
+
+    const interval = setInterval(() => {
+      try {
+        const sessionStart = localStorage.getItem('bmc_session_start');
+        if (!sessionStart) return;
+        const elapsed = Date.now() - parseInt(sessionStart, 10);
+        if (elapsed >= 120 * 1000) {
+          clearInterval(interval);
+          setShowBmcModal(true);
+        }
+      } catch {}
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [activeTab, onboarding]);
+
   const addToastRef = useRef<((content: React.ReactNode, duration?: number) => string) | null>(null);
 
   const ToastNotifier: React.FC = () => {
@@ -689,6 +754,17 @@ const App: React.FC = () => {
         onDarkBgChoiceChange={setDarkBgChoice}
         lightBgChoice={lightBgChoice}
         onLightBgChoiceChange={setLightBgChoice}
+      />
+
+      <BuyMeACoffeeModal
+        isOpen={showBmcModal}
+        onClose={(supporter) => {
+          setShowBmcModal(false);
+          if (supporter) {
+            try { localStorage.setItem('bmc_supporter_cooldown', String(Date.now())); } catch {}
+          }
+          try { localStorage.removeItem('bmc_session_start'); } catch {}
+        }}
       />
 
       <AppOnboardingLayer
