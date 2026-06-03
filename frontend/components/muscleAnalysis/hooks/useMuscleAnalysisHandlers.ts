@@ -3,6 +3,7 @@ import {
   getHeadlessIdForDetailedSvgId,
   HEADLESS_MUSCLE_NAMES,
 } from '../../../utils/muscle/mapping';
+import { getRelatedMuscleIds } from '../../bodyMap/BodyMap';
 import { getVolumeThresholds, getVolumeZone } from '../../../utils/muscle/hypertrophy';
 import type { TooltipData } from '../../ui/Tooltip';
 import type { WeeklySetsWindow } from '../../../utils/muscle/analytics';
@@ -128,12 +129,12 @@ export const useMuscleAnalysisHandlers = ({
 
   const selectedBodyMapIds = useMemo(() => {
     if (!selectedMuscle) return undefined;
-    return [selectedMuscle];
+    return getRelatedMuscleIds(selectedMuscle);
   }, [selectedMuscle]);
 
   const hoveredBodyMapIds = useMemo(() => {
     if (!hoveredMuscle) return undefined;
-    return [hoveredMuscle];
+    return getRelatedMuscleIds(hoveredMuscle);
   }, [hoveredMuscle]);
 
   return {
