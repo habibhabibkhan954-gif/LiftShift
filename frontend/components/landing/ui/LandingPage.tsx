@@ -125,7 +125,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectPlatform, onTr
           src={darkBgImage}
           alt=""
           aria-hidden="true"
-          className="fixed inset-0 w-full h-full object-cover z-[-1] pointer-events-none opacity-20"
+          className="fixed inset-0 w-full h-full object-cover z-[-1] pointer-events-none opacity-10"
           loading="lazy"
         />
       )}
