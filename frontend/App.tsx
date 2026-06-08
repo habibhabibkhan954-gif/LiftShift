@@ -6,6 +6,7 @@ import { Tab } from './app/navigation';
 import { AppOnboardingLayer } from './components/app/AppOnboardingLayer';
 import { AppLoadingOverlay } from './components/app/AppLoadingOverlay';
 import { UserPreferencesModal } from './components/modals/userPreferences/UserPreferencesModal';
+import { GuideModal } from './components/modals/guide/GuideModal';
 import { BuyMeACoffeeModal } from './components/modals/buyMeACoffee/BuyMeACoffeeModal';
 import { ToastProvider, useToast } from './components/ui/ToastProvider';
 import type { OnboardingFlow } from './app/onboarding/types';
@@ -129,6 +130,7 @@ const App: React.FC = () => {
   });
   const [dataSource, setDataSource] = useState(() => getDataSourceChoice());
   const [preferencesModalOpen, setPreferencesModalOpen] = useState(false);
+  const [guideModalOpen, setGuideModalOpen] = useState(false);
   const [showBmcModal, setShowBmcModal] = useState(false);
   const [bgLoaded, setBgLoaded] = useState(false);
 
@@ -687,6 +689,7 @@ const App: React.FC = () => {
         onSelectTab={handleSelectTab}
         onOpenUpdateFlow={handleOpenUpdateFlow}
         onOpenPreferences={() => setPreferencesModalOpen(true)}
+        onOpenGuide={() => setGuideModalOpen(true)}
         calendarOpen={calendarOpen}
         onToggleCalendarOpen={toggleCalendarOpen}
         onCloseCalendar={() => setCalendarOpen(false)}
@@ -732,6 +735,11 @@ const App: React.FC = () => {
         now={filteredEffectiveNow}
       />
         )}
+
+      <GuideModal
+        isOpen={guideModalOpen}
+        onClose={() => setGuideModalOpen(false)}
+      />
 
       <UserPreferencesModal
         isOpen={preferencesModalOpen}
@@ -791,6 +799,7 @@ const App: React.FC = () => {
         onHevySyncSaved={handleHevySyncSaved}
         onLyfatLogin={handleLyfatLogin}
         onLyfatSyncSaved={handleLyfatSyncSaved}
+        onOpenGuide={() => setGuideModalOpen(true)}
       />
 
       <AppLoadingOverlay open={isAnalyzing || showColdStartOverlay} isCompleting={isCompleting} />
