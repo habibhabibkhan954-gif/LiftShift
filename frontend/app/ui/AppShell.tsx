@@ -14,6 +14,7 @@ interface AppShellProps {
   onSelectTab: (tab: Tab) => void;
   onOpenUpdateFlow: () => void;
   onOpenPreferences: () => void;
+  onOpenGuide: () => void;
   calendarOpen: boolean;
   onToggleCalendarOpen: () => void;
   onCloseCalendar: () => void;
@@ -66,6 +67,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   onSelectTab,
   onOpenUpdateFlow,
   onOpenPreferences,
+  onOpenGuide,
   calendarOpen,
   onToggleCalendarOpen,
   onCloseCalendar,
@@ -120,6 +122,7 @@ export const AppShell: React.FC<AppShellProps> = ({
         onSelectTab={onSelectTab}
         onOpenUpdateFlow={onOpenUpdateFlow}
         onOpenPreferences={onOpenPreferences}
+        onOpenGuide={onOpenGuide}
         calendarOpen={calendarOpen}
         onToggleCalendarOpen={onToggleCalendarOpen}
         hasActiveCalendarFilter={hasActiveCalendarFilter}
