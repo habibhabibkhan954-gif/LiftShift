@@ -32,6 +32,7 @@ interface AppOnboardingLayerProps {
   onHevySyncSaved: () => void;
   onLyfatLogin: (apiKey: string) => void;
   onLyfatSyncSaved: () => void;
+  onOpenGuide: () => void;
 }
 
 export const AppOnboardingLayer: React.FC<AppOnboardingLayerProps> = ({
@@ -57,6 +58,7 @@ export const AppOnboardingLayer: React.FC<AppOnboardingLayerProps> = ({
   onHevySyncSaved,
   onLyfatLogin,
   onLyfatSyncSaved,
+  onOpenGuide,
 }) => {
   if (!onboarding) return null;
 
@@ -85,6 +87,7 @@ export const AppOnboardingLayer: React.FC<AppOnboardingLayerProps> = ({
       onHevySyncSaved={onHevySyncSaved}
       onLyfatLogin={onLyfatLogin}
       onLyfatSyncSaved={onLyfatSyncSaved}
+      onOpenGuide={onOpenGuide}
     />
   );
 };

@@ -50,6 +50,7 @@ interface AppOnboardingStepsProps {
   onHevySyncSaved: () => void;
   onLyfatLogin: (apiKey: string) => void;
   onLyfatSyncSaved: () => void;
+  onOpenGuide: () => void;
 }
 
 export const AppOnboardingSteps: React.FC<AppOnboardingStepsProps> = ({
@@ -75,6 +76,7 @@ export const AppOnboardingSteps: React.FC<AppOnboardingStepsProps> = ({
   onHevySyncSaved,
   onLyfatLogin,
   onLyfatSyncSaved,
+  onOpenGuide,
 }) => {
   const closeForUpdate =
     onboarding.intent === 'update'
@@ -114,6 +116,7 @@ export const AppOnboardingSteps: React.FC<AppOnboardingStepsProps> = ({
     return (
       <LandingPage
         onSelectPlatform={handleSelectPlatform}
+        onOpenGuide={onOpenGuide}
         onTryDemo={() => {
           onSetCsvImportError(null);
           onSetHevyLoginError(null);

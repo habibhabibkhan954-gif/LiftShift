@@ -16,9 +16,10 @@ import darkBgImage from '../../../src/assets/images/misc/dark-bg5.avif';
 interface LandingPageProps {
   onSelectPlatform: (source: DataSourceChoice) => void;
   onTryDemo?: () => void;
+  onOpenGuide?: () => void;
 }
 
-export const LandingPage: React.FC<LandingPageProps> = ({ onSelectPlatform, onTryDemo }) => {
+export const LandingPage: React.FC<LandingPageProps> = ({ onSelectPlatform, onTryDemo, onOpenGuide }) => {
   const { mode } = useTheme();
   const isLight = mode === 'light';
 
@@ -153,6 +154,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectPlatform, onTr
         <Navigation
           variant="landing"
           className="px-4 sm:px-6 lg:px-8"
+          onGuideClick={onOpenGuide}
         />
       </div>
 

@@ -799,6 +799,7 @@ const App: React.FC = () => {
         onHevySyncSaved={handleHevySyncSaved}
         onLyfatLogin={handleLyfatLogin}
         onLyfatSyncSaved={handleLyfatSyncSaved}
+        onOpenGuide={() => setGuideModalOpen(true)}
       />
 
       <AppLoadingOverlay open={isAnalyzing || showColdStartOverlay} isCompleting={isCompleting} />

@@ -152,27 +152,52 @@ Ensure `VITE_BACKEND_URL` is set in your frontend environment variables to point
 ## 8. GUI Usage Guide
 
 ### 📱 Getting Around
-- **Top Bar:** Quick access to **Update Data** (sync/import), **User Preferences** (theme, units, body type), and **Calendar Filters**.
-- **Tabs:** Switch between Dashboard, Exercises, Muscle Analysis, History, and Flex views at the bottom (mobile) or top (desktop).
+- **Top Bar:**
+  - **logo:** Click the logo to return to the Dashboard.
+  - **Update Data (Refresh icon):** Force a re-sync with Hevy/Lyfta or import a new CSV.
+  - **Guide (Book icon):** Open the in-app documentation.
+  - **User Preferences (Gear icon):** Change your theme, weight units, body type for the heatmap, and calculation models.
+  - **Calendar (Pencil/Calendar icon):** Apply date filters to the entire application.
+- **Navigation Tabs:**
+  - **Dashboard:** Overview of your current training state.
+  - **Exercises:** Library of every exercise you've ever performed.
+  - **Muscle:** Visual breakdown of muscle group volume.
+  - **History:** Journal of past workouts.
+  - **Flex:** Experimental views and deeper analysis.
 
-### 📊 Dashboard Tips
-- **Muscle Heatmap:** Click any muscle on the 3D-ish model to filter the entire dashboard by that muscle group.
-- **Volume Charts:** Hover over points to see exact weight totals for that day.
-- **PR Cards:** Click a PR to jump directly to that exercise's detailed view.
+### 📊 Dashboard In-Depth
+- **Current Volume vs 7d/30d/365d:** Compare your recent work against historical averages.
+- **Muscle Heatmap:** The 3D model shows which muscles are "hot" (hit recently) or "cold". Click a muscle to filter the Dashboard stats for just that group.
+- **Activity Heatmap:** A GitHub-style grid showing workout frequency over the last year.
+- **PR Highlights:** See your most recent Personal Records at a glance.
 
-### 🏋️ Exercise Analysis
-- **Search:** Quickly find exercises using the search bar at the top of the tab.
-- **Trend Toggle:** Switch between **Stable** (long-term) and **Reactive** (short-term) trend detection in User Preferences.
-- **1RM Progress:** View your estimated strength gains over time.
+### 🏋️ Exercise Library & 1RM
+- **Search & Filter:** Find any exercise by name or category.
+- **PR History:** Tracks every time you set a new record for weight or volume.
+- **1RM Estimates:** Uses standard formulas (like Epley) to estimate your one-rep max progress.
+- **Trend Logic:**
+  - **Stable:** Best for long-term consistency analysis.
+  - **Reactive:** Best for tracking recent performance swings or fatigue.
 
-### 📅 History & Feedback
-- **Workout List:** Scroll through past sessions.
-- **Set Badges:** Look for badges like **PR**, **Normal Fatigue**, or **Aggressive** next to each set for coaching feedback.
-- **Calendar Filter:** Use the calendar to find workouts from a specific date.
+### 🔥 Muscle Analysis (Heatmaps)
+- **Primary vs. Secondary:** Toggle how "secondary" muscles (e.g., triceps during bench press) are counted in your volume.
+- **Volume Zones:** Identifies if a muscle is getting Maintenance, Optimal, or Overreaching volume.
+- **Recovery Tracking:** Uses rolling windows to estimate muscle recovery state.
 
-### 🛠️ Customization
-- **Theme Modes:** Choose from Light, Medium Dark, Midnight, Pure Black, or Texture in Settings.
-- **Secondary Multiplier:** Adjust how much credit "assisted" or "secondary" exercises get towards muscle volume in Settings.
+### 📅 Workout History & Coaching
+- **Set-by-Set Feedback:** Every set is analyzed.
+  - **PR:** You broke a personal record!
+  - **Normal Fatigue:** Your performance drop matches expected fatigue levels.
+  - **Aggressive:** You're pushing harder than the algorithm expected.
+  - **Good Reset:** You successfully recovered volume after a dip.
+- **Note Viewing:** If your logger app (Hevy/Strong) includes notes, they appear here.
+
+### 🛠️ Advanced Customization
+- **Secondary Multiplier:** Found in Preferences. If set to 0.5, a "Secondary" muscle hit counts for half the volume of a "Primary" hit.
+- **Theme Modes:**
+  - **Pure Black:** Optimized for OLED screens.
+  - **Texture:** Adds a subtle paper-like grain to the UI.
+  - **Light/Dark:** Standard color schemes.
 
 ---
 

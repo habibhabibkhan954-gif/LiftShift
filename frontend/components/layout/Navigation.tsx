@@ -1,5 +1,5 @@
 import React from 'react';
-import { Info, Sparkles, Menu } from 'lucide-react';
+import { Info, Sparkles, Menu, BookOpen } from 'lucide-react';
 import { useTheme } from '../theme/ThemeProvider';
 import { assetPath } from '../../constants';
 import { SEMI_FANCY_FONT } from '../../utils/ui/uiConstants';
@@ -16,6 +16,7 @@ type NavigationProps = {
   className?: string;
   onNavClick?: (nav: 'how-it-works' | 'features') => void;
   onLogoClick?: () => void;
+  onGuideClick?: () => void;
 };
 
 export const Navigation: React.FC<NavigationProps> = ({
@@ -47,6 +48,15 @@ export const Navigation: React.FC<NavigationProps> = ({
 
       {/* Navigation links on the right - Desktop */}
       <div className="hidden sm:flex items-center gap-5">
+        {onGuideClick && (
+          <button
+            onClick={onGuideClick}
+            className={`inline-flex items-center gap-1.5 transition-colors duration-200 text-sm font-medium cursor-pointer ${isLight ? 'text-slate-600 hover:text-emerald-600' : 'text-slate-300 hover:text-emerald-300'}`}
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>Guide</span>
+          </button>
+        )}
         {onNavClick ? (
           <button
             onClick={() => onNavClick('how-it-works')}
@@ -106,6 +116,15 @@ export const Navigation: React.FC<NavigationProps> = ({
 
       {/* Mobile Navigation - all buttons on the right */}
       <div className="sm:hidden flex items-center gap-2">
+        {onGuideClick && (
+          <button
+            onClick={onGuideClick}
+            className={`inline-flex items-center gap-1 text-xs px-1.5 py-1 transition-colors cursor-pointer ${isLight ? 'text-slate-600 hover:text-emerald-600' : 'text-slate-300 hover:text-emerald-200'}`}
+          >
+            <BookOpen className="w-2.5 h-2.5" />
+            <span>Guide</span>
+          </button>
+        )}
         {onNavClick ? (
           <button
             onClick={() => onNavClick('how-it-works')}
