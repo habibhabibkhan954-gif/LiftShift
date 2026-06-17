@@ -25,6 +25,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   className = '',
   onNavClick,
   onLogoClick,
+  onGuideClick = undefined,
 }) => {
   const { mode } = useTheme();
   const isLight = mode === 'light';

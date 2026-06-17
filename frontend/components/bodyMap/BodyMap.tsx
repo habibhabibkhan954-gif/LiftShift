@@ -1,4 +1,5 @@
-import React, { useLayoutEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useLayoutEffect, useRef, useCallback, useMemo, useEffect } from 'react';
+import gsap from 'gsap';
 import { getVolumeColor, getExerciseMuscleColor, getHypertrophyColor, SVG_MUSCLE_GROUPS, CSV_TO_SVG_MUSCLE_MAP, getMuscleIdForDetailedSvgId } from '../../utils/muscle/mapping';
 import { INTERACTIVE_MUSCLE_IDS } from '../../utils/muscle/mapping';
 import { getMuscleWithFallback } from '../../utils/muscle/mapping/bodyMapAvailability';
@@ -115,32 +116,46 @@ export const BodyMap: React.FC<BodyMapProps> = ({
         const isHovered = hoveredMuscleIdsOverride
           ? hoveredMuscleIdsOverride.some(id => getRelatedMuscleIds(id).includes(muscleId))
           : (hoveredId === muscleId || (hoveredId && getRelatedMuscleIds(hoveredId).includes(muscleId)));
-        
+
+        let finalColor = color;
+        let finalFilter = '';
+
+        if (isSelected) {
+          finalColor = SELECTION_HIGHLIGHT;
+          finalFilter = 'brightness(1.15) url(#muscle-glow)';
+        } else if (isHovered) {
+          finalColor = HOVER_HIGHLIGHT;
+          finalFilter = 'brightness(1.1) url(#muscle-glow-subtle)';
+        }
+
         el.querySelectorAll('path').forEach(path => {
-          path.style.transition = 'all 0.15s ease';
-          // Stroke is handled by useBodyMapWarp hook - only set fill here
-          // Volume-based color
-          path.style.fill = color;
-          path.style.filter = '';
+          // Use GSAP for smooth transition
+          gsap.to(path, {
+            fill: finalColor,
+            duration: 0.4,
+            ease: 'power2.out',
+            overwrite: 'auto'
+          });
           
-          if (isSelected) {
-            // Selected state - should be clearly distinguishable from hover.
-            path.style.fill = SELECTION_HIGHLIGHT;
-            path.style.filter = 'brightness(1.12)';
-          } else if (isHovered) {
-            // Hover state - uses a distinct (non-palette) hover color.
-            path.style.fill = HOVER_HIGHLIGHT;
-            path.style.filter = 'brightness(1.08)';
+          path.style.filter = finalFilter;
+
+          // Add pulsing effect for highly active muscles
+          if (volume > (maxVolume * 0.7) && !compact) {
+             gsap.to(path, {
+               opacity: 0.7,
+               repeat: -1,
+               yoyo: true,
+               duration: 0.8 + Math.random() * 0.4,
+               ease: 'sine.inOut'
+             });
           } else {
-            // Default state - volume-based color
-            path.style.fill = color;
-            path.style.filter = '';
+             gsap.to(path, { opacity: 1, duration: 0.3, overwrite: 'auto' });
           }
         });
         (el as HTMLElement).style.cursor = compact && !interactive ? 'default' : 'pointer';
       });
     });
-  }, [muscleVolumes, maxVolume, selectedMuscleIds, hoveredMuscleIdsOverride, interactive, useExerciseColors, useHypertrophyColors, volumeThresholds]);
+  }, [muscleVolumes, maxVolume, selectedMuscleIds, hoveredMuscleIdsOverride, interactive, useExerciseColors, useHypertrophyColors, volumeThresholds, effectiveVariant, effectiveGender, compact]);
 
   const handleClick = useCallback((e: MouseEvent) => {
     const target = e.target as Element;
@@ -174,15 +189,22 @@ export const BodyMap: React.FC<BodyMapProps> = ({
   }, [onPartHover, applyColors, hoveredMuscleIdsOverride]);
 
   useLayoutEffect(() => {
-    applyColors(hoveredMuscleRef.current);
+    const ctx = gsap.context(() => {
+      applyColors(hoveredMuscleRef.current);
+    }, containerRef);
+
     const container = containerRef.current;
-    if (!container) return;
+    if (!container) return () => ctx.revert();
+
     // Skip event listeners for compact (mini) body maps - no interaction
-    if (compact && !interactive) return;
+    if (compact && !interactive) return () => ctx.revert();
+
     container.addEventListener('click', handleClick);
     container.addEventListener('mouseover', handleMouseOver);
     container.addEventListener('mouseout', handleMouseOut);
+
     return () => {
+      ctx.revert();
       container.removeEventListener('click', handleClick);
       container.removeEventListener('mouseover', handleMouseOver);
       container.removeEventListener('mouseout', handleMouseOut);
@@ -207,11 +229,102 @@ export const BodyMap: React.FC<BodyMapProps> = ({
       ? FemaleBackBodyMapGroup
       : MaleBackBodyMapGroup);
 
+  useEffect(() => {
+    if ((compact && !interactive) || !containerRef.current) return;
+
+    const ctx = gsap.context(() => {
+      const container = containerRef.current;
+      if (!container) return;
+
+      const handleMouseMove = (e: MouseEvent) => {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const factor = compact ? 40 : 20;
+        const rotateX = (y - centerY) / factor;
+        const rotateY = (centerX - x) / factor;
+
+        gsap.to(container, {
+          rotateX: rotateX,
+          rotateY: rotateY,
+          duration: 0.5,
+          ease: 'power2.out'
+        });
+      };
+
+      const handleMouseLeave = () => {
+        gsap.to(container, {
+          rotateX: 0,
+          rotateY: 0,
+          duration: 0.5,
+          ease: 'power2.out'
+        });
+      };
+
+      container.addEventListener('mousemove', handleMouseMove);
+      container.addEventListener('mouseleave', handleMouseLeave);
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, [compact, interactive]);
+
+  useEffect(() => {
+    if (!containerRef.current || compact) return;
+
+    const ctx = gsap.context(() => {
+      const muscles = containerRef.current?.querySelectorAll('g[id]');
+      if (muscles) {
+        gsap.fromTo(muscles,
+          { opacity: 0, scale: 0.9, y: 10 },
+          {
+            opacity: 1,
+            scale: 1,
+            y: 0,
+            duration: 0.6,
+            stagger: {
+              each: 0.015,
+              from: "center"
+            },
+            ease: 'back.out(1.4)',
+            clearProps: 'all'
+          }
+        );
+      }
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, [compact]);
+
   return (
-    <div 
+    <div
       ref={containerRef}
-      className={`flex justify-center items-center ${compact ? 'gap-0' : 'gap-4'} w-full ${compactFill ? 'h-full' : ''}`}
+      className={`body-map-container flex justify-center items-center ${compact ? 'gap-0' : 'gap-4'} w-full ${compactFill ? 'h-full' : ''}`}
+      style={{ perspective: '1200px', transformStyle: 'preserve-3d' }}
     >
+      <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+        <defs>
+          <filter id="muscle-glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feFlood floodColor="rgb(var(--bodymap-selection-rgb))" floodOpacity="0.5" result="glowColor" />
+            <feComposite in="glowColor" in2="blur" operator="in" result="softGlow" />
+            <feMerge>
+              <feMergeNode in="softGlow" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <filter id="muscle-glow-subtle" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur stdDeviation="1.5" result="blur" />
+            <feFlood floodColor="rgb(var(--bodymap-hover-rgb))" floodOpacity="0.3" result="glowColor" />
+            <feComposite in="glowColor" in2="blur" operator="in" result="softGlow" />
+            <feMerge>
+              <feMergeNode in="softGlow" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+      </svg>
       <FrontSvg className={svgClass} warpOverrides={warpParams} stroke={stroke} />
       <BackSvg className={svgClass} warpOverrides={warpParams} stroke={stroke} />
     </div>

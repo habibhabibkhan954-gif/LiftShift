@@ -2,12 +2,12 @@ import React from 'react';
 import { Navigation } from '../layout/Navigation';
 import { useTheme } from '../theme/ThemeProvider';
 import { assetPath } from '../../constants';
-import { clientOnly } from 'vike-react/clientOnly';
+import { ClientOnly } from 'vike-react/ClientOnly';
 import lightBgImage from '../../src/assets/images/misc/light-bg1.avif';
 import darkBgImage from '../../src/assets/images/misc/dark-bg5.avif';
 
-const LightRays = clientOnly(() => import('../landing/lightRays/LightRays'));
-const PlatformDock = clientOnly(() => import('../landing/ui/PlatformDock'));
+const LightRays = React.lazy(() => import('../landing/lightRays/LightRays'));
+const PlatformDock = React.lazy(() => import('../landing/ui/PlatformDock'));
 
 type InfoShellProps = {
   activeNav?: 'how-it-works' | 'features' | null;
@@ -96,20 +96,21 @@ export const InfoShell: React.FC<InfoShellProps> = ({ activeNav = null, title, s
       {/* Light rays - dark mode only */}
       {!isLight && (
         <div className="fixed inset-0 z-[1] pointer-events-none">
-          <LightRays
-            fallback={null}
-            raysOrigin="top-center"
-            raysColor="#ef4444"
-            raysSpeed={0.75}
-            lightSpread={1.2}
-            rayLength={1.5}
-            followMouse={true}
-            mouseInfluence={0.06}
-            noiseAmount={0.05}
-            distortion={0.03}
-            fadeDistance={1.2}
-            saturation={0.9}
-          />
+          <ClientOnly fallback={null}>
+            <LightRays
+              raysOrigin="top-center"
+              raysColor="#ef4444"
+              raysSpeed={0.75}
+              lightSpread={1.2}
+              rayLength={1.5}
+              followMouse={true}
+              mouseInfluence={0.06}
+              noiseAmount={0.05}
+              distortion={0.03}
+              fadeDistance={1.2}
+              saturation={0.9}
+            />
+          </ClientOnly>
         </div>
       )}
 
@@ -124,7 +125,9 @@ export const InfoShell: React.FC<InfoShellProps> = ({ activeNav = null, title, s
         <div className="mt-8 space-y-7">{children}</div>
       </main>
 
-      <PlatformDock fallback={null} items={platformDockItems} />
+      <ClientOnly fallback={null}>
+        <PlatformDock items={platformDockItems} />
+      </ClientOnly>
 
       <footer className={`relative z-10 border-t mt-16 px-4 sm:px-6 lg:px-8 py-10 ${isLight ? 'border-black/10' : 'border-white/10'}`}>
         <div className="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 text-sm">

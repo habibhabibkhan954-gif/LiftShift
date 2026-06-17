@@ -40,17 +40,12 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x android/gradlew
 
-      - name: Build APK (assembleRelease)
-        run: ./gradlew assembleRelease
+      - name: Build APK (assembleDebug)
+        run: ./gradlew assembleDebug
         working-directory: android
-        env:
-          RELEASE_KEYSTORE: release.keystore
-          RELEASE_KEYSTORE_PASSWORD: "opensource_build_key"
-          RELEASE_KEY_ALIAS: "release-alias"
-          RELEASE_KEY_PASSWORD: "opensource_build_key"
 
-      - name: Upload Release APK as Artifact
+      - name: Upload Debug APK as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: release-apk-${{ github.run_number }}
-          path: android/app/build/outputs/apk/release/*.apk
+          name: debug-apk-${{ github.run_number }}
+          path: android/app/build/outputs/apk/debug/*.apk
