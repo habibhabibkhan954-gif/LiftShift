@@ -1,58 +1,61 @@
 name: Import Exercises Dataset
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:          # run manually from the Actions tab
   push:
-    branches: [ main ]
+    branches: [ main ]        # optional automatic run
 
 jobs:
   import:
     runs-on: ubuntu-latest
 
     steps:
+      # ------------------------------------------------------------
+      # 1️⃣ Checkout the LiftShift repo (no credentials needed yet)
+      # ------------------------------------------------------------
       - name: Checkout LiftShift
         uses: actions/checkout@v4
         with:
-          persist-credentials: false
+          persist-credentials: false   # we’ll push later with the PAT
 
-      - name: Clone exercises‑dataset
-        run: git clone https://github.com/habibhabibkhan954-gif/exercises-dataset.git ./tmp_exercises
-
-      - name: Move dataset files to root
+      # ------------------------------------------------------------
+      # 2️⃣ Synchronise with the remote main branch (prevents
+      #    non‑fast‑forward errors)
+      # ------------------------------------------------------------
+      - name: Pull latest main
         run: |
-          shopt -s dotglob nullglob
-          cp -r ./tmp_exercises/* .
-          rm -rf ./tmp_exercises
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git fetch origin main
+          git reset --hard origin/main
 
-      - name: Create a short‑lived branch
-        id: branch
+      # ------------------------------------------------------------
+      # 3️⃣ Clone the exercises‑dataset repo into a **sub‑folder**
+      #    called `exercises-dataset` inside the root of LiftShift
+      # ------------------------------------------------------------
+      - name: Clone exercises‑dataset into sub‑folder
         run: |
-          BRANCH="import-exercises-${{ github.run_id }}"
-          git checkout -b "$BRANCH"
-          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          git clone https://github.com/habibhabibkhan954-gif/exercises-dataset.git ./exercises-dataset
 
+      # ------------------------------------------------------------
+      # 4️⃣ (Optional) Run any integration steps you need here
+      # ------------------------------------------------------------
+      # - name: Integrate dataset
+      #   run: |
+      #     # Example: copy specific files into your app folder
+      #     cp -r ./exercises-dataset/data ./src/data
+
+      # ------------------------------------------------------------
+      # 5️⃣ Commit the new folder and push back to main
+      # ------------------------------------------------------------
       - name: Commit changes
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "Import exercises‑dataset (run ${{ github.run_id }})"
+          git commit -m "Add/Update exercises‑dataset (run ${{ github.run_id }})"
 
-      - name: Push temporary branch
+      - name: Push changes (using PAT)
         uses: ad-m/github-push-action@v0.6.0
         with:
-          github_token: ${{ secrets.PAT_TOKEN }}
-          branch: ${{ steps.branch.outputs.branch }}
+          github_token: ${{ secrets.PAT_TOKEN }}   # PAT you created
+          branch: main
           force: false
-
-      - name: Open Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.PAT_TOKEN }}
-          commit-message: "Import exercises‑dataset"
-          branch: ${{ steps.branch.outputs.branch }}
-          base: main
-          title: "Import exercises‑dataset (run ${{ github.run_id }})"
-          body: |
-            This PR adds the latest contents of the **exercises‑dataset** repository
-            directly into the root of the LiftShift project.
