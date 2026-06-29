@@ -1,0 +1,43 @@
+name: Import Exercises Dataset
+
+on:
+  workflow_dispatch:          # manual trigger
+  push:
+    branches: [ main ]        # optional automatic run
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout the LiftShift repository (the repo where the workflow lives)
+      - name: Checkout LiftShift
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false   # avoid credential leakage
+
+      # 2️⃣ Remove any previous copy (optional, keeps the root clean on reruns)
+      - name: Clean previous dataset
+        run: |
+          if [ -d "./exercises-dataset" ]; then
+            rm -rf ./exercises-dataset
+          fi
+
+      # 3️⃣ Clone the exercises‑dataset repo directly into the repository root
+      - name: Clone Exercises Dataset into root
+        run: |
+          git clone https://github.com/habibhabibkhan954-gif/exercises-dataset.git .
+
+      # 4️⃣ (Optional) Run any integration steps you need after the clone
+      # - name: Integrate dataset
+      #   run: |
+      #     # Example: move files, generate assets, etc.
+      #     ./scripts/setup_exercises.sh
+
+      # 5️⃣ Commit and push the newly added files back to LiftShift
+      - name: Commit and push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+          force: false
