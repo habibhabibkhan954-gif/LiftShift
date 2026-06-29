@@ -1,44 +1,56 @@
 name: Import Exercises Dataset
 
 on:
-  workflow_dispatch:          # run manually from the Actions tab
+  workflow_dispatch:
   push:
-    branches: [ main ]        # optional automatic run on pushes
+    branches: [ main ]
 
 jobs:
   import:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout the LiftShift repository (the repo where this workflow lives)
       - name: Checkout LiftShift
         uses: actions/checkout@v4
-        with:
-          persist-credentials: false
 
-      # 2️⃣ Clone the exercises‑dataset repo into a temporary directory
-      - name: Clone exercises‑dataset into temp folder
-        run: |
-          git clone https://github.com/habibhabibkhan954-gif/exercises-dataset.git ./tmp_exercises
+      - name: Clone exercises‑dataset into a temp folder
+        run: git clone https://github.com/habibhabibkhan954-gif/exercises-dataset.git ./tmp_exercises
 
-      # 3️⃣ Move the cloned contents to the repository root
-      - name: Move dataset files to root
+      - name: Move dataset files to repository root
         run: |
-          # Copy everything (including hidden files) from the temp folder to the repo root
           shopt -s dotglob nullglob
           cp -r ./tmp_exercises/* .
-          # Clean up the temporary folder
           rm -rf ./tmp_exercises
 
-      # 4️⃣ (Optional) Run any script that integrates the dataset into your app
-      # - name: Integrate dataset
-      #   run: |
-      #     ./scripts/setup_exercises.sh
+      - name: Create a short‑lived branch
+        id: branch
+        run: |
+          BRANCH="import-exercises-${{ github.run_id }}"
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          git checkout -b "$BRANCH"
 
-      # 5️⃣ Commit and push the newly added / updated files back to LiftShift
-      - name: Commit and push changes
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Import exercises dataset (run ${{ github.run_id }})"
+
+      - name: Push temporary branch
         uses: ad-m/github-push-action@v0.6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+          branch: ${{ steps.branch.outputs.branch }}
           force: false
+
+      - name: Open Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Import exercises dataset"
+          branch: ${{ steps.branch.outputs.branch }}
+          base: main
+          title: "Import exercises dataset (run ${{ github.run_id }})"
+          body: |
+            This PR adds the latest version of the **exercises‑dataset** repository
+            directly into the root of the LiftShift project.
