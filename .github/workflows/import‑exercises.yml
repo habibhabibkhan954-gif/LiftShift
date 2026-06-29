@@ -10,25 +10,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout LiftShift (no credentials needed for read‑only actions)
       - name: Checkout LiftShift
         uses: actions/checkout@v4
         with:
-          persist-credentials: false   # we’ll push with our own token
+          persist-credentials: false
 
-      # 2️⃣ Clone the exercises‑dataset repo into a temporary folder
       - name: Clone exercises‑dataset
-        run: |
-          git clone https://github.com/habibhabibkhan954-gif/exercises-dataset.git ./tmp_exercises
+        run: git clone https://github.com/habibhabibkhan954-gif/exercises-dataset.git ./tmp_exercises
 
-      # 3️⃣ Move its contents to the repository root
       - name: Move dataset files to root
         run: |
           shopt -s dotglob nullglob
           cp -r ./tmp_exercises/* .
           rm -rf ./tmp_exercises
 
-      # 4️⃣ Commit the changes
+      - name: Create a short‑lived branch
+        id: branch
+        run: |
+          BRANCH="import-exercises-${{ github.run_id }}"
+          git checkout -b "$BRANCH"
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+
       - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
@@ -36,10 +38,21 @@ jobs:
           git add .
           git commit -m "Import exercises‑dataset (run ${{ github.run_id }})"
 
-      # 5️⃣ Push using the PAT secret
-      - name: Push changes
+      - name: Push temporary branch
         uses: ad-m/github-push-action@v0.6.0
         with:
-          github_token: ${{ secrets.PAT_TOKEN }}   # <-- PAT here
-          branch: ${{ github.ref }}
+          github_token: ${{ secrets.PAT_TOKEN }}
+          branch: ${{ steps.branch.outputs.branch }}
           force: false
+
+      - name: Open Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          commit-message: "Import exercises‑dataset"
+          branch: ${{ steps.branch.outputs.branch }}
+          base: main
+          title: "Import exercises‑dataset (run ${{ github.run_id }})"
+          body: |
+            This PR adds the latest contents of the **exercises‑dataset** repository
+            directly into the root of the LiftShift project.
