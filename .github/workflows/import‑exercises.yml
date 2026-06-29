@@ -1,40 +1,41 @@
 name: Import Exercises Dataset
 
 on:
-  workflow_dispatch:          # manual trigger
+  workflow_dispatch:          # run manually from the Actions tab
   push:
-    branches: [ main ]        # optional automatic run
+    branches: [ main ]        # optional automatic run on pushes
 
 jobs:
   import:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout the LiftShift repository (the repo where the workflow lives)
+      # 1️⃣ Checkout the LiftShift repository (the repo where this workflow lives)
       - name: Checkout LiftShift
         uses: actions/checkout@v4
         with:
-          persist-credentials: false   # avoid credential leakage
+          persist-credentials: false
 
-      # 2️⃣ Remove any previous copy (optional, keeps the root clean on reruns)
-      - name: Clean previous dataset
+      # 2️⃣ Clone the exercises‑dataset repo into a temporary directory
+      - name: Clone exercises‑dataset into temp folder
         run: |
-          if [ -d "./exercises-dataset" ]; then
-            rm -rf ./exercises-dataset
-          fi
+          git clone https://github.com/habibhabibkhan954-gif/exercises-dataset.git ./tmp_exercises
 
-      # 3️⃣ Clone the exercises‑dataset repo directly into the repository root
-      - name: Clone Exercises Dataset into root
+      # 3️⃣ Move the cloned contents to the repository root
+      - name: Move dataset files to root
         run: |
-          git clone https://github.com/habibhabibkhan954-gif/exercises-dataset.git .
+          # Copy everything (including hidden files) from the temp folder to the repo root
+          shopt -s dotglob nullglob
+          cp -r ./tmp_exercises/* .
+          # Clean up the temporary folder
+          rm -rf ./tmp_exercises
 
-      # 4️⃣ (Optional) Run any integration steps you need after the clone
+      # 4️⃣ (Optional) Run any script that integrates the dataset into your app
       # - name: Integrate dataset
       #   run: |
-      #     # Example: move files, generate assets, etc.
       #     ./scripts/setup_exercises.sh
 
-      # 5️⃣ Commit and push the newly added files back to LiftShift
+      # 5️⃣ Commit and push the newly added / updated files back to LiftShift
       - name: Commit and push changes
         uses: ad-m/github-push-action@v0.6.0
         with:
