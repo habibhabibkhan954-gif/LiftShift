@@ -1,7 +1,7 @@
 name: Import Exercises Dataset
 
 on:
-  workflow_dispatch:          # run manually from the Actions tab
+  workflow_dispatch:          # manual trigger
   push:
     branches: [ main ]        # optional automatic run
 
@@ -11,16 +11,16 @@ jobs:
 
     steps:
       # ------------------------------------------------------------
-      # 1️⃣ Checkout the LiftShift repo (no credentials needed yet)
+      # 1️⃣ Checkout LiftShift **without** trying to init submodules
       # ------------------------------------------------------------
       - name: Checkout LiftShift
         uses: actions/checkout@v4
         with:
-          persist-credentials: false   # we’ll push later with the PAT
+          persist-credentials: false   # we'll push with our PAT
+          submodules: false            # <-- ignore .gitmodules entries
 
       # ------------------------------------------------------------
-      # 2️⃣ Synchronise with the remote main branch (prevents
-      #    non‑fast‑forward errors)
+      # 2️⃣ Synchronise with the remote main (prevents fast‑forward errors)
       # ------------------------------------------------------------
       - name: Pull latest main
         run: |
@@ -31,7 +31,6 @@ jobs:
 
       # ------------------------------------------------------------
       # 3️⃣ Clone the exercises‑dataset repo into a **sub‑folder**
-      #    called `exercises-dataset` inside the root of LiftShift
       # ------------------------------------------------------------
       - name: Clone exercises‑dataset into sub‑folder
         run: |
@@ -42,7 +41,7 @@ jobs:
       # ------------------------------------------------------------
       # - name: Integrate dataset
       #   run: |
-      #     # Example: copy specific files into your app folder
+      #     # Example: copy specific files into your app directory
       #     cp -r ./exercises-dataset/data ./src/data
 
       # ------------------------------------------------------------
@@ -56,6 +55,6 @@ jobs:
       - name: Push changes (using PAT)
         uses: ad-m/github-push-action@v0.6.0
         with:
-          github_token: ${{ secrets.PAT_TOKEN }}   # PAT you created
+          github_token: ${{ secrets.PAT_TOKEN }}   # the PAT you added
           branch: main
           force: false
